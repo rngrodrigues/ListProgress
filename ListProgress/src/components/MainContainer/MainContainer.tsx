@@ -1,4 +1,3 @@
-
 import { Container } from "./MainContainer.styles";
 
 interface IMainContainer {

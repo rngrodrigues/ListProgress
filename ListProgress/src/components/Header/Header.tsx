@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
-import { MainContainer, LogoContainer, MenuContainer, LoginContainer } from "./Header.styles.ts";
+import { MainContainer, LogoContainer, 
+  MenuContainer, LoginContainer } from "./Header.styles.ts";
 import { ReactComponent as MetaIcon } from '../../assets/icons/meta.svg';
 import { ReactComponent as DayNightIcon } from '../../assets/icons/day-and-night.svg';
 

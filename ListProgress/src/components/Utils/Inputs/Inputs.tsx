@@ -1,11 +1,10 @@
     import { ReactComponent as SearchIcon } from '../../../assets/icons/search.svg';
-    import { SearchInput, SearchContainer } from "./Inputs.styles.ts";
-    const Inputs = () => {
+    import * as S from "./Inputs.styles.ts";
+    export const SearchInput = () => {
         return (
-  <SearchContainer tabIndex={0}>
+  <S.SearchContainer tabIndex={0}>
   <SearchIcon className="icon" />
-  <SearchInput placeholder="Pesquisar lista..." />
-</SearchContainer>
+  <S.SearchInput placeholder="Pesquisar lista..." />
+</S.SearchContainer>
         )
     }
- export default Inputs;

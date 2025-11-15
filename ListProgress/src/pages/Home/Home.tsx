@@ -1,27 +1,31 @@
-import MainContainer from "../../components/MainContainer/MainContainer.tsx";
-import Buttons from "../../components/Utils/Buttons/Buttons.tsx";
-import Inputs from "../../components/Utils/Inputs/Inputs.tsx";
+import MainContainer from "../../components/MainContainer";
+import TaskCard from "../../components/TaskCard";
+import Footer from "../../components/Footer";
+import { AddBtn } from "../../components/Utils/Buttons";
+import { SearchInput } from "../../components/Utils/Inputs";
 import { GridContainer, PaginationContainer, TopContainer } from "./Home.styles.ts";
 
+
+
 const Home = () => {
+  
   return (
+     <>
     <MainContainer>
       <TopContainer>
-        <Buttons />
-        <Inputs />
+        <AddBtn />
+        <SearchInput />
       </TopContainer>
-
       <GridContainer>
-        <div className="div-grid"></div>
-        <div className="div-grid"></div>
-        <div className="div-grid"></div>
-        <div className="div-grid"></div>
-        <div className="div-grid"></div>
-        <div className="div-grid"></div>
+   <TaskCard />
+   <TaskCard />
+   <TaskCard />
+   <TaskCard />
       </GridContainer>
-
-      <PaginationContainer />
+      <PaginationContainer></PaginationContainer>
     </MainContainer>
+<Footer />
+</>
   );
 };
 

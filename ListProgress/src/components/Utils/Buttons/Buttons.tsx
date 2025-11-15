@@ -1,10 +1,9 @@
  import { ReactComponent as AddIcon } from '../../../assets/icons/add.svg';
-  import { AddBtn } from "./Buttons.styles.ts";
+  import * as S from "./Buttons.styles.ts";
  
-  const Buttons = () => {
+  export const AddBtn = () => {
 return (
-<AddBtn> <AddIcon className="icon" /> Adicionar lista </AddBtn>
+<S.AddBtn> <AddIcon className="icon" /> Adicionar lista </S.AddBtn>
 )
  }
 
- export default Buttons;
