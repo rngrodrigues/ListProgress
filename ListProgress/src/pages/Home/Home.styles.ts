@@ -21,6 +21,6 @@ flex: 1;
 `;
 export const PaginationContainer = styled.div `
   flex: 0 0 auto;
-  width:100;
+  width:100%;
   padding: 1rem;
 `;
