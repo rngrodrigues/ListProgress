@@ -23,3 +23,45 @@ export const SearchInput = styled.input`
   width: 10rem;
   transition: border-color 0.3s ease;  
 `;
+export const TitleLabel = styled.label`
+  font-size: 1.6rem;
+  margin-left: 1rem;
+  margin-bottom: 0.25rem;
+`;
+export const TitleInput = styled.input`
+background: transparent; 
+margin: 1rem;
+padding: 0.5rem;
+ font-size: 1rem;
+ border: 1px solid black;
+ 
+`;
+
+export const CategoryLabel = styled.label`
+  font-size: 1.6rem;
+  margin-left: 1rem;
+  margin-bottom: 0.25rem;
+`;
+
+export const CategoryInput = styled.input `
+background: transparent; 
+margin: 1rem;
+padding: 0.5rem;
+font-size: 1rem;
+border: 1px solid black;
+`;
+
+export const DescriptionLabel = styled.label`
+  font-size: 1.6rem;
+  margin-left: 1rem;
+  margin-bottom: 0.25rem;
+`;
+
+export const DescriptionInput = styled.textarea `
+margin: 1rem;
+padding: 0.5rem;
+background: transparent;
+font-size: 1rem; 
+border: 1px solid black;
+height: 5rem;
+`;

@@ -17,3 +17,11 @@ height: 2rem;
 margin-right: 1rem;
 }
 `;
+export const ConfirmButton = styled.button `
+border-radius: 5rem;
+margin: 1rem;
+padding: 0.5rem 1rem;
+box-shadow: 0 1px 1px 0 black;
+background-color: #BAE8B1;
+cursor: pointer;
+`;

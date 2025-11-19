@@ -8,9 +8,13 @@ display: flex;
 align-items: center;
 justify-content: center;
 font-size: clamp(1rem, 2rem, 2rem);
+@media (max-width: 768px) {
+    display: none;
+  }
 `;
 export const LogoContainer = styled.div `
 border-radius: 5rem;
+font-weight: bold;
 background-color: white;
 margin: 0 auto 0 2rem;
 padding: 0.25rem;

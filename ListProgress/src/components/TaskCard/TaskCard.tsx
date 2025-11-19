@@ -1,5 +1,5 @@
 import { TaskCategory, TaskContainer, 
-    TaskProgress, TaskTitle, TitleContainer } from "./TaskCard.styles.ts";
+    TaskProgress, TaskTitle } from "./TaskCard.styles.ts";
 import { ReactComponent as IIcon } from '../../assets/icons/i.svg';
 
 const TaskCard = () => {

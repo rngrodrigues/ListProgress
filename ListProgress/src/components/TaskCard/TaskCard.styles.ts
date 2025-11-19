@@ -25,8 +25,6 @@ height: 3rem;
 }
 `;
 
-export const TitleContainer = styled.div `
-`;
 export const TaskCategory = styled.h2 `
   color: gray;
   font-size: clamp(1.2rem, 1.5vw, 2rem);
