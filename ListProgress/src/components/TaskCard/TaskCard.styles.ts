@@ -10,7 +10,7 @@ padding: 3rem;
 position: relative;
 box-shadow: 0 3px 5px 1px black;
 transition: all ease 0.5s;
-aspect-ratio: 2 / 2;
+aspect-ratio: 1 / 1;
 overflow: hidden;
 &:hover {
 transform: scale(1.08);

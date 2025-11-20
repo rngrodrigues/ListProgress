@@ -1,17 +1,24 @@
-import { TaskCategory, TaskContainer, 
-    TaskProgress, TaskTitle } from "./TaskCard.styles.ts";
+import { TaskCategory, TaskContainer, TaskProgress, TaskTitle } from "./TaskCard.styles.ts";
 import { ReactComponent as IIcon } from '../../assets/icons/i.svg';
 
-const TaskCard = () => {
-return(
-<TaskContainer>
-    <IIcon className="icon"></IIcon>
-    <TaskCategory>Finanças </TaskCategory>
-    <TaskTitle>Juntar 10 Mil Reais </TaskTitle>
-    <TaskProgress>___________</TaskProgress>
+type TaskCardProps = {
+  title: string;
+  category: string;
+  progress?: number; 
+};
 
-</TaskContainer>
-);
+const TaskCard = ({ title, category, progress }: TaskCardProps) => {
+  return (
+    <TaskContainer>
+      <IIcon className="icon" />
+
+      <TaskCategory>{category}</TaskCategory>
+      <TaskTitle>{title}</TaskTitle>
+      <TaskProgress>
+        {progress !== undefined ? `${progress}%` : "___________"}
+      </TaskProgress>
+    </TaskContainer>
+  );
 };
 
 export default TaskCard;

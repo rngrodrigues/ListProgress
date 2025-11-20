@@ -1,11 +1,11 @@
  import { ReactComponent as AddIcon } from '../../../assets/icons/add.svg';
   import * as S from "./Buttons.styles.ts";
  
-  interface ButtonProps {
+  interface IButtonProps {
   onClick?: () => void;
 }
 
-export const AddBtn: React.FC<ButtonProps> = ({ onClick }) => {
+export const AddBtn: React.FC<IButtonProps> = ({ onClick }) => {
   return (
     <S.AddBtn onClick={onClick}>
       <AddIcon className="icon" /> Adicionar lista
@@ -13,9 +13,9 @@ export const AddBtn: React.FC<ButtonProps> = ({ onClick }) => {
   );
 };
 
- export const ConfirmButton = () => {
+export const ConfirmButton: React.FC<IButtonProps> = ({ onClick }) => {
 return (
-<S.ConfirmButton>Confirmar</S.ConfirmButton>
+<S.ConfirmButton onClick={onClick}>Confirmar</S.ConfirmButton>
   );
  }
 
