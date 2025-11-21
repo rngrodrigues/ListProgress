@@ -64,3 +64,9 @@ export const DescriptionInput = ({ value, onChange }: IInputProps<HTMLTextAreaEl
     </>
   );
 };
+
+export const CheckInput = () => {
+  return (
+  <S.CheckInput type='checkbox' />
+  );
+}

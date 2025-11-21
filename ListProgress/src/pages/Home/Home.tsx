@@ -1,6 +1,6 @@
 import { useState } from "react";
 import MainContainer from "../../components/MainContainer";
-import TaskCard from "../../components/TaskCard";
+import { TaskCard } from "../../components/TaskCard";
 import Footer from "../../components/Footer";
 import { ModalAddList } from "../../components/Modals";
 import { AddBtn } from "../../components/Utils/Buttons";

@@ -65,3 +65,9 @@ font-size: 1rem;
 border: 1px solid black;
 height: 5rem;
 `;
+export const CheckInput = styled.input `
+   width: 3rem;
+    height: 3rem;
+    margin-right: 1.5rem;
+    cursor: pointer;
+`;
