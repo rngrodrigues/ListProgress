@@ -24,7 +24,7 @@ export const SearchInput = styled.input`
   transition: border-color 0.3s ease;  
 `;
 export const TitleLabel = styled.label`
-  font-size: 1.6rem;
+  font-size: 2rem;
   margin-left: 1rem;
   margin-bottom: 0.25rem;
 `;
@@ -34,11 +34,11 @@ margin: 1rem;
 padding: 0.5rem;
  font-size: 1rem;
  border: 1px solid black;
- 
+ height: 1.5rem;
 `;
 
 export const CategoryLabel = styled.label`
-  font-size: 1.6rem;
+  font-size: 2rem;
   margin-left: 1rem;
   margin-bottom: 0.25rem;
 `;
@@ -49,10 +49,12 @@ margin: 1rem;
 padding: 0.5rem;
 font-size: 1rem;
 border: 1px solid black;
+width: 19rem;
+height: 1.5rem;
 `;
 
 export const DescriptionLabel = styled.label`
-  font-size: 1.6rem;
+  font-size: 2rem;
   margin-left: 1rem;
   margin-bottom: 0.25rem;
 `;
@@ -63,7 +65,7 @@ padding: 0.5rem;
 background: transparent;
 font-size: 1rem; 
 border: 1px solid black;
-height: 5rem;
+height: 6rem;
 `;
 export const CheckInput = styled.input `
    width: 3rem;

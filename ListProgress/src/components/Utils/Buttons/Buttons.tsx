@@ -3,12 +3,13 @@
  
   interface IButtonProps {
   onClick?: () => void;
+  children?: React.ReactNode;
 }
 
-export const AddBtn: React.FC<IButtonProps> = ({ onClick }) => {
+export const AddBtn: React.FC<IButtonProps> = ({ onClick, children }) => {
   return (
     <S.AddBtn onClick={onClick}>
-      <AddIcon className="icon" /> Adicionar lista
+      <AddIcon className="icon" /> {children}
     </S.AddBtn>
   );
 };

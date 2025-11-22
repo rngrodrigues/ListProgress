@@ -37,6 +37,8 @@ border-radius: 5rem;
 export const BottomContainer = styled.div`
 flex: 2;
 display: flex;
+gap:2rem;
+padding: 0 6qrem;
 flex-direction: column;
 align-items: center;
 justify-content: center;

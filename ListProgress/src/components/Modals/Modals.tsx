@@ -56,8 +56,8 @@ export const ModalAddList: React.FC<IModalAddList> = ({ onClose, onAddTask }) =>
           </Title>
 
           <MaxWidthForm>
-            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
             <CategoryInput value={category} onChange={(e) => setCategory(e.target.value)} />
+            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
             <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
           </MaxWidthForm>
 

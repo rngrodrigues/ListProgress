@@ -7,10 +7,13 @@ import { AddBtn } from "../../components/Utils/Buttons";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { GridContainer, PaginationContainer, TopContainer } from "./Home.styles.ts";
 import { AnimatePresence } from "framer-motion";
+import { TaskList } from "../../components/TaskList/TaskList.tsx";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
+  const [selectedTask, setSelectedTask] = useState<any | null>(null);
+
   const ITEMS_PER_PAGE = 6;
   const [page, setPage] = useState<number>(0);
   const totalPages = Math.max(1, Math.ceil(tasks.length / ITEMS_PER_PAGE));
@@ -42,22 +45,40 @@ const Home = () => {
       </AnimatePresence>
 
       <MainContainer>
-        <TopContainer>
-          <AddBtn onClick={() => setOpen(true)} />
-          <SearchInput />
-        </TopContainer>
 
-        <GridContainer>
-          {currentTasks.map((task) => (
-            <TaskCard key={task.id} {...task} />
-          ))}
-        </GridContainer>
+        {!selectedTask && (
+          <TopContainer>
+            <AddBtn onClick={() => setOpen(true)}> Adicionar lista </AddBtn>
+            <SearchInput />
+          </TopContainer>
+        )}
 
-        <PaginationContainer>
-          <button onClick={() => changePage(-1)}>◀</button>
-          <span>{page + 1} / {totalPages}</span>
-          <button onClick={() => changePage(1)}>▶</button>
-        </PaginationContainer>
+        {selectedTask ? (
+          <TaskList
+            title={selectedTask.title}
+            category={selectedTask.category}
+            progress={selectedTask.progress}
+            onBack={() => setSelectedTask(null)}
+          />
+        ) : (
+          <GridContainer>
+            {currentTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                {...task}
+                onClick={() => setSelectedTask(task)}
+              />
+            ))}
+          </GridContainer>
+        )}
+
+        {!selectedTask && (
+          <PaginationContainer>
+            <button onClick={() => changePage(-1)}>◀</button>
+            <span>{page + 1} / {totalPages}</span>
+            <button onClick={() => changePage(1)}>▶</button>
+          </PaginationContainer>
+        )}
       </MainContainer>
 
       <Footer />
