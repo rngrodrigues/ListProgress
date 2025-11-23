@@ -17,7 +17,6 @@ export const ModalAddList: React.FC<IModalAddList> = ({ onClose, onAddTask }) =>
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
 
-
   function handleConfirm() {
     const newTask = {
       id: crypto.randomUUID(),

@@ -1,11 +1,5 @@
 import { useState } from "react";
-import { 
-  TaskCategory, 
-  TaskContainer, 
-  TaskDescription, 
-  TaskProgress, 
-  TaskTitle 
-} from "./TaskCard.styles";
+import { TaskCategory, TaskContainer, TaskDescription, TaskProgress, TaskTitle } from "./TaskCard.styles";
 import { ReactComponent as IIcon } from '../../assets/icons/i.svg';
 import { ReactComponent as BackIcon } from '../../assets/icons/arrow-back.svg';
 import { motion } from "framer-motion";
@@ -15,11 +9,12 @@ export type TaskCardProps = {
   id?: string;
   title: string;
   category: string;
+  description: string;
   progress?: number;
   onClick?: () => void;
 };
 
-export const TaskCard = ({ title, category, onClick }: TaskCardProps) => {
+export const TaskCard = ({ title, category, description, onClick }: TaskCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
 
@@ -40,7 +35,7 @@ export const TaskCard = ({ title, category, onClick }: TaskCardProps) => {
           <>
             <BackIcon className="icon" onClick={(e) =>{ e.stopPropagation(); flip(false);}} />
             <TaskDescription>
-              Fazer compras para o mês que vêm, listagem de tudo. Lorem ipsum dolor sit amet.
+              {description}
             </TaskDescription>
           </>
         ) : (
