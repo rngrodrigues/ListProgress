@@ -57,6 +57,7 @@ const Home = () => {
           <TaskList
             title={selectedTask.title}
             category={selectedTask.category}
+            description={selectedTask.Description}
             progress={selectedTask.progress}
             onBack={() => setSelectedTask(null)}
           />
