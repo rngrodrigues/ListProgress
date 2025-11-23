@@ -9,20 +9,19 @@ background-color: white;
 padding: 3rem;
 position: relative;
 box-shadow: 0 3px 5px 1px black;
-transition: transform ease 0.5s;
+transition: all ease 0.3s;
 aspect-ratio: 1 / 1;
 overflow: hidden;
-
 &:hover {
-transform: scale(1.03);
+box-shadow: 0 3px 15px 5px black;;
 }
 .icon {
 position: absolute;
 cursor: pointer;
 top: 3rem;
 right: 2rem;
-width: 4rem;
-height: 4rem;
+width: 3.5rem;
+height: 3.5rem;
 }
 `;
 
@@ -79,5 +78,8 @@ export const TaskProgress = styled.div<{ progress: number }>`
   }
 `;
 
-
+export const TaskDescription = styled.p`
+font-size: clamp(2rem, 3vw, 2.5rem);
+Width: 100%; 
+`;
 
