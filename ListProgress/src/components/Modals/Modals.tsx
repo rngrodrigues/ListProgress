@@ -84,9 +84,7 @@ export const ModalEditCard: React.FC<IModalEditCard> = ({ isOpen, onClose, card,
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-
   if (!isOpen) return null;
-
   useEffect(() => {
     if (card) {
       setTitle(card.title);
@@ -152,7 +150,9 @@ interface IModalAddTask {
 export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTask }) => {
  const [description, setDescription] = useState("");
  const [title, setTitle] = useState("");
+
  if (!isOpen) return null;
+ 
   function handleConfirm() {
     const newTask = {
   id: Date.now().toString(),
@@ -195,4 +195,73 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTa
       </motion.div>
     </BodyModal>
 );
+};
+interface IModalEditTask {
+  isOpen: boolean;
+  onClose: () => void;
+  card: {
+    id: string;
+    title: string;
+    description: string;
+  };
+  onEditCard: (updatedTask: any) => void;
+}
+
+export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, card, onEditCard }) => {
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  useEffect(() => {
+    if (card) {
+      setTitle(card.title);
+      setDescription(card.description);
+    }
+  }, [card, isOpen]);
+
+  if (!isOpen) return null;
+
+  function handleConfirm() {
+    const updatedTask = {
+      ...card,
+      title,
+      description
+    };
+
+    onEditCard(updatedTask);
+    onClose();
+  }
+  return (
+    <BodyModal
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.8, opacity: 0 }}
+        transition={{ duration: 0.1 }}
+        style={{
+          display: "flex", justifyContent: "center",
+          alignItems: "center", height: "100%"
+        }}
+      >
+        <MainContainer>
+          <ArrowBack onClick={onClose} />
+
+          <Title>
+            <MetaIcon className="icon" /> Editar tarefa
+          </Title>
+
+          <MaxWidthForm>
+            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
+            <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
+          </MaxWidthForm>
+
+          <ConfirmButton onClick={handleConfirm} />
+        </MainContainer>
+      </motion.div>
+    </BodyModal>
+  );
 };
