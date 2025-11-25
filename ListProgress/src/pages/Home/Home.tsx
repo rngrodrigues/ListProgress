@@ -2,7 +2,7 @@ import { useState } from "react";
 import MainContainer from "../../components/MainContainer";
 import { TaskCard } from "../../components/TaskCard";
 import Footer from "../../components/Footer";
-import { ModalAddList } from "../../components/Modals";
+import { ModalAddCard } from "../../components/Modals";
 import { AddBtn } from "../../components/Utils/Buttons";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { GridContainer, PaginationContainer, TopContainer } from "./Home.styles.ts";
@@ -29,16 +29,16 @@ const pageVariants = {
 
 const Home = () => {
   const [open, setOpen] = useState(false);
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
 
   const ITEMS_PER_PAGE = 6;
   const [page, setPage] = useState<number>(0);
   const [direction, setDirection] = useState(0);
 
-  const totalPages = Math.max(1, Math.ceil(tasks.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(cards.length / ITEMS_PER_PAGE));
 
-  const currentTasks = tasks.slice(
+  const currentTasks = cards.slice(
     page * ITEMS_PER_PAGE,
     page * ITEMS_PER_PAGE + ITEMS_PER_PAGE
   );
@@ -54,11 +54,11 @@ const Home = () => {
     <>
       <AnimatePresence>
         {open && (
-          <ModalAddList
+          <ModalAddCard
             isOpen={open}
             onClose={() => setOpen(false)}
-            onAddTask={(newTask: any) => {
-              setTasks(prev => [...prev, newTask]);
+            onAddCard={(newCard: any) => {
+              setCards(prev => [...prev, newCard]);
               setOpen(false);
             }}
           />
@@ -80,10 +80,11 @@ const Home = () => {
   key="tasklist"
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
-  transition={{ duration: 0.25 }}
+  transition={{ duration: 0.35 }}
   style={{ width: "100%" }}
 >
       <TaskList
+      id = {selectedTask.id}
         title={selectedTask.title}
         category={selectedTask.category}
         description={selectedTask.Description}
@@ -107,13 +108,21 @@ const Home = () => {
               style={{ width: "100%" }}
             >
               <GridContainer>
-                {currentTasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    {...task}
-                    onClick={() => setSelectedTask(task)}
-                  />
-                ))}
+             {currentTasks.map((card) => (
+  <TaskCard
+    key={card.id}
+    {...card}
+    onClick={() => setSelectedTask(card)}
+    onEdit={(updatedCard) => {
+      setCards(prev =>
+        prev.map(c => (c.id === updatedCard.id ? updatedCard : c))
+      );
+    }}
+    onDelete={(id) => {
+      setCards(prev => prev.filter(c => c.id !== id));
+    }}
+  />
+))}
               </GridContainer>
             </motion.div>
           </AnimatePresence>

@@ -62,7 +62,7 @@ margin: 3rem;
 export const IconsList = styled.div`
 margin-left: auto;
 .icon {
-    width: 2.5rem;
+    width: 3rem;
     height: 2.5rem;
     cursor: pointer;
     margin: 1rem;
