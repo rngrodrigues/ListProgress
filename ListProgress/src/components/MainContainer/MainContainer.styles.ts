@@ -11,6 +11,7 @@ export const Container = styled.div`
   -webkit-backdrop-filter: blur(0.1rem);
   box-shadow: 0 0 5px 0 black;
   overflow: hidden;
+
 `;
 
 

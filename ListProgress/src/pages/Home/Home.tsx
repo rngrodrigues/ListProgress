@@ -74,15 +74,27 @@ const Home = () => {
           </TopContainer>
         )}
 
-        {selectedTask ? (
-          <TaskList
-            title={selectedTask.title}
-            category={selectedTask.category}
-            description={selectedTask.Description}
-            progress={selectedTask.progress}
-            onBack={() => setSelectedTask(null)}
-          />
-        ) : (
+        <AnimatePresence>
+  {selectedTask && (
+    <motion.div
+  key="tasklist"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.25 }}
+  style={{ width: "100%" }}
+>
+      <TaskList
+        title={selectedTask.title}
+        category={selectedTask.category}
+        description={selectedTask.Description}
+        progress={selectedTask.progress}
+        onBack={() => setSelectedTask(null)}
+      />
+    </motion.div>
+  )}
+</AnimatePresence>
+
+        {!selectedTask && (
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={page}
