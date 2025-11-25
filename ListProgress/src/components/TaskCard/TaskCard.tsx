@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { TaskCategory, TaskContainer, TaskDescription, TaskProgress, TaskTitle } from "./TaskCard.styles";
+import { IconsList, TaskCategory, TaskContainer, TaskDescription, TaskProgress, TaskTitle } from "./TaskCard.styles";
 import { ReactComponent as IIcon } from '../../assets/icons/i.svg';
 import { ReactComponent as BackIcon } from '../../assets/icons/arrow-back.svg';
+import { ReactComponent as TrashIcon } from '../../assets/icons/trash.svg'; 
+import { ReactComponent as EditIcon } from '../../assets/icons/edit.svg';
 import { motion } from "framer-motion";
 
 
@@ -33,6 +35,10 @@ export const TaskCard = ({ title, category, description, onClick }: TaskCardProp
       <TaskContainer onClick={onClick} style={{ backfaceVisibility: "hidden" }}>
         {expanded ? (
           <>
+           <IconsList>
+                            <EditIcon className="icons" />
+                            <TrashIcon className="icons" />
+                          </IconsList>
             <BackIcon className="icon" onClick={(e) =>{ e.stopPropagation(); flip(false);}} />
             <TaskDescription>
               {description}
@@ -42,8 +48,8 @@ export const TaskCard = ({ title, category, description, onClick }: TaskCardProp
           <>
             <TaskCategory>{category}</TaskCategory>
             <TaskTitle>{title}</TaskTitle>
-            <TaskProgress progress={80}>
-              <span>80%</span>
+            <TaskProgress progress={47}>
+              <span>47%</span>
             </TaskProgress>
             <IIcon className="icon" onClick={(e) =>{ e.stopPropagation(); flip(true);}} />
           </>

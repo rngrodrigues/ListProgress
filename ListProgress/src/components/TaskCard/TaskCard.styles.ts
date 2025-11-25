@@ -20,8 +20,8 @@ position: absolute;
 cursor: pointer;
 top: 3rem;
 right: 2rem;
-width: 3.5rem;
-height: 3.5rem;
+width: 4rem;
+height: 4rem;
 }
 `;
 
@@ -77,9 +77,18 @@ export const TaskProgress = styled.div<{ progress: number }>`
     pointer-events: none;
   }
 `;
-
 export const TaskDescription = styled.p`
 font-size: clamp(2rem, 3vw, 2.5rem);
 Width: 100%; 
 `;
-
+export const IconsList = styled.div`
+position: absolute;
+top: 2rem;
+left: 2rem;
+.icons {
+cursor: pointer;
+width: 3rem;
+height: 3rem;
+margin: 1rem;
+}
+`;

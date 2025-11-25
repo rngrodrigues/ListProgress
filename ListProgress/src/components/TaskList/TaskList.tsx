@@ -28,11 +28,39 @@ export const TaskList = ({ title, category, progress = 0, onBack }: TaskListProp
                   <TrashIcon className="icon" />
                 </IconsList>
               </ItemList>
+              <ItemList>
+                <TextList> <CheckInput /> Guardar 10 reais</TextList>
+                <IconsList>
+                  <EditIcon className="icon" />
+                  <TrashIcon className="icon" />
+                </IconsList>
+              </ItemList>
+              <ItemList>
+                <TextList> <CheckInput /> Guardar 10 reais</TextList>
+                <IconsList>
+                  <EditIcon className="icon" />
+                  <TrashIcon className="icon" />
+                </IconsList>
+              </ItemList>
+              <ItemList>
+                <TextList> <CheckInput /> Guardar 10 reais</TextList>
+                <IconsList>
+                  <EditIcon className="icon" />
+                  <TrashIcon className="icon" />
+                </IconsList>
+              </ItemList>
+              <ItemList>
+                <TextList> <CheckInput /> Guardar 10 reais</TextList>
+                <IconsList>
+                  <EditIcon className="icon" />
+                  <TrashIcon className="icon" />
+                </IconsList>
+              </ItemList>
             </MidContainer>
 
             <BottomContainer>
-                 <TaskProgress progress={80}>
-                        <span>{80}%</span>
+                 <TaskProgress progress={47}>
+                        <span>{47}%</span>
                       </TaskProgress>
                 <AddBtn>Adicionar</AddBtn>
             </BottomContainer>

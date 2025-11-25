@@ -19,13 +19,12 @@ export const ModalAddList: React.FC<IModalAddList> = ({ onClose, onAddTask }) =>
 
   function handleConfirm() {
     const newTask = {
-      id: crypto.randomUUID(),
-      title,
-      category,
-      description,
-      progress: 0
-    };
-
+  id: Date.now().toString(),
+  title,
+  category,
+  description,
+  progress: 0
+   };
     onAddTask(newTask);   
     onClose();            
   }

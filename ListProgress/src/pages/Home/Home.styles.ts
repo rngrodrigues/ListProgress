@@ -22,6 +22,18 @@ flex: 8;
 export const PaginationContainer = styled.div `
   flex: 1;
   width:100%;
+  display: flex;
+text-align: center;
+justify-content: center;
+align-items: center;
   padding: 1rem;
+  font-size: 2.4rem;
   text-align: center;
+  button {
+  font-size: 2.4rem;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  margin:0 1rem;
+  }
 `;
