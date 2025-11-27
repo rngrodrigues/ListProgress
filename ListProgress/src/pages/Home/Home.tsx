@@ -8,6 +8,7 @@ import { SearchInput } from "../../components/Utils/Inputs";
 import { GridContainer, PaginationContainer, TopContainer } from "./Home.styles.ts";
 import { AnimatePresence, motion } from "framer-motion";
 import { TaskList } from "../../components/TaskList/TaskList.tsx";
+import { usePagination } from "../../hooks/usePagination";
 
 const pageVariants = {
   enter: (direction: number) => ({
@@ -31,24 +32,10 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
-
-  const ITEMS_PER_PAGE = 6;
-  const [page, setPage] = useState<number>(0);
-  const [direction, setDirection] = useState(0);
-
-  const totalPages = Math.max(1, Math.ceil(cards.length / ITEMS_PER_PAGE));
-
-  const currentTasks = cards.slice(
-    page * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-  );
-
-  function changePage(step: number) {
-    setDirection(step);
-    setPage(prev =>
-      Math.min(totalPages - 1, Math.max(0, prev + step))
-    );
-  }
+  const {
+    page, direction, 
+    totalPages, currentTasks, changePage
+  } = usePagination(cards, 6);
 
   return (
     <>
@@ -75,25 +62,25 @@ const Home = () => {
         )}
 
         <AnimatePresence>
-  {selectedTask && (
-    <motion.div
-  key="tasklist"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.35 }}
-  style={{ width: "100%" }}
->
-      <TaskList
-      id = {selectedTask.id}
-        title={selectedTask.title}
-        category={selectedTask.category}
-        description={selectedTask.Description}
-        progress={selectedTask.progress}
-        onBack={() => setSelectedTask(null)}
-      />
-    </motion.div>
-  )}
-</AnimatePresence>
+          {selectedTask && (
+            <motion.div
+              key="tasklist"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.35 }}
+              style={{ width: "100%" }}
+            >
+              <TaskList
+                id={selectedTask.id}
+                title={selectedTask.title}
+                category={selectedTask.category}
+                description={selectedTask.Description}
+                progress={selectedTask.progress}
+                onBack={() => setSelectedTask(null)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {!selectedTask && (
           <AnimatePresence initial={false} custom={direction}>
@@ -108,21 +95,21 @@ const Home = () => {
               style={{ width: "100%" }}
             >
               <GridContainer>
-             {currentTasks.map((card) => (
-  <TaskCard
-    key={card.id}
-    {...card}
-    onClick={() => setSelectedTask(card)}
-    onEdit={(updatedCard) => {
-      setCards(prev =>
-        prev.map(c => (c.id === updatedCard.id ? updatedCard : c))
-      );
-    }}
-    onDelete={(id) => {
-      setCards(prev => prev.filter(c => c.id !== id));
-    }}
-  />
-))}
+                {currentTasks.map((card) => (
+                  <TaskCard
+                    key={card.id}
+                    {...card}
+                    onClick={() => setSelectedTask(card)}
+                    onEdit={(updatedCard) => {
+                      setCards(prev =>
+                        prev.map(c => (c.id === updatedCard.id ? updatedCard : c))
+                      );
+                    }}
+                    onDelete={(id) => {
+                      setCards(prev => prev.filter(c => c.id !== id));
+                    }}
+                  />
+                ))}
               </GridContainer>
             </motion.div>
           </AnimatePresence>
