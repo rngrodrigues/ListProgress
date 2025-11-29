@@ -4,7 +4,7 @@ export const TopContainer = styled.div `
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  flex: 1;
+  height: 10%;
   .icon {
 width: 2rem;
 height: 2rem;
@@ -13,14 +13,18 @@ margin-right: 1rem;
 `;
 
 export const GridContainer = styled.div `
-display:grid;
+display: grid;
 grid-template-columns: repeat(auto-fit, minmax(33.8rem, 1fr));
 gap: 5rem;
 padding: clamp(1rem, 5vw, 5rem);
-flex: 8;
+min-height: 60vh;
+ & > *:only-child {
+    width: 75rem;
+    margin: 0 auto;
+  }
 `;
 export const PaginationContainer = styled.div `
-  flex: 1;
+  height: 10%:
   width:100%;
   display: flex;
 text-align: center;
