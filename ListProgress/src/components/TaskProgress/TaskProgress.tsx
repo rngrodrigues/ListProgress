@@ -1,9 +1,13 @@
-import { TaskProgressContainer } from "./TaskProgress.styles"
+import { TaskProgressContainer } from "./TaskProgress.styles";
 
-export const TaskProgress = () => {
+export const TaskProgress = ({ tasks }: { tasks: any[] }) => {
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.completed).length;
+    const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
+
     return (
-        <TaskProgressContainer progress={47}>
-            <span>47%</span>
+        <TaskProgressContainer progress={progress}>
+            <span>{progress}%</span>
         </TaskProgressContainer>
-    )
-}
+    );
+};

@@ -18,14 +18,14 @@ const Home = () => {
     <>
       <AnimatePresence>
         {open && (
-          <ModalAddCard
-            isOpen={open}
-            onClose={() => setOpen(false)}
-            onAddCard={(newCard: any) => {
-              setCards(prev => [...prev, newCard]);
-              setOpen(false);
-            }}
-          />
+         <ModalAddCard
+     isOpen={open}
+    onClose={() => setOpen(false)}
+     onAddCard={(newCard: any) => {
+    setCards(prev => [...prev, { ...newCard, tasks: [] }]);
+    setOpen(false);
+     }}
+        />
         )}
       </AnimatePresence>
 
@@ -50,8 +50,8 @@ const Home = () => {
               id={selectedTask.id}
               title={selectedTask.title}
               category={selectedTask.category}
-              description={selectedTask.Description}
-              progress={selectedTask.progress}
+              tasks={selectedTask.tasks}
+              description={selectedTask.description}
               onBack={() => setSelectedTask(null)}
             />
           </motion.div>

@@ -65,8 +65,12 @@ export const DescriptionInput = ({ value, onChange }: IInputProps<HTMLTextAreaEl
   );
 };
 
-export const CheckInput = () => {
-  return (
-  <S.CheckInput type='checkbox' />
-  );
+interface CheckInputProps {
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export const CheckInput = ({ checked, onChange }: CheckInputProps) => {
+  return <S.CheckInput type="checkbox" checked={checked} onChange={onChange} />;
+};
+

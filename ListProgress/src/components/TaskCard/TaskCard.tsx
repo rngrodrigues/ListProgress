@@ -1,6 +1,5 @@
 import { useState } from "react";
-import {
-  IconsList, TaskCategory, TaskContainer, 
+import { IconsList, TaskCategory, TaskContainer, 
   TaskDescription, TaskTitle,} from "./TaskCard.styles";
 import { ReactComponent as IIcon } from "../../assets/icons/i.svg";
 import { ReactComponent as BackIcon } from "../../assets/icons/arrow-back.svg";
@@ -15,13 +14,13 @@ export type TaskCardProps = {
   title: string;
   category: string;
   description: string;
-  progress?: number;
+  tasks: any[]; 
   onClick?: () => void;
   onEdit?: (updatedCard: any) => void; 
   onDelete?: (id: string) => void;     
 };
 
-export const TaskCard = ({id, title, category, description, onClick, onEdit, onDelete,}: TaskCardProps) => {
+export const TaskCard = ({id, title, category, description, tasks, onClick, onEdit, onDelete,}: TaskCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false); 
@@ -88,8 +87,8 @@ export const TaskCard = ({id, title, category, description, onClick, onEdit, onD
             <>
               <TaskCategory>{category}</TaskCategory>
               <TaskTitle>{title}</TaskTitle>
-              <TaskProgress />
-              
+              <TaskProgress tasks={tasks} />
+
               <IIcon
                 className="icon"
                 onClick={(e) => {

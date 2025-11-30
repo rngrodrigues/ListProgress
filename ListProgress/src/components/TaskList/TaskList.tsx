@@ -1,4 +1,4 @@
-import { ArrowBack, BodyList, BottomContainer, MidContainer, TopContainer, TaskCategory, TaskTitle, ItemList, IconsList, TextList } from './TaskList.styles.ts'
+import { ArrowBack, BodyList, BottomContainer, MidContainer, TopContainer, TaskCategory, TaskTitle, ItemList, IconsList, TextList } from './TaskList.styles';
 import type { TaskCardProps } from "../TaskCard/TaskCard";
 import { ReactComponent as TrashIcon } from '../../assets/icons/trash.svg'; 
 import { ReactComponent as EditIcon } from '../../assets/icons/edit.svg';
@@ -9,12 +9,11 @@ import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask } from "../../components/Modals";
 import { useState } from 'react';
 
-
 type TaskListProps = TaskCardProps & {
     id: string;
-  title: string;
-  category: string;
-  onBack: () => void;
+    title: string;
+    category: string;
+    onBack: () => void;
 };
 
 export const TaskList = ({ title, category, onBack }: TaskListProps) => {
@@ -32,19 +31,24 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
     setTasks(prev => prev.filter(t => t.id !== id));
   }
 
-  return (
-    <BodyList>   
+  function toggleTaskCompleted(id: string) {
+    setTasks(prev =>
+      prev.map(t =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      )
+    );
+  }
 
+  return (
+    <BodyList>
       <ModalAddTask
         isOpen={openAdd}
-        onClose={() => setOpenAdd(false)} 
+        onClose={() => setOpenAdd(false)}
         onAddTask={(newTask: any) => {
-          setTasks(prev => [...prev, newTask]);
+          setTasks(prev => [...prev, { ...newTask, completed: false }]);
           setOpenAdd(false);
-        }}          
+        }}
       />
-
-
       {selectedTask && (
         <ModalEditTask
           isOpen={openEdit}
@@ -53,31 +57,38 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
           onEditCard={handleEditTask}
         />
       )}
-
       <TopContainer>
-        <TaskCategory>{ category }</TaskCategory>
-        <ArrowBack className="icon" onClick={onBack}/>
+        <TaskCategory>{category}</TaskCategory>
+        <ArrowBack className="icon" onClick={onBack} />
       </TopContainer>
 
-      <TaskTitle>{ title }</TaskTitle>
+      <TaskTitle>{title}</TaskTitle>
 
       <MidContainer>
-
-        <ItemList>
-          <TextList><CheckInput />Guardar 10 reais</TextList>
+         <ItemList>
+          <TextList>
+            <CheckInput 
+              checked={false}
+              onChange={() => null}
+            />
+            Guardar 10 reais
+          </TextList>
           <IconsList>
             <EditIcon className="icon" />
             <TrashIcon className="icon" />
             <IIcon className="icon" />
           </IconsList>
         </ItemList>
-
-
         {tasks.map((task) => (
           <ItemList key={task.id}>
             <TextList>
-              <CheckInput /> {task.title}
+              <CheckInput
+                checked={task.completed}
+                onChange={() => toggleTaskCompleted(task.id)}
+              />
+              {task.title}
             </TextList>
+
             <IconsList>
               <EditIcon 
                 className="icon" 
@@ -86,19 +97,23 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
                   setOpenEdit(true);
                 }}
               />
+
               <TrashIcon 
                 className="icon" 
                 onClick={() => handleDeleteTask(task.id)}
               />
+
               <IIcon className="icon" />
             </IconsList>
           </ItemList>
-        ))}                         
+        ))}
       </MidContainer>
 
       <BottomContainer>
-        <TaskProgress />
-        <AddBtn onClick={() => setOpenAdd(true)}>Adicionar tarefa</AddBtn>
+        <TaskProgress tasks={tasks} />
+        <AddBtn onClick={() => setOpenAdd(true)}>
+          Adicionar tarefa
+        </AddBtn>
       </BottomContainer>
     </BodyList>
   );

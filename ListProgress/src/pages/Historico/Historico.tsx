@@ -33,8 +33,8 @@ const Historico = () => {
               id={selectedTask.id}
               title={selectedTask.title}
               category={selectedTask.category}
-              description={selectedTask.Description}
-              progress={selectedTask.progress}
+              description={selectedTask.description}
+              tasks={selectedTask.tasks}
               onBack={() => setSelectedTask(null)}
             />
           </motion.div>

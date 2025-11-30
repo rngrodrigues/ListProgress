@@ -20,14 +20,12 @@ const pageVariants = {
     position: "absolute"
   })
 };
-
 export const TaskBoard = ({
   cards,
   onEdit,
   onDelete,
   onSelect,
   emptyMessage,
-  showSearch = true
 }: {
   cards: any[];
   onEdit: (card: any) => void;
