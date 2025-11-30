@@ -1,13 +1,14 @@
 import { useState } from "react";
 import {
   IconsList, TaskCategory, TaskContainer, 
-  TaskDescription, TaskProgress, TaskTitle,} from "./TaskCard.styles";
+  TaskDescription, TaskTitle,} from "./TaskCard.styles";
 import { ReactComponent as IIcon } from "../../assets/icons/i.svg";
-  import { ReactComponent as BackIcon } from "../../assets/icons/arrow-back.svg";
+import { ReactComponent as BackIcon } from "../../assets/icons/arrow-back.svg";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard } from "../../components/Modals";
+import { TaskProgress } from "../TaskProgress/TaskProgress"
 
 export type TaskCardProps = {
   id: string;
@@ -87,11 +88,8 @@ export const TaskCard = ({id, title, category, description, onClick, onEdit, onD
             <>
               <TaskCategory>{category}</TaskCategory>
               <TaskTitle>{title}</TaskTitle>
-
-              <TaskProgress progress={47}>
-                <span>47%</span>
-              </TaskProgress>
-
+              <TaskProgress />
+              
               <IIcon
                 className="icon"
                 onClick={(e) => {

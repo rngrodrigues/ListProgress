@@ -5,7 +5,7 @@ import { ReactComponent as EditIcon } from '../../assets/icons/edit.svg';
 import { ReactComponent as IIcon } from '../../assets/icons/i.svg';
 import { AddBtn } from '../Utils/Buttons'
 import { CheckInput } from '../Utils/Inputs'
-import { TaskProgress } from "../TaskCard/TaskCard.styles.ts";
+import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask } from "../../components/Modals";
 import { useState } from 'react';
 
@@ -97,9 +97,7 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
       </MidContainer>
 
       <BottomContainer>
-        <TaskProgress progress={47}>
-          <span>47%</span>
-        </TaskProgress>
+        <TaskProgress />
         <AddBtn onClick={() => setOpenAdd(true)}>Adicionar tarefa</AddBtn>
       </BottomContainer>
     </BodyList>

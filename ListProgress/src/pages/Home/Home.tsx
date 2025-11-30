@@ -5,7 +5,7 @@ import Footer from "../../components/Footer";
 import { ModalAddCard } from "../../components/Modals";
 import { AddBtn } from "../../components/Utils/Buttons";
 import { SearchInput } from "../../components/Utils/Inputs";
-import { GridContainer, PaginationContainer, TopContainer } from "./Home.styles.ts";
+import { GridContainer, MainParagrafo, PaginationContainer, TopContainer } from "./Home.styles.ts";
 import { AnimatePresence, motion } from "framer-motion";
 import { TaskList } from "../../components/TaskList/TaskList.tsx";
 import { usePagination } from "../../hooks/usePagination";
@@ -95,22 +95,28 @@ const Home = () => {
               style={{ width: "100%" }}
             >
               <GridContainer>
-                {currentTasks.map((card) => (
-                  <TaskCard
-                    key={card.id}
-                    {...card}
-                    onClick={() => setSelectedTask(card)}
-                    onEdit={(updatedCard) => {
-                      setCards(prev =>
-                        prev.map(c => (c.id === updatedCard.id ? updatedCard : c))
-                      );
-                    }}
-                    onDelete={(id) => {
-                      setCards(prev => prev.filter(c => c.id !== id));
-                    }}
-                  />
-                ))}
-              </GridContainer>
+  {cards.length === 0 && (
+    <MainParagrafo>
+      Clique em “Adicionar lista” para criar a primeira.
+    </MainParagrafo>
+  )}
+  {currentTasks.map((card) => (
+    <TaskCard
+      key={card.id}
+      {...card}
+      onClick={() => setSelectedTask(card)}
+      onEdit={(updatedCard) => {
+        setCards(prev =>
+          prev.map(c => (c.id === updatedCard.id ? updatedCard : c))
+        );
+      }}
+      onDelete={(id) => {
+        setCards(prev => prev.filter(c => c.id !== id));
+      }}
+    />
+  ))}
+</GridContainer>
+
             </motion.div>
           </AnimatePresence>
         )}
