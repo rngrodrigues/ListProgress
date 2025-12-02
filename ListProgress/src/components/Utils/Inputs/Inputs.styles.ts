@@ -70,6 +70,6 @@ height: 6rem;
 export const CheckInput = styled.input `
    width: 3rem;
     height: 3rem;
-    margin-right: 1.5rem;
+    margin-left: 1.5rem;
     cursor: pointer;
 `;

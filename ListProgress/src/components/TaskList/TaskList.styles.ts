@@ -17,7 +17,7 @@ export const ArrowBack = styled(ArrowBackSvg)`
   position: absolute;
   top: 5rem;
   right: 5rem;
-  margin-right : 0;
+  margin-right: 0;
   cursor: pointer;
 `;
 export const TopContainer = styled.div`
@@ -61,35 +61,53 @@ margin: 3rem;
 `;
 export const IconsList = styled.div`
 margin-left: auto;
+.IIcon {
+width: 3rem;
+}
 .icon {
     width: 3rem;
     height: 2.5rem;
     cursor: pointer;
-    margin: 1rem;
+    margin: auto 0.5rem;
   }
 `;
 export const ItemList = styled.ul`
 border-radius: 2rem;
-border: 1px solid gray;
+min-height: 5rem;
+box-shadow: 0 2px 2px 1px lightgray;
 display: flex;
 align-items: center;
-justify-content: center;
+position: relative;
 margin: 0 auto;
- max-width: 80rem;
-  padding: 1rem;
-  font-size: 2.4rem;
+width: 100%;
+max-width: 80rem;
+padding: 0.3rem;
+font-size: 2.4rem;
  width: 100%;
+ padding-left: 1rem;
  input {
  width: 3rem;
     height: 3rem;
     margin-right: 1.5rem;
     cursor: pointer;
  }
+.BackIcon {
+    position: absolute;
+    right: 1rem;
+    margin-left: auto;
+    width: 3rem;
+    height: 2.5rem;
+    cursor: pointer;
+    }
 `;
 export const TextList = styled.li`
  display: flex;
  aligm-items: center;
  text-decoration: none;
+`;
+
+export const ItemDescription = styled.p`
+text-align:center;
 `;
 
 
