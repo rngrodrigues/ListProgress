@@ -27,12 +27,13 @@ height: 4rem;
 
 export const TaskCategory = styled.h2 `
   color: gray;
-  font-size: clamp(1.2rem, 1.5vw, 2rem);
+  font-size: clamp(1.2rem, 2vw, 2rem);
   font-weight: 500;
 `;
 export const TaskTitle = styled.h1 `
-  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-size: clamp(2rem, 2vw, 2.8rem);
   font-weight: 700;
+  margin-bottom: 5rem;
 `;
 
 export const TaskDescription = styled.p`

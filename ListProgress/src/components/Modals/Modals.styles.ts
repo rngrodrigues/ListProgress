@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactComponent as ArrowBackSvg } from "../../assets/icons/arrow-back.svg";
+import { ReactComponent as ArrowBackSvg } from "../../assets/icons/close.svg";
 
 export const BodyModal = styled.div`
   position: fixed;
@@ -32,7 +32,7 @@ export const MainContainer = styled.div`
   }
 `;
 
-export const ArrowBack = styled(ArrowBackSvg)`
+export const IconClose = styled(ArrowBackSvg)`
   width: 2.5rem;
   height: 2.5rem;
   cursor: pointer;

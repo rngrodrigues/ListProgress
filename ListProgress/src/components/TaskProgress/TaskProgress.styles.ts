@@ -9,9 +9,9 @@ const getProgressColor = (value: number) => {
 };
 
 export const TaskProgressContainer = styled.div<{ progress: number }>`
-  margin-top: 10rem;
+  margin-top: 5rem;
   width: 100%;
-  height: 1.6rem;
+  height: clamp(1.5rem, 2.5vw, 2.3rem);
   background-color: #d9d9d9;
   border-radius: 1rem;
   position: relative;
@@ -27,8 +27,10 @@ export const TaskProgressContainer = styled.div<{ progress: number }>`
     border-radius: inherit;
   }
 
-  span {
-    position: absolute;
+`;
+
+export const ProgressNumber = styled.p <{ progress: number }> `
+  position: absolute;
     height: 100%;
     display: flex;
     align-items: center;
@@ -40,5 +42,4 @@ export const TaskProgressContainer = styled.div<{ progress: number }>`
     color: black;
     z-index: 2;
     pointer-events: none;
-  }
 `;

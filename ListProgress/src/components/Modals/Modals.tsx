@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowBack, BodyModal, MainContainer, MaxWidthForm, Title } from "./Modals.styles.ts";
+import { IconClose, BodyModal, MainContainer, MaxWidthForm, Title } from "./Modals.styles.ts";
 import { TitleInput, CategoryInput, DescriptionInput } from '../Utils/Inputs';
 import { ConfirmButton } from '../Utils/Buttons';
 import { ReactComponent as MetaIcon } from '../../assets/icons/meta.svg';
@@ -48,7 +48,7 @@ export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCa
         }}
       >
         <MainContainer>
-          <ArrowBack onClick={onClose} />
+          <IconClose onClick={onClose} />
 
           <Title>
             <MetaIcon className="icon" /> Adicionar lista
@@ -122,7 +122,7 @@ export const ModalEditCard: React.FC<IModalEditCard> = ({ isOpen, onClose, card,
         }}
       >
         <MainContainer>
-          <ArrowBack onClick={onClose} />
+          <IconClose onClick={onClose} />
 
           <Title>
             <MetaIcon className="icon" /> Editar lista
@@ -180,7 +180,7 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTa
         }}
       >
         <MainContainer>
-          <ArrowBack onClick={onClose} />
+          <IconClose onClick={onClose} />
           <Title>
             <MetaIcon className="icon" /> Adicionar tarefa
           </Title>
@@ -248,7 +248,7 @@ export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, card,
         }}
       >
         <MainContainer>
-          <ArrowBack onClick={onClose} />
+          <IconClose onClick={onClose} />
 
           <Title>
             <MetaIcon className="icon" /> Editar tarefa

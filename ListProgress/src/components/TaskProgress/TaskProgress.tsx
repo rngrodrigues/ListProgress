@@ -1,4 +1,4 @@
-import { TaskProgressContainer } from "./TaskProgress.styles";
+import { TaskProgressContainer, ProgressNumber } from "./TaskProgress.styles";
 
 export const TaskProgress = ({ tasks }: { tasks: any[] }) => {
     const total = tasks.length;
@@ -7,7 +7,7 @@ export const TaskProgress = ({ tasks }: { tasks: any[] }) => {
 
     return (
         <TaskProgressContainer progress={progress}>
-            <span>{progress}%</span>
+            <ProgressNumber progress={progress}>{progress}%</ProgressNumber>
         </TaskProgressContainer>
     );
 };

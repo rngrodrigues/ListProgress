@@ -67,9 +67,30 @@ font-size: 1rem;
 border: 1px solid black;
 height: 6rem;
 `;
-export const CheckInput = styled.input `
-   width: 3rem;
-    height: 3rem;
-    margin-left: 1.5rem;
-    cursor: pointer;
+export const CheckInput = styled.input`
+  width: 3rem;
+  height: 3rem;
+  margin-left: 1.5rem;
+  cursor: pointer;
+
+  appearance: none;
+  border: 2px solid lightgray;
+  border-radius: 4px;
+  position: relative;
+
+  &:checked {
+    background-color: black;
+    border-color: black;
+  }
+
+  &:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: white;
+  }
 `;
+

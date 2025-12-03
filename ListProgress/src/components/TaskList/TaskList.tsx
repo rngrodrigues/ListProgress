@@ -125,13 +125,14 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
                   </>
                 ) : (
                   <>
-                    <TextList>
-                      <CheckInput
-                        checked={task.completed}
-                        onChange={() => toggleTaskCompleted(task.id)}
-                      />
-                      {task.title}
-                    </TextList>
+                    <TextList className={task.completed ? "completed" : ""}>
+  <CheckInput
+    checked={task.completed}
+    onChange={() => toggleTaskCompleted(task.id)}
+  />
+  {task.title}
+</TextList>
+
 
                     <IconsList>
                       <EditIcon

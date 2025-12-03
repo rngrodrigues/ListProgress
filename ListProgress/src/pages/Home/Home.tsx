@@ -69,7 +69,7 @@ const Home = () => {
               setCards(prev => prev.filter(c => c.id !== id))
             }
             onSelect={setSelectedTask}
-            emptyMessage="Clique em “Adicionar lista” para criar a primeira."
+            emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
             showSearch={true}
           />
         )}

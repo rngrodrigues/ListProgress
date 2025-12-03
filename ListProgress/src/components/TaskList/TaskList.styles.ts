@@ -37,8 +37,7 @@ border-radius: 5rem;
 export const BottomContainer = styled.div`
 flex: 2;
 display: flex;
-gap:2rem;
-padding: 0 6qrem;
+gap: 2rem;
 flex-direction: column;
 align-items: center;
 justify-content: center;
@@ -53,12 +52,7 @@ export const TaskTitle = styled.h1`
   font-weight: 700;
   margin: 3rem;
 `;
-export const TaskProgress = styled.div`
-text-align: center;
-margin: 3rem;
-  font-size: clamp(1.2rem, 1.5vw, 2rem);
- color: blue;
-`;
+
 export const IconsList = styled.div`
 margin-left: auto;
 .IIcon {
@@ -104,6 +98,9 @@ export const TextList = styled.li`
  display: flex;
  aligm-items: center;
  text-decoration: none;
+ &.completed {
+    text-decoration: line-through;
+  }
 `;
 
 export const ItemDescription = styled.p`
