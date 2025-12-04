@@ -1,13 +1,15 @@
 import express from "express";
 import cors from "cors"; 
-import cardsRoutes from "./routes/cardRoutes.ts";
+import cardRoutes from "./routes/cardRoutes.ts";
+import taskRoutes from "./routes/taskRoutes.ts";
 
 const app = express();
 
 app.use(cors()); 
 app.use(express.json());
 
-app.use("/cards", cardsRoutes);
+app.use("/cards", cardRoutes);
+app.use("/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando");

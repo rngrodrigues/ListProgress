@@ -8,8 +8,10 @@ import { AddBtn } from '../Utils/Buttons'
 import { CheckInput } from '../Utils/Inputs'
 import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask } from "../../components/Modals";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+
+const API_URL = "http://192.168.1.9:3001";
 
 type TaskListProps = TaskCardProps & {
   id: string;
@@ -19,7 +21,7 @@ type TaskListProps = TaskCardProps & {
   onBack: () => void;
 };
 
-export const TaskList = ({ title, category, onBack }: TaskListProps) => {
+export const TaskList = ({ id, title, category, onBack }: TaskListProps) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -27,6 +29,8 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
   const [flipState, setFlipState] = useState<
     Record<string, { expanded: boolean; isFlipping: boolean }>
   >({});
+  
+
 
   function flip(id: string, to: boolean) {
     setFlipState(prev => ({
@@ -48,14 +52,48 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
     }, 150);
   }
 
-  function handleEditTask(updatedTask: any) {
-    setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
-    setOpenEdit(false);
+useEffect(() => {
+  fetch(`${API_URL}/tasks`)
+    .then(res => res.json())
+    .then(data => {
+
+      const cardTasks = data.filter((task: any) => task.card_id === id);
+      setTasks(cardTasks);
+    })
+    .catch(err => console.error("Erro ao carregar tasks:", err));
+}, [id]); 
+
+
+   async function handleAddTask(newTask: any) {
+  console.log("newTask enviado:", newTask);
+  try {
+    const res = await fetch(`${API_URL}/tasks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newTask), 
+    });
+
+    const createdTask = await res.json();
+
+    setTasks(prev => [...prev, createdTask]);
+
+  } catch (err) {
+    console.error("Erro ao adicionar tarefa:", err);
   }
 
-  function handleDeleteTask(id: string) {
-    setTasks(prev => prev.filter(t => t.id !== id));
+  setOpenAdd(false);
+}
+
+
+async function handleDeleteTask(taskId: string) {
+  try {
+    await fetch(`${API_URL}/tasks/${taskId}`, { method: "DELETE" });
+    setTasks(prev => prev.filter(t => t.id !== taskId));
+  } catch (err) {
+    console.error("Erro ao deletar tarefa:", err);
   }
+}
+
 
   function toggleTaskCompleted(id: string) {
     setTasks(prev =>
@@ -70,19 +108,35 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
       <ModalAddTask
         isOpen={openAdd}
         onClose={() => setOpenAdd(false)}
-        onAddTask={(newTask: any) => {
-          setTasks(prev => [...prev, { ...newTask, completed: false }]);
-          setOpenAdd(false);
-        }}
+       onAddTask={handleAddTask}
+       card_id={id}
       />
 
       {selectedTask && (
         <ModalEditTask
-          isOpen={openEdit}
-          onClose={() => setOpenEdit(false)}
-          card={selectedTask}
-          onEditCard={handleEditTask}
-        />
+  isOpen={openEdit}
+  onClose={() => setOpenEdit(false)}
+  task={selectedTask}
+  onEditTask={async (updatedTask) => {
+    try {
+      const response = await fetch(`${API_URL}/tasks/${updatedTask.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTask),
+      });
+      const data = await response.json();
+      console.log("Resposta do servidor:", data);
+      setTasks(prev =>
+  prev.map(t => t.id === updatedTask.id ? updatedTask : t)
+);
+    } catch (err) {
+      console.error(err);
+    }
+
+    setOpenEdit(false);
+  }}
+/>
+
       )}
 
       <TopContainer>
@@ -132,8 +186,6 @@ export const TaskList = ({ title, category, onBack }: TaskListProps) => {
   />
   {task.title}
 </TextList>
-
-
                     <IconsList>
                       <EditIcon
                         className="icon"

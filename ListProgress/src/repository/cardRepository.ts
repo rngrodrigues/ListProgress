@@ -36,7 +36,7 @@ export const CardRepository = {
     return data;
   },
 
-  async findById(id: string): Promise<Card | null> {   // <--- adicionei aqui
+  async findById(id: string): Promise<Card | null> {   
     const { data, error } = await supabase
       .from("cards")
       .select("*")

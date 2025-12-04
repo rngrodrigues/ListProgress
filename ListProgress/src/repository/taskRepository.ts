@@ -1,38 +1,48 @@
-import { supabase } from "../config/supabaseClient";
+import { supabase } from "../config/supabaseClient.ts";
 import type { Task } from "../types/Task";
 
 export const TaskRepository = {
-  async createTask(data: Partial<Task>): Promise<Task> {
-    const { data: result, error } = await supabase
+   async create(task: any) {
+    const { data, error } = await supabase
       .from("tasks")
-      .insert(data)
+      .insert([task])
       .select()
       .single();
 
-    if (error) throw error;
-    return result as Task;
+    if (error) throw new Error(error.message);
+    return data;
   },
 
-  async findByCard(card_id: string): Promise<Task[]> {
+  async list(): Promise<Task[]> {
+    const { data, error } = await supabase.from("tasks").select("*");
+    if (error) throw error;
+    return data;
+  },
+
+  async delete(id: string): Promise<boolean> {
+    const { error } = await supabase.from("tasks").delete().eq("id", id);
+    if (error) throw error;
+    return true;
+  },
+
+  async update(id: string, updatedCard: Partial<Task>): Promise<Task> {
     const { data, error } = await supabase
       .from("tasks")
-      .select("*")
-      .eq("card_id", card_id)
-      .order("created_at", { ascending: true });
-
-    if (error) throw error;
-    return data as Task[];
-  },
-
-  async updateTask(id: string, data: Partial<Task>): Promise<Task> {
-    const { data: result, error } = await supabase
-      .from("tasks")
-      .update(data)
+      .update(updatedCard)
       .eq("id", id)
       .select()
       .single();
-
     if (error) throw error;
-    return result as Task;
-  }
+    return data;
+  },
+
+  async findById(id: string): Promise<Task | null> {   
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (error) throw error;
+    return data;
+  },
 };

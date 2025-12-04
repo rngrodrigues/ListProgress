@@ -9,7 +9,7 @@ import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 
-const API_URL = "http://localhost:3001"; 
+const API_URL = "http://192.168.1.9:3001"; 
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -23,9 +23,7 @@ const Home = () => {
       .catch(err => console.error("Erro ao carregar cards:", err));
   }, []);
 
-
   async function handleAddCard(newCard: any) {
-     console.log("Enviando ao backend:", newCard);
     try {
       const res = await fetch(`${API_URL}/cards`, {
         method: "POST",

@@ -143,25 +143,34 @@ interface IModalAddTask {
   isOpen: boolean;
   onClose: () => void;
   onAddTask: (task: any) => void;
+  card_id: string;
 }
 
-export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTask }) => {
- const [description, setDescription] = useState("");
- const [title, setTitle] = useState("");
+export const ModalAddTask: React.FC<IModalAddTask> = ({ 
+  isOpen, 
+  onClose, 
+  onAddTask, 
+  card_id 
+}) => {
 
- if (!isOpen) return null;
- 
+  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState("");
+
+  if (!isOpen) return null;
+
   function handleConfirm() {
     const newTask = {
-  id: Date.now().toString(),
-  description,
-  title,
-   };
-    onAddTask(newTask);   
-    onClose();            
+      title,
+      description,
+      card_id, 
+    };
+
+    onAddTask(newTask);
+    onClose();
   }
+
   return (
-  <BodyModal
+    <BodyModal
       as={motion.div}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -173,59 +182,68 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTa
         exit={{ scale: 0.8, opacity: 0 }}
         transition={{ duration: 0.1 }}
         style={{
-          display: "flex", justifyContent: "center",
-          alignItems: "center", height: "100%"
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%"
         }}
       >
         <MainContainer>
           <IconClose onClick={onClose} />
+
           <Title>
             <MetaIcon className="icon" /> Adicionar tarefa
           </Title>
 
           <MaxWidthForm>
-            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-            <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
+            <TitleInput 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+            />
+            <DescriptionInput 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)} 
+            />
           </MaxWidthForm>
 
           <ConfirmButton onClick={handleConfirm} />
         </MainContainer>
       </motion.div>
     </BodyModal>
-);
+  );
 };
+
 interface IModalEditTask {
   isOpen: boolean;
   onClose: () => void;
-  card: {
-    id: string;
+  task: {
     title: string;
     description: string;
   };
-  onEditCard: (updatedTask: any) => void;
+  onEditTask: (updatedTask: any) => void;
 }
 
-export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, card, onEditCard }) => {
+export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task, onEditTask }) => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   useEffect(() => {
-    if (card) {
-      setTitle(card.title);
-      setDescription(card.description);
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description);
     }
-  }, [card, isOpen]);
+  }, [task, isOpen]);
 
   if (!isOpen) return null;
 
   function handleConfirm() {
     const updatedTask = {
-      ...card,
+      ...task,
       title,
-      description
+      description,
     };
 
-    onEditCard(updatedTask);
+    onEditTask(updatedTask);
     onClose();
   }
   return (

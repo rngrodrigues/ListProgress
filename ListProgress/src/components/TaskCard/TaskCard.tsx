@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard } from "../../components/Modals";
 
 
-const API_URL = "http://localhost:3001"; 
+const API_URL = "http://192.168.1.9:3001"; 
 
 export type TaskCardProps = {
   id: string;
