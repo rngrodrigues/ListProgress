@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { IconsList, TaskCategory, TaskContainer, 
-  TaskDescription, TaskTitle,} from "./TaskCard.styles";
+import {
+  IconsList, TaskCategory, TaskContainer, 
+  TaskDescription, TaskTitle,
+} from "./TaskCard.styles";
 import { ReactComponent as IIcon } from "../../assets/icons/i.svg";
 import { ReactComponent as BackIcon } from "../../assets/icons/arrow-back.svg";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard } from "../../components/Modals";
-import { TaskProgress } from "../TaskProgress/TaskProgress"
+
+
+const API_URL = "http://localhost:3001"; 
 
 export type TaskCardProps = {
   id: string;
@@ -20,7 +24,7 @@ export type TaskCardProps = {
   onDelete?: (id: string) => void;     
 };
 
-export const TaskCard = ({id, title, category, description, tasks, onClick, onEdit, onDelete,}: TaskCardProps) => {
+export const TaskCard = ({id, title, category, description, onClick, onEdit, onDelete,}: TaskCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false); 
@@ -28,6 +32,13 @@ export const TaskCard = ({id, title, category, description, tasks, onClick, onEd
   function flip(to: boolean) {
     setIsFlipping(true);
     setTimeout(() => setExpanded(to), 150);
+  }
+
+  async function handleDeleteCard() {
+    if (onDelete) {
+      await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
+      onDelete(id);
+    }
   }
 
   return (
@@ -38,13 +49,23 @@ export const TaskCard = ({id, title, category, description, tasks, onClick, onEd
             isOpen={open}
             onClose={() => setOpen(false)}
             card={{ id, title, category, description }}
-            onEditCard={(updatedCard) => {
-              if (onEdit) onEdit(updatedCard); 
+            onEditCard={async (updatedCard) => {
+              try {
+                await fetch(`${API_URL}/cards/${id}`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(updatedCard),
+                });
+                if (onEdit) onEdit(updatedCard);
+              } catch (err) {
+                console.error(err);
+              }
               setOpen(false);
             }}
           />
         )}
       </AnimatePresence>
+
       <motion.div
         animate={{ rotateY: isFlipping ? 180 : 0 }}
         transition={{ duration: 0.2 }}
@@ -52,33 +73,22 @@ export const TaskCard = ({id, title, category, description, tasks, onClick, onEd
         style={{ transformStyle: "preserve-3d" }}
       >
         <TaskContainer onClick={onClick} style={{ backfaceVisibility: "hidden" }}>
-
-
           {expanded ? (
             <>
               <IconsList>
                 <EditIcon
                   className="icons"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpen(true);
-                  }}
+                  onClick={(e) => { e.stopPropagation(); setOpen(true); }}
                 />
                 <TrashIcon
                   className="icons"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (onDelete) onDelete(id);
-                  }}
+                  onClick={(e) => { e.stopPropagation(); handleDeleteCard(); }}
                 />
               </IconsList>
 
               <BackIcon
                 className="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  flip(false);
-                }}
+                onClick={(e) => { e.stopPropagation(); flip(false); }}
               />
 
               <TaskDescription>{description}</TaskDescription>
@@ -87,14 +97,10 @@ export const TaskCard = ({id, title, category, description, tasks, onClick, onEd
             <>
               <TaskCategory>{category}</TaskCategory>
               <TaskTitle>{title}</TaskTitle>
-              <TaskProgress tasks={tasks} />
-
+        
               <IIcon
                 className="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  flip(true);
-                }}
+                onClick={(e) => { e.stopPropagation(); flip(true); }}
               />
             </>
           )}

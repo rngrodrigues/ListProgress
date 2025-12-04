@@ -20,11 +20,9 @@ export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCa
 
   function handleConfirm() {
     const newCard = {
-  id: Date.now().toString(),
   title,
   category,
   description,
-  progress: 0
    };
     onAddCard(newCard);   
     onClose();            

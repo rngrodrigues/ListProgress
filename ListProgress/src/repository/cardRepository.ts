@@ -1,36 +1,48 @@
-import { supabase } from "../config/supabaseClient";
+import { supabase } from "../config/supabaseClient.ts";
 import type { Card } from "../types/Card";
 
 export const CardRepository = {
-  async createCard(data: Partial<Card>): Promise<Card> {
-    const { data: result, error } = await supabase
+   async create(card: any) {
+    const { data, error } = await supabase
       .from("cards")
-      .insert(data)
+      .insert([card])
       .select()
       .single();
 
-    if (error) throw error;
-    return result as Card;
+    if (error) throw new Error(error.message);
+    return data;
   },
 
-  async getAll(): Promise<Card[]> {
+  async list(): Promise<Card[]> {
+    const { data, error } = await supabase.from("cards").select("*");
+    if (error) throw error;
+    return data;
+  },
+
+  async delete(id: string): Promise<boolean> {
+    const { error } = await supabase.from("cards").delete().eq("id", id);
+    if (error) throw error;
+    return true;
+  },
+
+  async update(id: string, updatedCard: Partial<Card>): Promise<Card> {
     const { data, error } = await supabase
       .from("cards")
-      .select("*")
-      .order("created_at", { ascending: false });
-
+      .update(updatedCard)
+      .eq("id", id)
+      .select()
+      .single();
     if (error) throw error;
-    return data as Card[];
+    return data;
   },
 
-  async findById(id: string): Promise<Card | null> {
+  async findById(id: string): Promise<Card | null> {   // <--- adicionei aqui
     const { data, error } = await supabase
       .from("cards")
       .select("*")
       .eq("id", id)
       .single();
-
     if (error) throw error;
-    return data as Card;
-  }
+    return data;
+  },
 };

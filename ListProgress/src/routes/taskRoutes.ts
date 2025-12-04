@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TaskController } from "../controllers/taskController";
+import { TaskController } from "../controllers/taskController.ts";
 
 const router = Router();
 

@@ -1,13 +1,8 @@
-import { CardRepository } from "../repository/cardRepository";
-import type { Card } from "../types/Card";
+import { CardRepository } from "../repository/cardRepository.ts";
 
 export const CardService = {
-  async createCard(data: Partial<Card>): Promise<Card> {
-    if (!data.title) throw new Error("Title is required");
-    return await CardRepository.createCard(data);
-  },
-
-  async listCards(): Promise<Card[]> {
-    return await CardRepository.getAll();
-  }
+  create: (card: any) => CardRepository.create(card),
+  list: () => CardRepository.list(),
+  delete: (id: string) => CardRepository.delete(id),
+  update: (id: string, card: any) => CardRepository.update(id, card),
 };

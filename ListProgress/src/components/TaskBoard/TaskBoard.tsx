@@ -29,7 +29,7 @@ export const TaskBoard = ({
 }: {
   cards: any[];
   onEdit: (card: any) => void;
-  onDelete: (id: number | string) => void;
+  onDelete: (id: string ) => void;
   onSelect: (card: any) => void;
   emptyMessage: string;
   showSearch?: boolean;
@@ -64,7 +64,7 @@ export const TaskBoard = ({
                 {...card}
                 onClick={() => onSelect(card)}
                 onEdit={onEdit}
-                onDelete={onDelete}
+                onDelete={(id) => onDelete(id)}
               />
             ))}
           </GridContainer>

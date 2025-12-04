@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainContainer from "../../components/MainContainer";
 import Footer from "../../components/Footer";
 import { ModalAddCard } from "../../components/Modals";
@@ -9,32 +9,63 @@ import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 
+const API_URL = "http://localhost:3001"; 
+
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
 
+  useEffect(() => {
+    fetch(`${API_URL}/cards`)
+      .then(res => res.json())
+      .then(data => setCards(data))
+      .catch(err => console.error("Erro ao carregar cards:", err));
+  }, []);
+
+
+  async function handleAddCard(newCard: any) {
+     console.log("Enviando ao backend:", newCard);
+    try {
+      const res = await fetch(`${API_URL}/cards`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCard),
+      });
+      const createdCard = await res.json();
+      setCards(prev => [...prev, { ...createdCard, tasks: [] }]);
+    } catch (err) {
+      console.error(err);
+    }
+    setOpen(false);
+  }
+
+  async function handleDeleteCard(id: string) {
+    try {
+      await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
+      setCards(prev => prev.filter(c => c.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <AnimatePresence>
         {open && (
-         <ModalAddCard
-     isOpen={open}
-    onClose={() => setOpen(false)}
-     onAddCard={(newCard: any) => {
-    setCards(prev => [...prev, { ...newCard, tasks: [] }]);
-    setOpen(false);
-     }}
-        />
+          <ModalAddCard
+            isOpen={open}
+            onClose={() => setOpen(false)}
+            onAddCard={handleAddCard}
+          />
         )}
       </AnimatePresence>
 
       <MainContainer>
-
         {!selectedTask && (
           <TopContainer>
             <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
-    <SearchInput />
+            <SearchInput />
           </TopContainer>
         )}
 
@@ -61,13 +92,9 @@ const Home = () => {
           <TaskBoard
             cards={cards}
             onEdit={(updated) =>
-              setCards(prev => prev.map(c =>
-                c.id === updated.id ? updated : c
-              ))
+              setCards(prev => prev.map(c => c.id === updated.id ? updated : c))
             }
-            onDelete={(id) =>
-              setCards(prev => prev.filter(c => c.id !== id))
-            }
+            onDelete={handleDeleteCard}
             onSelect={setSelectedTask}
             emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
             showSearch={true}
