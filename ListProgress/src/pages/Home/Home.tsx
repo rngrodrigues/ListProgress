@@ -9,39 +9,66 @@ import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 
-const API_URL = "http://192.168.1.9:3001"; 
+const API_URL = "http://192.168.1.9:3001";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
 
+
   useEffect(() => {
     fetch(`${API_URL}/cards`)
       .then(res => res.json())
-      .then(data => setCards(data))
+      .then(data => {
+        const ordered = data.sort((a: any, b: any) => {
+          if (a.position == null) return 1;
+          if (b.position == null) return -1;
+          return a.position - b.position;
+        });
+
+        setCards(ordered);
+      })
       .catch(err => console.error("Erro ao carregar cards:", err));
   }, []);
 
   async function handleAddCard(newCard: any) {
     try {
+      const nextPosition = cards.length;
+      const payload = { ...newCard, position: nextPosition };
+
+    console.log("Enviando JSON para o backend (CREATE):", payload);
+
       const res = await fetch(`${API_URL}/cards`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCard),
+        body: JSON.stringify({ ...newCard, position: nextPosition }),
       });
+
       const createdCard = await res.json();
-      setCards(prev => [...prev, { ...createdCard, tasks: [] }]);
+
+      setCards(prev => {
+        const list = [...prev, { ...createdCard, tasks: [] }];
+
+        return list.sort((a, b) => a.position - b.position);
+      });
+
     } catch (err) {
       console.error(err);
     }
+
     setOpen(false);
   }
 
   async function handleDeleteCard(id: string) {
     try {
       await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
-      setCards(prev => prev.filter(c => c.id !== id));
+
+      setCards(prev =>
+        prev
+          .filter(c => c.id !== id)
+          .map((c, index) => ({ ...c, position: index }))
+      );
     } catch (err) {
       console.error(err);
     }
@@ -60,6 +87,7 @@ const Home = () => {
       </AnimatePresence>
 
       <MainContainer>
+
         {!selectedTask && (
           <TopContainer>
             <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
@@ -90,7 +118,13 @@ const Home = () => {
           <TaskBoard
             cards={cards}
             onEdit={(updated) =>
-              setCards(prev => prev.map(c => c.id === updated.id ? updated : c))
+              setCards(prev =>
+                prev.map(c =>
+                  c.id === updated.id
+                    ? { ...c, ...updated, position: c.position } 
+                    : c
+                )
+              )
             }
             onDelete={handleDeleteCard}
             onSelect={setSelectedTask}
@@ -98,6 +132,7 @@ const Home = () => {
             showSearch={true}
           />
         )}
+
       </MainContainer>
 
       <Footer />

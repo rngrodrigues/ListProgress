@@ -26,7 +26,7 @@ export const TaskBoard = ({
   onDelete,
   onSelect,
   emptyMessage,
-}: {
+} : {
   cards: any[];
   onEdit: (card: any) => void;
   onDelete: (id: string ) => void;
