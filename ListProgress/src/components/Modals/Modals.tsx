@@ -16,6 +16,15 @@ export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCa
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
+
+    useEffect(() => {
+  if (isOpen) {
+    setCategory("");
+    setTitle("");
+    setDescription("");
+  }
+}, [isOpen]);
+
    if (!isOpen) return null;
 
   function handleConfirm() {
@@ -155,6 +164,14 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({
 
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
+
+  useEffect(() => {
+  if (isOpen) {
+    setTitle("");
+    setDescription("");
+  }
+}, [isOpen]);
+
 
   if (!isOpen) return null;
 

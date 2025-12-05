@@ -95,13 +95,31 @@ async function handleDeleteTask(taskId: string) {
 }
 
 
-  function toggleTaskCompleted(id: string) {
+  async function toggleTaskCompleted(taskId: string) {
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+  
+  const updated = { ...task, completed: !task.completed };
+
+  try {
+    const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
+    });
+
+    const data = await response.json();
+    console.log("Tarefa atualizada:", data);
+
     setTasks(prev =>
-      prev.map(t =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-      )
+      prev.map(t => (t.id === taskId ? data : t))
     );
+
+  } catch (err) {
+    console.error("Erro ao atualizar tarefa:", err);
   }
+}
+
 
   return (
     <BodyList>

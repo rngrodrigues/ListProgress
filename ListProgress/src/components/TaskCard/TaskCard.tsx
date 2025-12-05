@@ -1,14 +1,12 @@
-import { useState } from "react";
-import {
-  IconsList, TaskCategory, TaskContainer, 
-  TaskDescription, TaskTitle,
-} from "./TaskCard.styles";
+import { useEffect, useState } from "react";
+import { IconsList, TaskCategory, TaskContainer, TaskDescription, TaskTitle } from "./TaskCard.styles";
 import { ReactComponent as IIcon } from "../../assets/icons/i.svg";
 import { ReactComponent as BackIcon } from "../../assets/icons/arrow-back.svg";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard } from "../../components/Modals";
+import { TaskProgress } from "../TaskProgress/TaskProgress";
 
 
 const API_URL = "http://192.168.1.9:3001"; 
@@ -28,6 +26,20 @@ export const TaskCard = ({id, title, category, description, onClick, onEdit, onD
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false); 
+  const [cardTasks, setCardTasks] = useState<any[]>([]);
+
+   useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const res = await fetch(`${API_URL}/tasks`);
+        const data = await res.json();
+        setCardTasks(data.filter((t: any) => t.card_id === id));
+      } catch (err) {
+        console.error("Erro ao carregar tasks:", err);
+      }
+    }
+    fetchTasks();
+  }, [id]);
 
   function flip(to: boolean) {
     setIsFlipping(true);
@@ -97,7 +109,7 @@ export const TaskCard = ({id, title, category, description, onClick, onEdit, onD
             <>
               <TaskCategory>{category}</TaskCategory>
               <TaskTitle>{title}</TaskTitle>
-        
+            <TaskProgress tasks={cardTasks} />
               <IIcon
                 className="icon"
                 onClick={(e) => { e.stopPropagation(); flip(true); }}
