@@ -12,6 +12,7 @@ import { TaskProgress } from "../TaskProgress/TaskProgress";
 const API_URL = "http://192.168.1.9:3001"; 
 
 export type TaskCardProps = {
+  className: string;
   id: string;
   title: string;
   category: string;
@@ -22,7 +23,7 @@ export type TaskCardProps = {
   onDelete?: (id: string) => void;     
 };
 
-export const TaskCard = ({id, title, category, description, onClick, onEdit, onDelete,}: TaskCardProps) => {
+export const TaskCard = ({className, id, title, category, description, onClick, onEdit, onDelete,}: TaskCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false); 
@@ -79,12 +80,13 @@ export const TaskCard = ({id, title, category, description, onClick, onEdit, onD
       </AnimatePresence>
 
       <motion.div
+      className={className}
         animate={{ rotateY: isFlipping ? 180 : 0 }}
         transition={{ duration: 0.2 }}
         onAnimationComplete={() => setIsFlipping(false)}
         style={{ transformStyle: "preserve-3d" }}
       >
-        <TaskContainer onClick={onClick} style={{ backfaceVisibility: "hidden" }}>
+        <TaskContainer  onClick={onClick} style={{ backfaceVisibility: "hidden" }}>
           {expanded ? (
             <>
               <IconsList>

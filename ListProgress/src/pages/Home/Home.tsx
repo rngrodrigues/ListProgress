@@ -15,6 +15,9 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
+  const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState(0);
+
 
 
   useEffect(() => {
@@ -60,18 +63,38 @@ const Home = () => {
     setOpen(false);
   }
 
-  async function handleDeleteCard(id: string) {
-    try {
-      await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
+const ITEMS_PER_PAGE = 6; 
 
-      setCards(prev =>
-        prev
-          .filter(c => c.id !== id)
-          .map((c, index) => ({ ...c, position: index }))
-      );
-    } catch (err) {
-      console.error(err);
-    }
+async function handleDeleteCard(id: string) {
+  try {
+    await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
+
+    setCards(prevCards => {
+
+      const next = prevCards
+        .filter(c => c.id !== id)
+        .map((c, index) => ({ ...c, position: index }));
+
+
+      const newTotalPages = Math.max(1, Math.ceil(next.length / ITEMS_PER_PAGE));
+
+      setPage(prevPage => {
+        const lastValidPage = newTotalPages - 1;
+        return Math.min(prevPage, lastValidPage);
+      });
+
+      return next;
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+  function handleChangePage(step: number) {
+    setDirection(step);
+    setPage(prev => prev + step);
   }
 
   return (
@@ -104,6 +127,7 @@ const Home = () => {
             style={{ width: "100%" }}
           >
             <TaskList
+              className="task-card"
               id={selectedTask.id}
               title={selectedTask.title}
               category={selectedTask.category}
@@ -117,11 +141,14 @@ const Home = () => {
         {!selectedTask && (
           <TaskBoard
             cards={cards}
+            page={page}
+            direction={direction}
+            onChangePage={handleChangePage}
             onEdit={(updated) =>
               setCards(prev =>
                 prev.map(c =>
                   c.id === updated.id
-                    ? { ...c, ...updated, position: c.position } 
+                    ? { ...c, ...updated, position: c.position }
                     : c
                 )
               )
@@ -129,7 +156,6 @@ const Home = () => {
             onDelete={handleDeleteCard}
             onSelect={setSelectedTask}
             emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
-            showSearch={true}
           />
         )}
 

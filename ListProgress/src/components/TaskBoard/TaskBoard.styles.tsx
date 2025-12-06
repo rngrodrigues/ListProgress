@@ -1,17 +1,21 @@
-
 import styled from "styled-components";
 
-export const GridContainer = styled.div `
+interface GridProps {
+  $isSingle: boolean;
+}
+export const GridContainer = styled.div<GridProps> `
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
 gap: 5rem;
 padding: clamp(1rem, 5vw, 5rem);
 min-height: 80%;
- & > *:only-child {
+ ${props => props.$isSingle && `
+  & > .task-card {
     width: 100%;
     max-width: 58rem;
     margin: 0 auto;
   }
+`}
 `;
 export const MainParagrafo = styled.h1`
 font-size: clamp(2.8rem, 3.4vw, 3.4rem);
@@ -23,7 +27,7 @@ min-height:50rem;
 width: auto
 `;
 export const PaginationContainer = styled.div `
-  min-height: 10%:
+  min-height: 10%;
   width:100%;
   display: flex;
 text-align: center;
@@ -38,5 +42,10 @@ align-items: center;
   background: transparent;
   border: none;
   margin:0 1rem;
+  }
+   button:disabled {
+    opacity: 0.5;
+    cursor: default;      
+    pointer-events: none;  
   }
 `;

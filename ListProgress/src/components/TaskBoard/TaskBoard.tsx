@@ -20,29 +20,36 @@ const pageVariants = {
     position: "absolute"
   })
 };
+
 export const TaskBoard = ({
   cards,
   onEdit,
   onDelete,
   onSelect,
   emptyMessage,
-} : {
+  page,
+  direction,
+  onChangePage,
+}: {
   cards: any[];
   onEdit: (card: any) => void;
-  onDelete: (id: string ) => void;
+  onDelete: (id: string) => void;
   onSelect: (card: any) => void;
   emptyMessage: string;
-  showSearch?: boolean;
+  page: number;
+  direction: number;
+  onChangePage: (direction: number) => void;
 }) => {
-  
+
   const {
-    page, direction,
-    totalPages, currentTasks, changePage
-  } = usePagination(cards, 6);
+    totalPages,
+    currentTasks,
+  } = usePagination(cards, 6, page); // << recebe pagina atual
 
   return (
     <>
       <AnimatePresence initial={false} custom={direction}>
+        
         <motion.div
           key={page}
           variants={pageVariants}
@@ -53,13 +60,15 @@ export const TaskBoard = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
           style={{ width: "100%" }}
         >
-          <GridContainer>
+          
+          <GridContainer $isSingle={currentTasks.length === 1}>
             {cards.length === 0 && (
               <MainParagrafo>{emptyMessage}</MainParagrafo>
             )}
 
             {currentTasks.map(card => (
               <TaskCard
+                className="task-card"
                 key={card.id}
                 {...card}
                 onClick={() => onSelect(card)}
@@ -69,12 +78,25 @@ export const TaskBoard = ({
             ))}
           </GridContainer>
         </motion.div>
+       
       </AnimatePresence>
 
       <PaginationContainer>
-        <button onClick={() => changePage(-1)}>◀</button>
+        <button
+          disabled={page === 0}
+          onClick={() => onChangePage(-1)}
+        >
+          ◀
+        </button>
+
         <span>{page + 1} / {totalPages}</span>
-        <button onClick={() => changePage(1)}>▶</button>
+
+        <button
+          disabled={page === totalPages - 1}
+          onClick={() => onChangePage(1)}
+        >
+          ▶
+        </button>
       </PaginationContainer>
     </>
   );

@@ -56,26 +56,45 @@ useEffect(() => {
   fetch(`${API_URL}/tasks`)
     .then(res => res.json())
     .then(data => {
+      const cardTasks = data
+        .filter((task: any) => task.card_id === id)
+        .sort((a:any, b:any) => {
+          if (a.position == null) return 1;
+          if (b.position == null) return -1;
+          return a.position - b.position;
+        });
 
-      const cardTasks = data.filter((task: any) => task.card_id === id);
       setTasks(cardTasks);
     })
     .catch(err => console.error("Erro ao carregar tasks:", err));
-}, [id]); 
+}, [id]);
+
 
 
    async function handleAddTask(newTask: any) {
-  console.log("newTask enviado:", newTask);
   try {
+    const nextPosition = tasks.length;
+
+    const payload = { 
+      ...newTask,
+      position: nextPosition,
+      card_id: id
+    };
+
     const res = await fetch(`${API_URL}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newTask), 
+      body: JSON.stringify(payload),
     });
 
     const createdTask = await res.json();
 
-    setTasks(prev => [...prev, createdTask]);
+    console.log("Enviando JSON para o backend (CREATE):", payload);
+
+    setTasks(prev => {
+      const list = [...prev, createdTask];
+      return list.sort((a, b) => a.position - b.position);
+    });
 
   } catch (err) {
     console.error("Erro ao adicionar tarefa:", err);
@@ -85,14 +104,35 @@ useEffect(() => {
 }
 
 
+
 async function handleDeleteTask(taskId: string) {
   try {
     await fetch(`${API_URL}/tasks/${taskId}`, { method: "DELETE" });
-    setTasks(prev => prev.filter(t => t.id !== taskId));
+
+    setTasks(prev => {
+      const filtered = prev.filter(t => t.id !== taskId);
+
+      const reindexed = filtered.map((t, index) => ({
+        ...t,
+        position: index
+      }));
+
+      reindexed.forEach(async t => {
+        await fetch(`${API_URL}/tasks/${t.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(t),
+        });
+      });
+
+      return reindexed;
+    });
+
   } catch (err) {
     console.error("Erro ao deletar tarefa:", err);
   }
 }
+
 
 
   async function toggleTaskCompleted(taskId: string) {
@@ -154,9 +194,7 @@ async function handleDeleteTask(taskId: string) {
     setOpenEdit(false);
   }}
 />
-
       )}
-
       <TopContainer>
         <TaskCategory>{category}</TaskCategory>
         <ArrowBack className="icon" onClick={onBack} />
