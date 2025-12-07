@@ -4,4 +4,5 @@ export interface Card {
   category?: string;
   description?: string;
   created_at: string;
+  completed: boolean;
 }

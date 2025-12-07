@@ -18,10 +18,9 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
 
-
-
   useEffect(() => {
     fetch(`${API_URL}/cards`)
+    
       .then(res => res.json())
       .then(data => {
         const ordered = data.sort((a: any, b: any) => {
@@ -40,19 +39,18 @@ const Home = () => {
       const nextPosition = cards.length;
       const payload = { ...newCard, position: nextPosition };
 
-    console.log("Enviando JSON para o backend (CREATE):", payload);
+      console.log("Enviando JSON para o backend (CREATE):", payload);
 
       const res = await fetch(`${API_URL}/cards`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newCard, position: nextPosition }),
+        body: JSON.stringify(payload),
       });
 
       const createdCard = await res.json();
 
       setCards(prev => {
         const list = [...prev, { ...createdCard, tasks: [] }];
-
         return list.sort((a, b) => a.position - b.position);
       });
 
@@ -63,34 +61,32 @@ const Home = () => {
     setOpen(false);
   }
 
-const ITEMS_PER_PAGE = 6; 
+  const ITEMS_PER_PAGE = 6;
 
-async function handleDeleteCard(id: string) {
-  try {
-    await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
+  async function handleDeleteCard(id: string) {
+    try {
+      await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
 
-    setCards(prevCards => {
+      setCards(prevCards => {
 
-      const next = prevCards
-        .filter(c => c.id !== id)
-        .map((c, index) => ({ ...c, position: index }));
+        const next = prevCards
+          .filter(c => c.id !== id)
+          .map((c, index) => ({ ...c, position: index }));
 
+        const newTotalPages = Math.max(1, Math.ceil(next.length / ITEMS_PER_PAGE));
 
-      const newTotalPages = Math.max(1, Math.ceil(next.length / ITEMS_PER_PAGE));
+        setPage(prevPage => {
+          const lastValidPage = newTotalPages - 1;
+          return Math.min(prevPage, lastValidPage);
+        });
 
-      setPage(prevPage => {
-        const lastValidPage = newTotalPages - 1;
-        return Math.min(prevPage, lastValidPage);
+        return next;
       });
 
-      return next;
-    });
-
-  } catch (err) {
-    console.error(err);
+    } catch (err) {
+      console.error(err);
+    }
   }
-}
-
 
   function handleChangePage(step: number) {
     setDirection(step);
@@ -134,13 +130,18 @@ async function handleDeleteCard(id: string) {
               tasks={selectedTask.tasks}
               description={selectedTask.description}
               onBack={() => setSelectedTask(null)}
+              onCardUpdate={(updatedCard) => {
+        setCards(prev =>
+          prev.map(c => c.id === updatedCard.id ? { ...c, ...updatedCard } : c)
+        );
+      }}
             />
           </motion.div>
         )}
 
         {!selectedTask && (
           <TaskBoard
-            cards={cards}
+            cards={cards.filter(c => !c.completed)} 
             page={page}
             direction={direction}
             onChangePage={handleChangePage}
@@ -148,7 +149,7 @@ async function handleDeleteCard(id: string) {
               setCards(prev =>
                 prev.map(c =>
                   c.id === updated.id
-                    ? { ...c, ...updated, position: c.position }
+                    ? { ...c, ...updated }
                     : c
                 )
               )

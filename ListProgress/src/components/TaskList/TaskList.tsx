@@ -19,182 +19,162 @@ type TaskListProps = TaskCardProps & {
   description: string;
   category: string;
   onBack: () => void;
+  onCardUpdate?: (updatedCard: any) => void; 
 };
 
-export const TaskList = ({ id, title, category, onBack }: TaskListProps) => {
+export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskListProps) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
-  const [flipState, setFlipState] = useState<
-    Record<string, { expanded: boolean; isFlipping: boolean }>
-  >({});
-  
+  const [flipState, setFlipState] = useState<Record<string, { expanded: boolean; isFlipping: boolean }>>({});
 
-
+ 
   function flip(id: string, to: boolean) {
     setFlipState(prev => ({
       ...prev,
-      [id]: {
-        ...prev[id],
-        isFlipping: true,
-      },
+      [id]: { ...prev[id], isFlipping: true }
     }));
-
     setTimeout(() => {
       setFlipState(prev => ({
         ...prev,
-        [id]: {
-          ...prev[id],
-          expanded: to,
-        },
+        [id]: { ...prev[id], expanded: to, isFlipping: false }
       }));
     }, 150);
   }
 
-useEffect(() => {
-  fetch(`${API_URL}/tasks`)
-    .then(res => res.json())
-    .then(data => {
-      const cardTasks = data
-        .filter((task: any) => task.card_id === id)
-        .sort((a:any, b:any) => {
-          if (a.position == null) return 1;
-          if (b.position == null) return -1;
-          return a.position - b.position;
-        });
-
-      setTasks(cardTasks);
-    })
-    .catch(err => console.error("Erro ao carregar tasks:", err));
-}, [id]);
-
-
-
-   async function handleAddTask(newTask: any) {
-  try {
-    const nextPosition = tasks.length;
-
-    const payload = { 
-      ...newTask,
-      position: nextPosition,
-      card_id: id
-    };
-
-    const res = await fetch(`${API_URL}/tasks`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const createdTask = await res.json();
-
-    console.log("Enviando JSON para o backend (CREATE):", payload);
-
-    setTasks(prev => {
-      const list = [...prev, createdTask];
-      return list.sort((a, b) => a.position - b.position);
-    });
-
-  } catch (err) {
-    console.error("Erro ao adicionar tarefa:", err);
-  }
-
-  setOpenAdd(false);
-}
+  
+  useEffect(() => {
+    fetch(`${API_URL}/tasks`)
+      .then(res => res.json())
+      .then(data => {
+        const cardTasks = data
+          .filter((task: any) => task.card_id === id)
+          .sort((a:any, b:any) => {
+            if (a.position == null) return 1;
+            if (b.position == null) return -1;
+            return a.position - b.position;
+          });
+        setTasks(cardTasks);
+      })
+      .catch(err => console.error("Erro ao carregar tasks:", err));
+  }, [id]);
 
 
+  async function handleAddTask(newTask: any) {
+    try {
+      const nextPosition = tasks.length;
+      const payload = { ...newTask, position: nextPosition, card_id: id };
 
-async function handleDeleteTask(taskId: string) {
-  try {
-    await fetch(`${API_URL}/tasks/${taskId}`, { method: "DELETE" });
-
-    setTasks(prev => {
-      const filtered = prev.filter(t => t.id !== taskId);
-
-      const reindexed = filtered.map((t, index) => ({
-        ...t,
-        position: index
-      }));
-
-      reindexed.forEach(async t => {
-        await fetch(`${API_URL}/tasks/${t.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(t),
-        });
+      const res = await fetch(`${API_URL}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      return reindexed;
-    });
+      const createdTask = await res.json();
+      setTasks(prev => [...prev, createdTask].sort((a, b) => a.position - b.position));
 
-  } catch (err) {
-    console.error("Erro ao deletar tarefa:", err);
+    } catch (err) {
+      console.error("Erro ao adicionar tarefa:", err);
+    }
+    setOpenAdd(false);
   }
-}
 
+
+  async function handleDeleteTask(taskId: string) {
+    try {
+      await fetch(`${API_URL}/tasks/${taskId}`, { method: "DELETE" });
+
+      setTasks(prev => {
+        const filtered = prev.filter(t => t.id !== taskId);
+        const reindexed = filtered.map((t, index) => ({ ...t, position: index }));
+
+        reindexed.forEach(async t => {
+          await fetch(`${API_URL}/tasks/${t.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(t),
+          });
+        });
+
+        return reindexed;
+      });
+
+    } catch (err) {
+      console.error("Erro ao deletar tarefa:", err);
+    }
+  }
 
 
   async function toggleTaskCompleted(taskId: string) {
-  const task = tasks.find(t => t.id === taskId);
-  if (!task) return;
-  
-  const updated = { ...task, completed: !task.completed };
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
 
-  try {
-    const response = await fetch(`${API_URL}/tasks/${taskId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
-    });
+    const updatedTask = { ...task, completed: !task.completed };
 
-    const data = await response.json();
-    console.log("Tarefa atualizada:", data);
+    try {
 
-    setTasks(prev =>
-      prev.map(t => (t.id === taskId ? data : t))
-    );
+      const resTask = await fetch(`${API_URL}/tasks/${taskId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTask),
+      });
+      const dataTask = await resTask.json();
 
-  } catch (err) {
-    console.error("Erro ao atualizar tarefa:", err);
+ 
+      setTasks(prev => prev.map(t => t.id === taskId ? dataTask : t));
+
+      const allCompleted = tasks
+        .map(t => t.id === taskId ? updatedTask : t)
+        .every(t => t.completed);
+
+      const updatedCard = { completed: allCompleted };
+      await fetch(`${API_URL}/cards/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedCard),
+      });
+
+
+      if (onCardUpdate) onCardUpdate({ id, ...updatedCard });
+
+    } catch (err) {
+      console.error("Erro ao atualizar tarefa ou card:", err);
+    }
   }
-}
-
 
   return (
     <BodyList>
       <ModalAddTask
         isOpen={openAdd}
         onClose={() => setOpenAdd(false)}
-       onAddTask={handleAddTask}
-       card_id={id}
+        onAddTask={handleAddTask}
+        card_id={id}
       />
 
       {selectedTask && (
         <ModalEditTask
-  isOpen={openEdit}
-  onClose={() => setOpenEdit(false)}
-  task={selectedTask}
-  onEditTask={async (updatedTask) => {
-    try {
-      const response = await fetch(`${API_URL}/tasks/${updatedTask.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedTask),
-      });
-      const data = await response.json();
-      console.log("Resposta do servidor:", data);
-      setTasks(prev =>
-  prev.map(t => t.id === updatedTask.id ? updatedTask : t)
-);
-    } catch (err) {
-      console.error(err);
-    }
-
-    setOpenEdit(false);
-  }}
-/>
+          isOpen={openEdit}
+          onClose={() => setOpenEdit(false)}
+          task={selectedTask}
+          onEditTask={async (updatedTask) => {
+            try {
+              const res = await fetch(`${API_URL}/tasks/${updatedTask.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedTask),
+              });
+              const data = await res.json();
+              setTasks(prev => prev.map(t => t.id === updatedTask.id ? data : t));
+            } catch (err) {
+              console.error(err);
+            }
+            setOpenEdit(false);
+          }}
+        />
       )}
+
       <TopContainer>
         <TaskCategory>{category}</TaskCategory>
         <ArrowBack className="icon" onClick={onBack} />
@@ -203,7 +183,7 @@ async function handleDeleteTask(taskId: string) {
       <TaskTitle>{title}</TaskTitle>
 
       <MidContainer>
-        {tasks.map((task) => {
+        {tasks.map(task => {
           const expanded = flipState[task.id]?.expanded ?? false;
           const isFlipping = flipState[task.id]?.isFlipping ?? false;
 
@@ -221,52 +201,40 @@ async function handleDeleteTask(taskId: string) {
               style={{ transformStyle: "preserve-3d" }}
             >
               <ItemList>
-
                 {expanded ? (
                   <>
                     <ItemDescription>{task.description}</ItemDescription>
                     <UpIcon
                       className="BackIcon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        flip(task.id, false);
-                      }}
+                      onClick={(e) => { e.stopPropagation(); flip(task.id, false); }}
                     />
                   </>
                 ) : (
                   <>
                     <TextList className={task.completed ? "completed" : ""}>
-  <CheckInput
-    checked={task.completed}
-    onChange={() => toggleTaskCompleted(task.id)}
-  />
-  {task.title}
-</TextList>
+                      <CheckInput
+                        checked={task.completed}
+                        onChange={() => toggleTaskCompleted(task.id)}
+                      />
+                      {task.title}
+                    </TextList>
+
                     <IconsList>
                       <EditIcon
                         className="icon"
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setOpenEdit(true);
-                        }}
+                        onClick={() => { setSelectedTask(task); setOpenEdit(true); }}
                       />
-
                       <TrashIcon
                         className="icon"
                         onClick={() => handleDeleteTask(task.id)}
                       />
-
                       <IIcon
                         className="icon IIcon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          flip(task.id, true);
-                        }}
+                        onClick={(e) => { e.stopPropagation(); flip(task.id, true); }}
                       />
                     </IconsList>
                   </>
                 )}
-
               </ItemList>
             </motion.div>
           );

@@ -44,8 +44,7 @@ export const TaskBoard = ({
   const {
     totalPages,
     currentTasks,
-  } = usePagination(cards, 6, page); // << recebe pagina atual
-
+  } = usePagination(cards, 6, page); 
   return (
     <>
       <AnimatePresence initial={false} custom={direction}>
