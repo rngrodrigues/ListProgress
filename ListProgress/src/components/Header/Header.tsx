@@ -18,12 +18,12 @@ const Header = () => {
         <NavLink to="/" end>Home</NavLink>
         <NavLink to="/historico">Histórico</NavLink>
         <NavLink to="/comousar">Como usar?</NavLink>
-        <NavLink to="/faq">FAQ</NavLink>
+        <NavLink to="/sobre">Sobre</NavLink>
         <DayNightIcon className="icon" />
       </MenuContainer>
 
       <LoginContainer>
-        <Link to="/login">Entre ou Cadastre-se</Link>
+        <Link to="/login">Fazer login</Link>
       </LoginContainer>
     </MainContainer>
   );

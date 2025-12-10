@@ -15,7 +15,7 @@ const App = () => {
           <Route path="login" element={<Login />} />
           <Route path="historico" element={<Historico />} />
           <Route path="comousar" element={<ComoUsar />} />
-          <Route path="faq" element={<Faq />} />
+          <Route path="sobre" element={<Faq />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

@@ -5,7 +5,20 @@
   onClick?: () => void;
   children?: React.ReactNode;
 }
-
+export const GenericBtn: React.FC<IButtonProps> = ({ onClick, children }) => {
+  return (
+    <S.Btn onClick={onClick}>
+ {children}
+    </S.Btn>
+  );
+};
+export const GenericBtnBlack: React.FC<IButtonProps> = ({ onClick, children }) => {
+  return (
+    <S.BtnBlack onClick={onClick}>
+ {children}
+    </S.BtnBlack>
+  );
+};
 export const AddBtn: React.FC<IButtonProps> = ({ onClick, children }) => {
   return (
     <S.AddBtn onClick={onClick}>

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const SearchContainer = styled.div `
-  grid-column: 3;
-  justify-self: end;
+grid-column: 3;
+justify-self: end;
 display: flex;
 align-items: center;
 border: 1px solid gray;
@@ -72,7 +72,6 @@ export const CheckInput = styled.input`
   height: 3rem;
   margin-left: 1.5rem;
   cursor: pointer;
-
   appearance: none;
   border: 2px solid lightgray;
   border-radius: 4px;
@@ -93,4 +92,77 @@ export const CheckInput = styled.input`
     color: white;
   }
 `;
+export const NameContainer = styled.div `
+margin: 0;
+padding: 0;
+position: relative;
+.icon{
+width: 2.3rem;
+height:2.3rem;
+position: absolute;
+right: 1.5rem;
+bottom: 1.25rem;
+}
+`;
+export const NameInput = styled.input`
+background: white;
+margin: 1rem 1rem 0.5rem 0;
+padding: 0.5rem;
+font-size: 2rem;
+  border-radius: 4px;
+border: none;
+height: 2.5rem;
+&:has(input:focus) {
+border: 2px solid black;
+  }
+`;
+export const PasswordContainer = styled.div `
+margin: 0;
+padding: 0;
+position: relative;
+.icon{
+width: 2.3rem;
+height:2.3rem;
+position: absolute;
+right: 1.5rem;
+bottom: 1.25rem;
+}
+`;
+export const PasswordInput = styled.input`
+background: white;
+margin: 1rem 1rem 0.5rem 0;
+  border-radius: 4px;
+padding: 0.5rem;
+font-size: 2rem;
+border: none;
+height: 2.5rem;
+&:has(input:focus) {
+border: 2px solid black;
+  }
+`;
+export const EmailContainer = styled.div `
+margin: 0;
+padding: 0;
+position: relative;
+.icon{
+width: 2.3rem;
+height:2.3rem;
+position: absolute;
+right: 1.5rem;
+bottom: 1.25rem;
+}
+`;
+export const EmailInput = styled.input`
+background: white;
+margin: 1rem 1rem 0.5rem 0;
+border-radius: 4px;
+padding: 0.5rem;
+font-size: 2rem;
+border: none;
+height: 2.5rem;
+&:has(input:focus) {
+border: 2px solid black;
+  }
+`;
+
 

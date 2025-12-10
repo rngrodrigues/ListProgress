@@ -1,4 +1,7 @@
 import { ReactComponent as SearchIcon } from '../../../assets/icons/search.svg';
+import { ReactComponent as NameIcon } from '../../../assets/icons/name.svg';
+import { ReactComponent as EmailIcon } from '../../../assets/icons/email.svg';
+import { ReactComponent as PasswordIcon } from '../../../assets/icons/password.svg';
 import * as S from "./Inputs.styles.ts";
 import React from "react";
 
@@ -73,4 +76,61 @@ interface CheckInputProps {
 export const CheckInput = ({ checked, onChange }: CheckInputProps) => {
   return <S.CheckInput type="checkbox" checked={checked} onChange={onChange} />;
 };
+
+
+export const NameInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+  return (
+    <>
+  <S.NameContainer>
+    <NameIcon className="icon" />
+      <S.NameInput
+        type="text"
+        aria-label="Nome"
+        placeholder="Nome"
+        value={value}
+        onChange={onChange}
+      />
+      </S.NameContainer>
+    </>
+  );
+};
+
+export const EmailInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+  return (
+    <>
+<S.EmailContainer>
+  <EmailIcon className="icon" />
+      <S.EmailInput
+        type="email"
+        aria-label="Email"
+        placeholder="Email"
+        value={value}
+        onChange={onChange}
+      />
+      </S.EmailContainer>
+    </>
+  );
+};
+
+export const PasswordInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+  return (
+    <>
+  <S.PasswordContainer>
+    <PasswordIcon className="icon" />
+    <S.PasswordInput
+      
+        type="password"
+        aria-label="Senha"
+        placeholder="Senha"
+        value={value}
+        onChange={onChange}
+      />
+      </S.PasswordContainer>
+      
+    </>
+  );
+};
+
+
+
 

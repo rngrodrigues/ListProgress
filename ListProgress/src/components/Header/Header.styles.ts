@@ -78,7 +78,7 @@ display: inline-block;
  transition: transform ease 0.5s;
  }
  a:hover {
-transform: scale(1.05);
+transform: scale(1.01);
  }
 
 `;
