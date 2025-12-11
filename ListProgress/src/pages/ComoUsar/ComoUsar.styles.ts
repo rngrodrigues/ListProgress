@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-export const Title = styled.h1`
-  font-size: clamp(2.5rem, 3.2vw, 3.8rem);
-  text-align: center;
-  margin: 2.5rem 0;
-`;
-
 export const Container = styled.section`
   padding: 2rem;
   border-radius: 1rem 5rem 5rem 1rem;
@@ -16,7 +10,7 @@ export const Container = styled.section`
 `;
 
 export const TitleContainer = styled.h2`
-  font-size: clamp(2rem, 3vw, 3rem);
+font-size: clamp(1.6rem, 2vw, 2.6rem);
 `;
 
 export const TextContainer = styled.p<{ open: boolean }>`
@@ -30,7 +24,4 @@ export const TextContainer = styled.p<{ open: boolean }>`
   transition: max-height 0.5s ease, opacity 0.5s ease;
 `;
 
-export const MaxWidthContainer = styled.div`
-max-width: 80rem;
-margin: 0 auto;
-`;
+

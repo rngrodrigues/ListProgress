@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Footer from "../../components/Footer";
-import { Container, MaxWidthContainer, TextContainer, Title, TitleContainer } from "./ComoUsar.styles";
+import { Container, TextContainer, TitleContainer } from "./ComoUsar.styles";
 import MainContainer from "../../components/MainContainer";
 
 const stepsData = [
@@ -15,6 +15,21 @@ const stepsData = [
   {
     title: "Editar tarefas",
     text: "Clique na tarefa para editar seu conteúdo.adsf gawergrae grea "
+  },
+  {
+    title: "Excluir tarefas",
+    text: "Use o ícone de lixeira para remover uma tarefa."
+  },  {
+    title: "Excluir tarefas",
+    text: "Use o ícone de lixeira para remover uma tarefa."
+  },
+   {
+    title: "Excluir tarefas",
+    text: "Use o ícone de lixeira para remover uma tarefa."
+  },
+   {
+    title: "Excluir tarefas",
+    text: "Use o ícone de lixeira para remover uma tarefa."
   },
   {
     title: "Excluir tarefas",
@@ -38,7 +53,7 @@ const ComoUsar = () => {
   return (
     <>
       <MainContainer>
-        <Title>Como usar?</Title>
+
 
         {stepsData.map((step, index) => (
 

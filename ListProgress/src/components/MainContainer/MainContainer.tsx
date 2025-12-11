@@ -10,7 +10,7 @@ const MainContainer: React.FC<IMainContainer> = ({ children }) => {
 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
+      transition={{ duration: 0.50, ease: "easeOut" }}
     >
       {children}
     </Container>

@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Historico from "./pages/Historico";
 import ComoUsar from "./pages/ComoUsar";
-import Faq from "./pages/Faq";
+import Faq from "./pages/SobreNos";
 
 const App = () => {
   return (

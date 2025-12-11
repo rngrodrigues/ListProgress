@@ -18,7 +18,7 @@ const Header = () => {
         <NavLink to="/" end>Home</NavLink>
         <NavLink to="/historico">Histórico</NavLink>
         <NavLink to="/comousar">Como usar?</NavLink>
-        <NavLink to="/sobre">Sobre</NavLink>
+        <NavLink to="/sobre">Sobre nós</NavLink>
         <DayNightIcon className="icon" />
       </MenuContainer>
 
