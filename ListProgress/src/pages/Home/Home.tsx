@@ -105,62 +105,68 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-      <MainContainer>
+     <MainContainer>
 
-        {!selectedTask && (
-          <TopContainer>
-            <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
-            <SearchInput />
-          </TopContainer>
-        )}
+  {!selectedTask && (
+    <TopContainer>
+      <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
+      <SearchInput />
+    </TopContainer>
+  )}
 
-        {selectedTask && (
-          <motion.div
-            key="tasklist"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.35 }}
-            style={{ width: "100%" }}
-          >
-            <TaskList
-              className="task-card"
-              id={selectedTask.id}
-              title={selectedTask.title}
-              category={selectedTask.category}
-              tasks={selectedTask.tasks}
-              description={selectedTask.description}
-              onBack={() => setSelectedTask(null)}
-              onCardUpdate={(updatedCard) => {
-        setCards(prev =>
-          prev.map(c => c.id === updatedCard.id ? { ...c, ...updatedCard } : c)
-        );
-      }}
-            />
-          </motion.div>
-        )}
+  <AnimatePresence mode="wait">
+    {selectedTask ? (
+      <motion.div
+        key="task"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <TaskList
+          className="task-card"
+          id={selectedTask.id}
+          title={selectedTask.title}
+          category={selectedTask.category}
+          tasks={selectedTask.tasks}
+          description={selectedTask.description}
+          onBack={() => setSelectedTask(null)}
+          onCardUpdate={(updatedCard) => {
+            setCards(prev =>
+              prev.map(c => c.id === updatedCard.id ? { ...c, ...updatedCard } : c)
+            );
+          }}
+        />
+      </motion.div>
+    ) : (
+      <motion.div
+        key="board"
+        initial={{ opacity: 0  }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+    
+      >
+        <TaskBoard
+          cards={cards.filter(c => !c.completed)}
+          page={page}
+          direction={direction}
+          onChangePage={handleChangePage}
+          onEdit={(updated) =>
+            setCards(prev =>
+              prev.map(c => (c.id === updated.id ? { ...c, ...updated } : c))
+            )
+          }
+          onDelete={handleDeleteCard}
+          onSelect={setSelectedTask}
+          emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
+        />
+      </motion.div>
+    )}
+  </AnimatePresence>
 
-        {!selectedTask && (
-          <TaskBoard
-            cards={cards.filter(c => !c.completed)} 
-            page={page}
-            direction={direction}
-            onChangePage={handleChangePage}
-            onEdit={(updated) =>
-              setCards(prev =>
-                prev.map(c =>
-                  c.id === updated.id
-                    ? { ...c, ...updated }
-                    : c
-                )
-              )
-            }
-            onDelete={handleDeleteCard}
-            onSelect={setSelectedTask}
-            emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
-          />
-        )}
+</MainContainer>
 
-      </MainContainer>
 
       <Footer />
     </>
