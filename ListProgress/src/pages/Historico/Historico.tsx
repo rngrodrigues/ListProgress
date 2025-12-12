@@ -7,7 +7,7 @@ import { HistoricoTopContainer } from "./Historico.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 
-const API_URL = "http://192.168.1.9:3001";
+import { apiFetch } from "../../services/apiFetch";
 
 const Historico = () => {
   const [cards, setCards] = useState<any[]>([]);
@@ -20,26 +20,25 @@ const Historico = () => {
     setPage(prev => prev + step);
   }
 
-   useEffect(() => {
-      fetch(`${API_URL}/cards`)
-      
-        .then(res => res.json())
-        .then(data => {
-          const ordered = data.sort((a: any, b: any) => {
-            if (a.position == null) return 1;
-            if (b.position == null) return -1;
-            return a.position - b.position;
-          });
-  
-          setCards(ordered);
-        })
-        .catch(err => console.error("Erro ao carregar cards:", err));
-    }, []);
+  useEffect(() => {
+    apiFetch("/cards")
+      .then((data) => {
+        const ordered = data.sort((a: any, b: any) => {
+          if (a.position == null) return 1;
+          if (b.position == null) return -1;
+          return a.position - b.position;
+        });
+
+        setCards(ordered);
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar cards:", err);
+      });
+  }, []);
 
   return (
     <>
       <MainContainer>
-
         {!selectedTask && (
           <HistoricoTopContainer>
             <SearchInput />
@@ -63,26 +62,30 @@ const Historico = () => {
               tasks={selectedTask.tasks}
               onBack={() => setSelectedTask(null)}
               onCardUpdate={(updatedCard) => {
-        setCards(prev =>
-          prev.map(c => c.id === updatedCard.id ? { ...c, ...updatedCard } : c)
-        );
-      }}
+                setCards(prev =>
+                  prev.map(c =>
+                    c.id === updatedCard.id
+                      ? { ...c, ...updatedCard }
+                      : c
+                  )
+                );
+              }}
             />
           </motion.div>
         )}
 
         {!selectedTask && (
           <TaskBoard
-            cards={cards.filter(c => c.completed)} 
-           onEdit={(updated) =>
-  setCards(prev =>
-    prev.map(c =>
-      c.id === updated.id
-        ? { ...c, ...updated } 
-        : c
-    )
-  )
-}
+            cards={cards.filter(c => c.completed)}
+            onEdit={(updated) =>
+              setCards(prev =>
+                prev.map(c =>
+                  c.id === updated.id
+                    ? { ...c, ...updated }
+                    : c
+                )
+              )
+            }
             onDelete={(id) =>
               setCards(prev => prev.filter(c => c.id !== id))
             }
@@ -93,7 +96,6 @@ const Historico = () => {
             onChangePage={handleChangePage}
           />
         )}
-
       </MainContainer>
 
       <Footer />

@@ -80,4 +80,28 @@ export const FadeWrapper = styled.div<{ $fade: boolean }>`
   opacity: ${({ $fade }) => ($fade ? 0 : 1)};
   transition: opacity 0.3s ease;
 `;
+export const CheckInput = styled.input`
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid gray;
+  position: relative;
+
+  &:checked {
+    background-color: black;
+    border-color: black;
+  }
+
+  &:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: white;
+  }
+`;
 

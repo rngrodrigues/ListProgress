@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Container = styled(motion.div)`
-max-width: 1300px;
+max-width: 900px;
   border-radius: 5rem;
   margin: 5rem auto;
-  background: white;
+  background: whitesmoke;
    box-shadow: 0 0 5px 0 black;
   padding: 2rem 2rem;
   display: flex;
@@ -33,7 +33,6 @@ export const Text = styled.p`
   font-size: clamp(1.5rem, 2vw, 2.3rem);
   color: #444;
 margin: 1rem auto;
-max-width: 90rem;
   padding-left: 1rem;
 `;
 

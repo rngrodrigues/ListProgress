@@ -1,17 +1,28 @@
-import { ArrowBack, BodyList, BottomContainer, MidContainer, TopContainer, TaskCategory, TaskTitle, ItemList, IconsList, TextList, ItemDescription } from './TaskList.styles';
+import {
+  ArrowBack,
+  BodyList,
+  BottomContainer,
+  MidContainer,
+  TopContainer,
+  TaskCategory,
+  TaskTitle,
+  ItemList,
+  IconsList,
+  TextList,
+  ItemDescription
+} from "./TaskList.styles";
 import type { TaskCardProps } from "../TaskCard/TaskCard";
-import { ReactComponent as TrashIcon } from '../../assets/icons/trash.svg'; 
-import { ReactComponent as EditIcon } from '../../assets/icons/edit.svg';
-import { ReactComponent as IIcon } from '../../assets/icons/i.svg';
+import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
+import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
+import { ReactComponent as IIcon } from "../../assets/icons/i.svg";
 import { ReactComponent as UpIcon } from "../../assets/icons/arrow-up.svg";
-import { AddBtn } from '../Utils/Buttons'
-import { CheckInput } from '../Utils/Inputs'
+import { AddBtn } from "../Utils/Buttons";
+import { CheckInput } from "../Utils/Inputs";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask } from "../../components/Modals";
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-
-const API_URL = "http://192.168.1.9:3001";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { apiFetch } from "../../services/apiFetch";
 
 type TaskListProps = TaskCardProps & {
   id: string;
@@ -19,126 +30,130 @@ type TaskListProps = TaskCardProps & {
   description: string;
   category: string;
   onBack: () => void;
-  onCardUpdate?: (updatedCard: any) => void; 
+  onCardUpdate?: (updatedCard: any) => void;
 };
 
-export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskListProps) => {
+export const TaskList = ({
+  id,
+  title,
+  category,
+  onBack,
+  onCardUpdate
+}: TaskListProps) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
-  const [flipState, setFlipState] = useState<Record<string, { expanded: boolean; isFlipping: boolean }>>({});
+  const [flipState, setFlipState] = useState<
+    Record<string, { expanded: boolean; isFlipping: boolean }>
+  >({});
 
- 
-  function flip(id: string, to: boolean) {
-    setFlipState(prev => ({
+  function flip(taskId: string, to: boolean) {
+    setFlipState((prev) => ({
       ...prev,
-      [id]: { ...prev[id], isFlipping: true }
+      [taskId]: { ...prev[taskId], isFlipping: true }
     }));
+
     setTimeout(() => {
-      setFlipState(prev => ({
+      setFlipState((prev) => ({
         ...prev,
-        [id]: { ...prev[id], expanded: to, isFlipping: false }
+        [taskId]: {
+          expanded: to,
+          isFlipping: false
+        }
       }));
     }, 150);
   }
 
-  
   useEffect(() => {
-    fetch(`${API_URL}/tasks`)
-      .then(res => res.json())
-      .then(data => {
+    apiFetch("/tasks")
+      .then((data) => {
         const cardTasks = data
           .filter((task: any) => task.card_id === id)
-          .sort((a:any, b:any) => {
+          .sort((a: any, b: any) => {
             if (a.position == null) return 1;
             if (b.position == null) return -1;
             return a.position - b.position;
           });
+
         setTasks(cardTasks);
       })
-      .catch(err => console.error("Erro ao carregar tasks:", err));
+      .catch((err) => console.error("Erro ao carregar tasks:", err));
   }, [id]);
-
 
   async function handleAddTask(newTask: any) {
     try {
       const nextPosition = tasks.length;
       const payload = { ...newTask, position: nextPosition, card_id: id };
 
-      const res = await fetch(`${API_URL}/tasks`, {
+      const createdTask = await apiFetch("/tasks", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
-      const createdTask = await res.json();
-      setTasks(prev => [...prev, createdTask].sort((a, b) => a.position - b.position));
-
+      setTasks((prev) =>
+        [...prev, createdTask].sort((a, b) => a.position - b.position)
+      );
     } catch (err) {
       console.error("Erro ao adicionar tarefa:", err);
     }
+
     setOpenAdd(false);
   }
 
-
   async function handleDeleteTask(taskId: string) {
     try {
-      await fetch(`${API_URL}/tasks/${taskId}`, { method: "DELETE" });
+      await apiFetch(`/tasks/${taskId}`, { method: "DELETE" });
 
-      setTasks(prev => {
-        const filtered = prev.filter(t => t.id !== taskId);
-        const reindexed = filtered.map((t, index) => ({ ...t, position: index }));
+      setTasks((prev) => {
+        const filtered = prev.filter((t) => t.id !== taskId);
+        const reindexed = filtered.map((t, index) => ({
+          ...t,
+          position: index
+        }));
 
-        reindexed.forEach(async t => {
-          await fetch(`${API_URL}/tasks/${t.id}`, {
+        reindexed.forEach(async (t) => {
+          await apiFetch(`/tasks/${t.id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(t),
+            body: JSON.stringify(t)
           });
         });
 
         return reindexed;
       });
-
     } catch (err) {
       console.error("Erro ao deletar tarefa:", err);
     }
   }
 
-
   async function toggleTaskCompleted(taskId: string) {
-    const task = tasks.find(t => t.id === taskId);
+    const task = tasks.find((t) => t.id === taskId);
     if (!task) return;
 
     const updatedTask = { ...task, completed: !task.completed };
 
     try {
-
-      const resTask = await fetch(`${API_URL}/tasks/${taskId}`, {
+      const dataTask = await apiFetch(`/tasks/${taskId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedTask),
+        body: JSON.stringify(updatedTask)
       });
-      const dataTask = await resTask.json();
 
- 
-      setTasks(prev => prev.map(t => t.id === taskId ? dataTask : t));
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? dataTask : t))
+      );
 
       const allCompleted = tasks
-        .map(t => t.id === taskId ? updatedTask : t)
-        .every(t => t.completed);
+        .map((t) => (t.id === taskId ? updatedTask : t))
+        .every((t) => t.completed);
 
       const updatedCard = { completed: allCompleted };
-      await fetch(`${API_URL}/cards/${id}`, {
+
+      await apiFetch(`/cards/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedCard),
+        body: JSON.stringify(updatedCard)
       });
 
-
       if (onCardUpdate) onCardUpdate({ id, ...updatedCard });
-
     } catch (err) {
       console.error("Erro ao atualizar tarefa ou card:", err);
     }
@@ -160,16 +175,20 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
           task={selectedTask}
           onEditTask={async (updatedTask) => {
             try {
-              const res = await fetch(`${API_URL}/tasks/${updatedTask.id}`, {
+              const data = await apiFetch(`/tasks/${updatedTask.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedTask),
+                body: JSON.stringify(updatedTask)
               });
-              const data = await res.json();
-              setTasks(prev => prev.map(t => t.id === updatedTask.id ? data : t));
+
+              setTasks((prev) =>
+                prev.map((t) =>
+                  t.id === updatedTask.id ? data : t
+                )
+              );
             } catch (err) {
               console.error(err);
             }
+
             setOpenEdit(false);
           }}
         />
@@ -183,7 +202,7 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
       <TaskTitle>{title}</TaskTitle>
 
       <MidContainer>
-        {tasks.map(task => {
+        {tasks.map((task) => {
           const expanded = flipState[task.id]?.expanded ?? false;
           const isFlipping = flipState[task.id]?.isFlipping ?? false;
 
@@ -192,12 +211,6 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
               key={task.id}
               animate={{ rotateX: isFlipping ? 90 : 0 }}
               transition={{ duration: 0.2 }}
-              onAnimationComplete={() =>
-                setFlipState(prev => ({
-                  ...prev,
-                  [task.id]: { ...prev[task.id], isFlipping: false }
-                }))
-              }
               style={{ transformStyle: "preserve-3d" }}
             >
               <ItemList>
@@ -206,7 +219,10 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
                     <ItemDescription>{task.description}</ItemDescription>
                     <UpIcon
                       className="BackIcon"
-                      onClick={(e) => { e.stopPropagation(); flip(task.id, false); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        flip(task.id, false);
+                      }}
                     />
                   </>
                 ) : (
@@ -222,7 +238,10 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
                     <IconsList>
                       <EditIcon
                         className="icon"
-                        onClick={() => { setSelectedTask(task); setOpenEdit(true); }}
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setOpenEdit(true);
+                        }}
                       />
                       <TrashIcon
                         className="icon"
@@ -230,7 +249,10 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
                       />
                       <IIcon
                         className="icon IIcon"
-                        onClick={(e) => { e.stopPropagation(); flip(task.id, true); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          flip(task.id, true);
+                        }}
                       />
                     </IconsList>
                   </>

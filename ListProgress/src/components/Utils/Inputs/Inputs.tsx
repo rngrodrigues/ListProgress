@@ -18,6 +18,7 @@ export const SearchInput = () => {
         type="text"
         aria-label="Pesquisar"
         placeholder="Pesquisar lista..."
+        autoComplete="off"
       />
     </S.SearchContainer>
   );
@@ -33,6 +34,7 @@ export const TitleInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =
         placeholder="Escreva um título..."
         value={value}
         onChange={onChange}
+        autoComplete="off"
       />
     </>
   );
@@ -48,6 +50,7 @@ export const CategoryInput = ({ value, onChange }: IInputProps<HTMLInputElement>
         placeholder="Escreva uma categoria..."
         value={value}
         onChange={onChange}
+        autoComplete="off"
       />
     </>
   );
@@ -63,6 +66,7 @@ export const DescriptionInput = ({ value, onChange }: IInputProps<HTMLTextAreaEl
         placeholder="Uma breve descrição..."
         value={value}
         onChange={onChange}
+        autoComplete="off"
       />
     </>
   );
@@ -77,60 +81,50 @@ export const CheckInput = ({ checked, onChange }: CheckInputProps) => {
   return <S.CheckInput type="checkbox" checked={checked} onChange={onChange} />;
 };
 
-
 export const NameInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
   return (
-    <>
-  <S.NameContainer>
-    <NameIcon className="icon" />
+    <S.NameContainer>
+      <NameIcon className="icon" />
       <S.NameInput
         type="text"
         aria-label="Nome"
         placeholder="Nome"
         value={value}
         onChange={onChange}
+        autoComplete="name"
       />
-      </S.NameContainer>
-    </>
+    </S.NameContainer>
   );
 };
 
 export const EmailInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
   return (
-    <>
-<S.EmailContainer>
-  <EmailIcon className="icon" />
+    <S.EmailContainer>
+      <EmailIcon className="icon" />
       <S.EmailInput
         type="email"
         aria-label="Email"
         placeholder="Email"
         value={value}
         onChange={onChange}
+        autoComplete="email"
       />
-      </S.EmailContainer>
-    </>
+    </S.EmailContainer>
   );
 };
 
-export const PasswordInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+export const PasswordInput = ({ value, onChange, isLogin = true }: IInputProps<HTMLInputElement> & { isLogin?: boolean }) => {
   return (
-    <>
-  <S.PasswordContainer>
-    <PasswordIcon className="icon" />
-    <S.PasswordInput
-      
+    <S.PasswordContainer>
+      <PasswordIcon className="icon" />
+      <S.PasswordInput
         type="password"
         aria-label="Senha"
         placeholder="Senha"
         value={value}
         onChange={onChange}
+        autoComplete={isLogin ? "current-password" : "new-password"}
       />
-      </S.PasswordContainer>
-      
-    </>
+    </S.PasswordContainer>
   );
 };
-
-
-
-

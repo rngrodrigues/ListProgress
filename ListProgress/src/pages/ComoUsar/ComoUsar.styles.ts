@@ -17,7 +17,7 @@ export const TextContainer = styled.p<{ open: boolean }>`
   font-size: clamp(1.2rem, 3.2vw, 2.2rem);
   color: #333;
   line-height: 1.6;
-  margin-top: 10px;
+  margin-top: 1rem;
   overflow: hidden;
   max-height: ${({ open }) => (open ? "500px" : "0")};
   opacity: ${({ open }) => (open ? 1 : 0)};

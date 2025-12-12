@@ -8,8 +8,7 @@ import { TaskList } from "../../components/TaskList/TaskList";
 import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
-
-const API_URL = "http://192.168.1.9:3001";
+import { apiFetch } from "../../services/apiFetch";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -18,11 +17,11 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
 
+  const ITEMS_PER_PAGE = 6;
+
   useEffect(() => {
-    fetch(`${API_URL}/cards`)
-    
-      .then(res => res.json())
-      .then(data => {
+    apiFetch("/cards")
+      .then((data) => {
         const ordered = data.sort((a: any, b: any) => {
           if (a.position == null) return 1;
           if (b.position == null) return -1;
@@ -31,7 +30,7 @@ const Home = () => {
 
         setCards(ordered);
       })
-      .catch(err => console.error("Erro ao carregar cards:", err));
+      .catch((err) => console.error("Erro ao carregar cards:", err));
   }, []);
 
   async function handleAddCard(newCard: any) {
@@ -39,21 +38,15 @@ const Home = () => {
       const nextPosition = cards.length;
       const payload = { ...newCard, position: nextPosition };
 
-      console.log("Enviando JSON para o backend (CREATE):", payload);
-
-      const res = await fetch(`${API_URL}/cards`, {
+      const createdCard = await apiFetch("/cards", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      const createdCard = await res.json();
-
-      setCards(prev => {
+      setCards((prev) => {
         const list = [...prev, { ...createdCard, tasks: [] }];
         return list.sort((a, b) => a.position - b.position);
       });
-
     } catch (err) {
       console.error(err);
     }
@@ -61,28 +54,27 @@ const Home = () => {
     setOpen(false);
   }
 
-  const ITEMS_PER_PAGE = 6;
-
   async function handleDeleteCard(id: string) {
     try {
-      await fetch(`${API_URL}/cards/${id}`, { method: "DELETE" });
+      await apiFetch(`/cards/${id}`, { method: "DELETE" });
 
-      setCards(prevCards => {
-
+      setCards((prevCards) => {
         const next = prevCards
-          .filter(c => c.id !== id)
+          .filter((c) => c.id !== id)
           .map((c, index) => ({ ...c, position: index }));
 
-        const newTotalPages = Math.max(1, Math.ceil(next.length / ITEMS_PER_PAGE));
+        const newTotalPages = Math.max(
+          1,
+          Math.ceil(next.length / ITEMS_PER_PAGE)
+        );
 
-        setPage(prevPage => {
+        setPage((prevPage) => {
           const lastValidPage = newTotalPages - 1;
           return Math.min(prevPage, lastValidPage);
         });
 
         return next;
       });
-
     } catch (err) {
       console.error(err);
     }
@@ -90,7 +82,7 @@ const Home = () => {
 
   function handleChangePage(step: number) {
     setDirection(step);
-    setPage(prev => prev + step);
+    setPage((prev) => prev + step);
   }
 
   return (
@@ -105,68 +97,68 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-     <MainContainer>
+      <MainContainer>
+        {!selectedTask && (
+          <TopContainer>
+            <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
+            <SearchInput />
+          </TopContainer>
+        )}
 
-  {!selectedTask && (
-    <TopContainer>
-      <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
-      <SearchInput />
-    </TopContainer>
-  )}
-
-  <AnimatePresence mode="wait">
-    {selectedTask ? (
-      <motion.div
-        key="task"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <TaskList
-          className="task-card"
-          id={selectedTask.id}
-          title={selectedTask.title}
-          category={selectedTask.category}
-          tasks={selectedTask.tasks}
-          description={selectedTask.description}
-          onBack={() => setSelectedTask(null)}
-          onCardUpdate={(updatedCard) => {
-            setCards(prev =>
-              prev.map(c => c.id === updatedCard.id ? { ...c, ...updatedCard } : c)
-            );
-          }}
-        />
-      </motion.div>
-    ) : (
-      <motion.div
-        key="board"
-        initial={{ opacity: 0  }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-    
-      >
-        <TaskBoard
-          cards={cards.filter(c => !c.completed)}
-          page={page}
-          direction={direction}
-          onChangePage={handleChangePage}
-          onEdit={(updated) =>
-            setCards(prev =>
-              prev.map(c => (c.id === updated.id ? { ...c, ...updated } : c))
-            )
-          }
-          onDelete={handleDeleteCard}
-          onSelect={setSelectedTask}
-          emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
-        />
-      </motion.div>
-    )}
-  </AnimatePresence>
-
-</MainContainer>
-
+        <AnimatePresence mode="wait">
+          {selectedTask ? (
+            <motion.div
+              key="task"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <TaskList
+                className="task-card"
+                id={selectedTask.id}
+                title={selectedTask.title}
+                category={selectedTask.category}
+                tasks={selectedTask.tasks}
+                description={selectedTask.description}
+                onBack={() => setSelectedTask(null)}
+                onCardUpdate={(updatedCard) => {
+                  setCards((prev) =>
+                    prev.map((c) =>
+                      c.id === updatedCard.id ? { ...c, ...updatedCard } : c
+                    )
+                  );
+                }}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="board"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TaskBoard
+                cards={cards.filter((c) => !c.completed)}
+                page={page}
+                direction={direction}
+                onChangePage={handleChangePage}
+                onEdit={(updated) =>
+                  setCards((prev) =>
+                    prev.map((c) =>
+                      c.id === updated.id ? { ...c, ...updated } : c
+                    )
+                  )
+                }
+                onDelete={handleDeleteCard}
+                onSelect={setSelectedTask}
+                emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </MainContainer>
 
       <Footer />
     </>

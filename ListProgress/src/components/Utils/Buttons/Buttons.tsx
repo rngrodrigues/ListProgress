@@ -1,35 +1,55 @@
- import { ReactComponent as AddIcon } from '../../../assets/icons/add.svg';
-  import * as S from "./Buttons.styles.ts";
- 
-  interface IButtonProps {
+import { ReactComponent as AddIcon } from '../../../assets/icons/add.svg';
+import * as S from "./Buttons.styles.ts";
+
+export interface IButtonProps {
   onClick?: () => void;
   children?: React.ReactNode;
+  disabled?: boolean;
 }
-export const GenericBtn: React.FC<IButtonProps> = ({ onClick, children }) => {
+
+export const GenericBtn: React.FC<IButtonProps> = ({
+  onClick,
+  children,
+  disabled
+}) => {
   return (
-    <S.Btn onClick={onClick}>
- {children}
+    <S.Btn onClick={onClick} disabled={disabled}>
+      {children}
     </S.Btn>
   );
 };
-export const GenericBtnBlack: React.FC<IButtonProps> = ({ onClick, children }) => {
+
+export const GenericBtnBlack: React.FC<IButtonProps> = ({
+  onClick,
+  children,
+  disabled
+}) => {
   return (
-    <S.BtnBlack onClick={onClick}>
- {children}
+    <S.BtnBlack onClick={onClick} disabled={disabled}>
+      {children}
     </S.BtnBlack>
   );
 };
-export const AddBtn: React.FC<IButtonProps> = ({ onClick, children }) => {
+
+export const AddBtn: React.FC<IButtonProps> = ({
+  onClick,
+  children,
+  disabled
+}) => {
   return (
-    <S.AddBtn onClick={onClick}>
+    <S.AddBtn onClick={onClick} disabled={disabled}>
       <AddIcon className="icon" /> {children}
     </S.AddBtn>
   );
 };
 
-export const ConfirmButton: React.FC<IButtonProps> = ({ onClick }) => {
-return (
-<S.ConfirmButton onClick={onClick}>Confirmar</S.ConfirmButton>
+export const ConfirmButton: React.FC<IButtonProps> = ({
+  onClick,
+  disabled
+}) => {
+  return (
+    <S.ConfirmButton onClick={onClick} disabled={disabled}>
+      Confirmar
+    </S.ConfirmButton>
   );
- }
-
+};
