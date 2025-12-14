@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MainContainer from "../../components/MainContainer";
 import Footer from "../../components/Footer";
 import { ModalAddCard } from "../../components/Modals";
@@ -9,8 +10,12 @@ import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { apiFetch } from "../../services/apiFetch";
+import { useAuth } from "../../contexts/authContext";
 
 const Home = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
@@ -20,6 +25,14 @@ const Home = () => {
   const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
+  useEffect(() => {
+    if (!user) return;
+
     apiFetch("/cards")
       .then((data) => {
         const ordered = data.sort((a: any, b: any) => {
@@ -31,7 +44,7 @@ const Home = () => {
         setCards(ordered);
       })
       .catch((err) => console.error("Erro ao carregar cards:", err));
-  }, []);
+  }, [user]);
 
   async function handleAddCard(newCard: any) {
     try {
@@ -85,6 +98,8 @@ const Home = () => {
     setPage((prev) => prev + step);
   }
 
+  if (loading) return null;
+
   return (
     <>
       <AnimatePresence>
@@ -119,7 +134,6 @@ const Home = () => {
                 id={selectedTask.id}
                 title={selectedTask.title}
                 category={selectedTask.category}
-                tasks={selectedTask.tasks}
                 description={selectedTask.description}
                 onBack={() => setSelectedTask(null)}
                 onCardUpdate={(updatedCard) => {

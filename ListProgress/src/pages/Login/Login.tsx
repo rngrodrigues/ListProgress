@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import {
   LoginMainContainer,
@@ -16,10 +17,11 @@ import {
 import { GenericBtn, GenericBtnBlack } from "../../components/Utils/Buttons";
 import { NameInput, EmailInput, PasswordInput } from "../../components/Utils/Inputs";
 import { apiFetch } from "../../services/apiFetch";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [isLogin, setIsLogin] = useState(true);
   const [fade, setFade] = useState(false);
@@ -49,10 +51,7 @@ const Login = () => {
         body: JSON.stringify({ email, password })
       });
 
-      const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("token", response.token);
-      storage.setItem("user", JSON.stringify(response.user));
-
+      login(response.user, response.token, rememberMe);
       navigate("/");
     } catch (err: any) {
       console.error("Erro no login:", err);
@@ -72,10 +71,7 @@ const Login = () => {
         method: "POST",
         body: JSON.stringify({ name, email, password })
       });
-
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
-
+      login(response.user, response.token, true);
       navigate("/");
     } catch (err: any) {
       console.error("Erro no cadastro:", err);
@@ -102,7 +98,9 @@ const Login = () => {
                     Todas suas metas serão salvas automaticamente ao fazer login.
                   </TextContainer>
                   <AnswerContainer>Ainda não possui uma conta?</AnswerContainer>
-                  <GenericBtn onClick={() => triggerSwitch(false)}>Cadastre-se</GenericBtn>
+                  <GenericBtn onClick={() => triggerSwitch(false)}>
+                    Cadastre-se
+                  </GenericBtn>
                 </>
               ) : (
                 <>
@@ -111,7 +109,9 @@ const Login = () => {
                     Crie uma conta e tenha todas suas metas salvas, em qualquer lugar.
                   </TextContainer>
                   <AnswerContainer>Você já possui uma conta?</AnswerContainer>
-                  <GenericBtn onClick={() => triggerSwitch(true)}>Entrar</GenericBtn>
+                  <GenericBtn onClick={() => triggerSwitch(true)}>
+                    Entrar
+                  </GenericBtn>
                 </>
               )}
             </FadeWrapper>
@@ -130,8 +130,14 @@ const Login = () => {
                 >
                   <TitleGrayContainer>Login</TitleGrayContainer>
 
-                  <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
-                  <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <EmailInput
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <PasswordInput
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
 
                   <div
                     style={{
@@ -167,9 +173,18 @@ const Login = () => {
                 >
                   <TitleGrayContainer>Cadastre-se</TitleGrayContainer>
 
-                  <NameInput value={name} onChange={(e) => setName(e.target.value)} />
-                  <EmailInput value={email} onChange={(e) => setEmail(e.target.value)}  />
-                  <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <NameInput
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <EmailInput
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <PasswordInput
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
 
                   <div id="gambiarra">
                     <GenericBtnBlack disabled={loading}>

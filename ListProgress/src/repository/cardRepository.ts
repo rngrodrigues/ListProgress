@@ -2,7 +2,7 @@ import { supabase } from "../config/supabaseClient.ts";
 import type { Card } from "../types/Card";
 
 export const CardRepository = {
-   async create(card: any) {
+  async create(card: Partial<Card> & { user_id: string }): Promise<Card> {
     const { data, error } = await supabase
       .from("cards")
       .insert([card])
@@ -13,36 +13,54 @@ export const CardRepository = {
     return data;
   },
 
-  async list(): Promise<Card[]> {
-    const { data, error } = await supabase.from("cards").select("*");
-    if (error) throw error;
-    return data;
+  async listByUser(userId: string): Promise<Card[]> {
+    const { data, error } = await supabase
+      .from("cards")
+      .select("*")
+      .eq("user_id", userId)
+      .order("position", { ascending: true });
+
+    if (error) throw new Error(error.message);
+    return data ?? [];
   },
 
-  async delete(id: string): Promise<boolean> {
-    const { error } = await supabase.from("cards").delete().eq("id", id);
-    if (error) throw error;
-    return true;
+  async deleteByUser(id: string, userId: string): Promise<boolean> {
+    const { error, count } = await supabase
+      .from("cards")
+      .delete({ count: "exact" })
+      .eq("id", id)
+      .eq("user_id", userId);
+
+    if (error) throw new Error(error.message);
+    return !!count;
   },
 
-  async update(id: string, updatedCard: Partial<Card>): Promise<Card> {
+  async updateByUser(
+    id: string,
+    updatedCard: Partial<Card>,
+    userId: string
+  ): Promise<Card | null> {
     const { data, error } = await supabase
       .from("cards")
       .update(updatedCard)
       .eq("id", id)
+      .eq("user_id", userId)
       .select()
       .single();
-    if (error) throw error;
+
+    if (error) return null;
     return data;
   },
 
-  async findById(id: string): Promise<Card | null> {   
+  async findByIdByUser(id: string, userId: string): Promise<Card | null> {
     const { data, error } = await supabase
       .from("cards")
       .select("*")
       .eq("id", id)
+      .eq("user_id", userId)
       .single();
-    if (error) throw error;
+
+    if (error) return null;
     return data;
-  },
+  }
 };

@@ -2,47 +2,112 @@ import { supabase } from "../config/supabaseClient.ts";
 import type { Task } from "../types/Task";
 
 export const TaskRepository = {
-   async create(task: any) {
+  async create(
+    task: Omit<Task, "id" | "created_at">
+  ): Promise<Task> {
     const { data, error } = await supabase
       .from("tasks")
-      .insert([task])
+      .insert(task) 
       .select()
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("TaskRepository.create:", error);
+      throw new Error(error.message);
+    }
+
     return data;
   },
 
-  async list(): Promise<Task[]> {
-    const { data, error } = await supabase.from("tasks").select("*");
-    if (error) throw error;
+  async listByUser(userId: string): Promise<Task[]> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("user_id", userId)
+      .order("position", { ascending: true });
+
+    if (error) {
+      console.error("TaskRepository.listByUser:", error);
+      throw new Error(error.message);
+    }
+
+    return data ?? [];
+  },
+
+  async listByCard(
+    cardId: string,
+    userId: string
+  ): Promise<Task[]> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("card_id", cardId)
+      .eq("user_id", userId)
+      .order("position", { ascending: true });
+
+    if (error) {
+      console.error("TaskRepository.listByCard:", error);
+      throw new Error(error.message);
+    }
+
+    return data ?? [];
+  },
+
+  async update(
+    id: string,
+    userId: string,
+    updatedTask: Partial<Task>
+  ): Promise<Task> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .update(updatedTask)
+      .eq("id", id)
+      .eq("user_id", userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("TaskRepository.update:", error);
+      throw new Error(error.message);
+    }
+
     return data;
   },
 
-  async delete(id: string): Promise<boolean> {
-    const { error } = await supabase.from("tasks").delete().eq("id", id);
-    if (error) throw error;
+  async delete(
+    id: string,
+    userId: string
+  ): Promise<boolean> {
+    const { error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("TaskRepository.delete:", error);
+      throw new Error(error.message);
+    }
+
     return true;
   },
 
-  async update(id: string, updatedCard: Partial<Task>): Promise<Task> {
-    const { data, error } = await supabase
-      .from("tasks")
-      .update(updatedCard)
-      .eq("id", id)
-      .select()
-      .single();
-    if (error) throw error;
-    return data;
-  },
-
-  async findById(id: string): Promise<Task | null> {   
+  async findById(
+    id: string,
+    userId: string
+  ): Promise<Task | null> {
     const { data, error } = await supabase
       .from("tasks")
       .select("*")
       .eq("id", id)
-      .single();
-    if (error) throw error;
+      .eq("user_id", userId)
+      .maybeSingle(); 
+
+    if (error) {
+      console.error("TaskRepository.findById:", error);
+      throw new Error(error.message);
+    }
+
     return data;
-  },
+  }
 };

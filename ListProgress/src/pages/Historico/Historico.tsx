@@ -59,7 +59,6 @@ const Historico = () => {
               title={selectedTask.title}
               category={selectedTask.category}
               description={selectedTask.description}
-              tasks={selectedTask.tasks}
               onBack={() => setSelectedTask(null)}
               onCardUpdate={(updatedCard) => {
                 setCards(prev =>

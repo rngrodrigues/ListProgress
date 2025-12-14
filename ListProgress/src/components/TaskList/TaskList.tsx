@@ -65,18 +65,17 @@ export const TaskList = ({
     }, 150);
   }
 
+  
   useEffect(() => {
-    apiFetch("/tasks")
+    apiFetch(`/cards/${id}/tasks`)
       .then((data) => {
-        const cardTasks = data
-          .filter((task: any) => task.card_id === id)
-          .sort((a: any, b: any) => {
-            if (a.position == null) return 1;
-            if (b.position == null) return -1;
-            return a.position - b.position;
-          });
+        const ordered = data.sort((a: any, b: any) => {
+          if (a.position == null) return 1;
+          if (b.position == null) return -1;
+          return a.position - b.position;
+        });
 
-        setTasks(cardTasks);
+        setTasks(ordered);
       })
       .catch((err) => console.error("Erro ao carregar tasks:", err));
   }, [id]);
@@ -84,7 +83,11 @@ export const TaskList = ({
   async function handleAddTask(newTask: any) {
     try {
       const nextPosition = tasks.length;
-      const payload = { ...newTask, position: nextPosition, card_id: id };
+      const payload = {
+        ...newTask,
+        position: nextPosition,
+        card_id: id
+      };
 
       const createdTask = await apiFetch("/tasks", {
         method: "POST",
@@ -107,15 +110,17 @@ export const TaskList = ({
 
       setTasks((prev) => {
         const filtered = prev.filter((t) => t.id !== taskId);
+
         const reindexed = filtered.map((t, index) => ({
           ...t,
           position: index
         }));
 
+        
         reindexed.forEach(async (t) => {
           await apiFetch(`/tasks/${t.id}`, {
             method: "PUT",
-            body: JSON.stringify(t)
+            body: JSON.stringify({ position: t.position })
           });
         });
 
@@ -138,13 +143,13 @@ export const TaskList = ({
         body: JSON.stringify(updatedTask)
       });
 
-      setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? dataTask : t))
+      const updatedTasks = tasks.map((t) =>
+        t.id === taskId ? dataTask : t
       );
 
-      const allCompleted = tasks
-        .map((t) => (t.id === taskId ? updatedTask : t))
-        .every((t) => t.completed);
+      setTasks(updatedTasks);
+
+      const allCompleted = updatedTasks.every((t) => t.completed);
 
       const updatedCard = { completed: allCompleted };
 
