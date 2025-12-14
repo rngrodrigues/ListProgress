@@ -105,6 +105,9 @@ export const TextList = styled.li`
 
 export const ItemDescription = styled.p`
 text-align:center;
+ &.completed {
+    text-decoration: line-through;
+  }
 `;
 
 

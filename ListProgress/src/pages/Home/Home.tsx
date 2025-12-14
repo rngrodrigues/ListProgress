@@ -21,6 +21,20 @@ const Home = () => {
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [search, setSearch] = useState("");
+
+  const filteredCards = cards.filter((card) => {
+  if (!search.trim()) return true;
+
+  const term = search.toLowerCase();
+
+  return (
+    card.title?.toLowerCase().includes(term) ||
+    card.category?.toLowerCase().includes(term)
+  );
+});
+
+
 
   const ITEMS_PER_PAGE = 6;
 
@@ -116,7 +130,11 @@ const Home = () => {
         {!selectedTask && (
           <TopContainer>
             <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
-            <SearchInput />
+            <SearchInput
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
+
           </TopContainer>
         )}
 
@@ -154,7 +172,7 @@ const Home = () => {
               transition={{ duration: 0.2 }}
             >
               <TaskBoard
-                cards={cards.filter((c) => !c.completed)}
+  cards={filteredCards.filter((c) => !c.completed)}
                 page={page}
                 direction={direction}
                 onChangePage={handleChangePage}

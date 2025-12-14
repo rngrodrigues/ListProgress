@@ -13,7 +13,7 @@ transition: all ease 0.3s;
 aspect-ratio: 1 / 1;
 overflow: hidden;
 &:hover {
-box-shadow: 0 3px 15px 5px black;;
+box-shadow: 0 3px 15px 5px black;
 }
 .icon {
 position: absolute;

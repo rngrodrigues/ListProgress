@@ -10,11 +10,13 @@ interface IInputProps<T extends HTMLInputElement | HTMLTextAreaElement> {
   onChange: (e: React.ChangeEvent<T>) => void;
 }
 
-export const SearchInput = () => {
+export const SearchInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
   return (
     <S.SearchContainer tabIndex={0}>
       <SearchIcon className="icon" />
       <S.SearchInput
+      value={value}
+        onChange={onChange}
         type="text"
         aria-label="Pesquisar"
         placeholder="Pesquisar lista..."

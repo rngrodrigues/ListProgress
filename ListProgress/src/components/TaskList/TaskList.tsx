@@ -221,7 +221,7 @@ export const TaskList = ({
               <ItemList>
                 {expanded ? (
                   <>
-                    <ItemDescription>{task.description}</ItemDescription>
+                    <ItemDescription className={task.completed ? "completed" : ""} >{task.description}</ItemDescription>
                     <UpIcon
                       className="BackIcon"
                       onClick={(e) => {
