@@ -23,6 +23,7 @@ import { ModalAddTask, ModalEditTask } from "../../components/Modals";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { apiFetch } from "../../services/apiFetch";
+import { toast } from "../Utils/Toasts/Toasts";
 
 type TaskListProps = TaskCardProps & {
   id: string;
@@ -66,19 +67,21 @@ export const TaskList = ({
   }
 
   
-  useEffect(() => {
-    apiFetch(`/cards/${id}/tasks`)
-      .then((data) => {
-        const ordered = data.sort((a: any, b: any) => {
-          if (a.position == null) return 1;
-          if (b.position == null) return -1;
-          return a.position - b.position;
-        });
-
-        setTasks(ordered);
-      })
-      .catch((err) => console.error("Erro ao carregar tasks:", err));
-  }, [id]);
+useEffect(() => {
+  apiFetch(`/cards/${id}/tasks`)
+    .then((data) => {
+      const ordered = data.sort((a: any, b: any) => {
+        if (a.position == null) return 1;
+        if (b.position == null) return -1;
+        return a.position - b.position;
+      });
+      setTasks(ordered);
+    })
+    .catch((err) => {
+      console.error("Erro ao carregar tasks:", err);
+      toast.error("Erro ao carregar tarefas!");
+    });
+}, [id]);
 
   async function handleAddTask(newTask: any) {
     try {
@@ -97,12 +100,36 @@ export const TaskList = ({
       setTasks((prev) =>
         [...prev, createdTask].sort((a, b) => a.position - b.position)
       );
+      toast.success("Tarefa adicionada com sucesso!");
     } catch (err) {
       console.error("Erro ao adicionar tarefa:", err);
+      toast.error("Erro ao adicionar tarefa!");
     }
 
     setOpenAdd(false);
   }
+  
+  async function handleEditTask(updatedTask: any) {
+  try {
+    const data = await apiFetch(`/tasks/${updatedTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedTask)
+    });
+
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === updatedTask.id ? data : t
+      )
+    );
+    toast.info("Tarefa atualizada com sucesso!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao atualizar tarefa!");
+  }
+
+  setOpenEdit(false);
+}
+
 
   async function handleDeleteTask(taskId: string) {
     try {
@@ -126,8 +153,10 @@ export const TaskList = ({
 
         return reindexed;
       });
+      toast.successDelete("Tarefa removida com sucesso!");
     } catch (err) {
       console.error("Erro ao deletar tarefa:", err);
+      toast.error("Erro ao remover tarefa!");
     }
   }
 
@@ -150,7 +179,6 @@ export const TaskList = ({
       setTasks(updatedTasks);
 
       const allCompleted = updatedTasks.every((t) => t.completed);
-
       const updatedCard = { completed: allCompleted };
 
       await apiFetch(`/cards/${id}`, {
@@ -175,28 +203,11 @@ export const TaskList = ({
 
       {selectedTask && (
         <ModalEditTask
-          isOpen={openEdit}
-          onClose={() => setOpenEdit(false)}
-          task={selectedTask}
-          onEditTask={async (updatedTask) => {
-            try {
-              const data = await apiFetch(`/tasks/${updatedTask.id}`, {
-                method: "PUT",
-                body: JSON.stringify(updatedTask)
-              });
-
-              setTasks((prev) =>
-                prev.map((t) =>
-                  t.id === updatedTask.id ? data : t
-                )
-              );
-            } catch (err) {
-              console.error(err);
-            }
-
-            setOpenEdit(false);
-          }}
-        />
+    isOpen={openEdit}
+    onClose={() => setOpenEdit(false)}
+    task={selectedTask}
+    onEditTask={handleEditTask}
+  />
       )}
 
       <TopContainer>

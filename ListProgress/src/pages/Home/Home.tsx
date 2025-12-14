@@ -11,6 +11,8 @@ import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { apiFetch } from "../../services/apiFetch";
 import { useAuth } from "../../contexts/authContext";
+import { toast } from "../../components/Utils/Toasts/Toasts.ts";
+
 
 const Home = () => {
   const { user, loading } = useAuth();
@@ -38,74 +40,87 @@ const Home = () => {
 
   const ITEMS_PER_PAGE = 6;
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-    }
-  }, [user, loading, navigate]);
+useEffect(() => {
+  if (!user) return;
 
-  useEffect(() => {
-    if (!user) return;
+  apiFetch("/cards")
+    .then((data) => {
+      const ordered = data.sort((a: any, b: any) => {
+        if (a.position == null) return 1;
+        if (b.position == null) return -1;
+        return a.position - b.position;
+      });
 
-    apiFetch("/cards")
-      .then((data) => {
-        const ordered = data.sort((a: any, b: any) => {
-          if (a.position == null) return 1;
-          if (b.position == null) return -1;
-          return a.position - b.position;
-        });
+      setCards(ordered);
+    })
+    .catch((err) => {
+      console.error("Erro ao carregar cards:", err);
+      toast.error("Erro ao carregar suas listas");
+    });
+}, [user]);
 
-        setCards(ordered);
-      })
-      .catch((err) => console.error("Erro ao carregar cards:", err));
-  }, [user]);
 
   async function handleAddCard(newCard: any) {
-    try {
-      const nextPosition = cards.length;
-      const payload = { ...newCard, position: nextPosition };
+  try {
+    const nextPosition = cards.length;
+    const payload = { ...newCard, position: nextPosition };
 
-      const createdCard = await apiFetch("/cards", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+    const createdCard = await apiFetch("/cards", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
 
-      setCards((prev) => {
-        const list = [...prev, { ...createdCard, tasks: [] }];
-        return list.sort((a, b) => a.position - b.position);
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    setCards((prev) => {
+      const list = [...prev, { ...createdCard, tasks: [] }];
+      const newIndex = list.length - 1;
+      const newPage = Math.floor(newIndex / ITEMS_PER_PAGE);
 
+      setDirection(newPage > page ? 1 : -1);
+      setPage(newPage);
+
+      return list.sort((a, b) => a.position - b.position);
+    });
+
+    toast.success("Lista criada com sucesso!");
     setOpen(false);
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao criar a lista");
   }
+}
+
 
   async function handleDeleteCard(id: string) {
-    try {
-      await apiFetch(`/cards/${id}`, { method: "DELETE" });
+  try {
+    await apiFetch(`/cards/${id}`, { method: "DELETE" });
 
-      setCards((prevCards) => {
-        const next = prevCards
-          .filter((c) => c.id !== id)
-          .map((c, index) => ({ ...c, position: index }));
+    setCards((prevCards) => {
+      const next = prevCards
+        .filter((c) => c.id !== id)
+        .map((c, index) => ({ ...c, position: index }));
 
-        const newTotalPages = Math.max(
-          1,
-          Math.ceil(next.length / ITEMS_PER_PAGE)
-        );
+      const newTotalPages = Math.max(
+        1,
+        Math.ceil(next.length / ITEMS_PER_PAGE)
+      );
 
-        setPage((prevPage) => {
-          const lastValidPage = newTotalPages - 1;
-          return Math.min(prevPage, lastValidPage);
-        });
-
-        return next;
+      setPage((prevPage) => {
+        const lastValidPage = newTotalPages - 1;
+        return Math.min(prevPage, lastValidPage);
       });
-    } catch (err) {
-      console.error(err);
-    }
+
+      return next;
+    });
+
+    toast.successDelete("Lista removida com sucesso!");
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao remover a lista");
   }
+}
+
 
   function handleChangePage(step: number) {
     setDirection(step);

@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard } from "../../components/Modals";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { apiFetch } from "../../services/apiFetch";
+import { toast } from "../Utils/Toasts/Toasts";
 
 export type TaskCardProps = {
   className: string;
@@ -36,6 +37,7 @@ export const TaskCard = ({
   onEdit,
   onDelete
 }: TaskCardProps) => {
+
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false);
@@ -64,6 +66,25 @@ async function handleDeleteCard() {
 
   onDelete(id); 
 }
+async function handleEditCard(updatedCard: any) {
+  try {
+    const data = await apiFetch(`/cards/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedCard),
+    });
+
+    if (onEdit) onEdit(data);
+
+    toast.info("Lista atualizada com sucesso!");
+    setOpen(false);
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao atualizar a lista");
+  }
+}
+
+
 
   return (
     <>
@@ -73,20 +94,7 @@ async function handleDeleteCard() {
             isOpen={open}
             onClose={() => setOpen(false)}
             card={{ id, title, category, description }}
-            onEditCard={async (updatedCard) => {
-              try {
-                const data = await apiFetch(`/cards/${id}`, {
-                  method: "PUT",
-                  body: JSON.stringify(updatedCard)
-                });
-
-                if (onEdit) onEdit(data);
-              } catch (err) {
-                console.error(err);
-              }
-
-              setOpen(false);
-            }}
+              onEditCard={handleEditCard}
           />
         )}
       </AnimatePresence>

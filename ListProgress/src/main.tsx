@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { AuthProvider } from "./contexts/authContext.tsx";
 import './main.css'
 import App from './App.tsx'
+import "./toast.css";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
