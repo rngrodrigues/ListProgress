@@ -4,7 +4,7 @@ const Toast = Swal.mixin({
   toast: true,
   position: "top",
   showConfirmButton: false,
-  timer: 2500,
+  timer: 2000,
 
   customClass: {
     popup: "custom-toast",

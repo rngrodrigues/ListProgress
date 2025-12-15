@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import MainContainer from "../../components/MainContainer";
 import Footer from "../../components/Footer";
 import { ModalAddCard } from "../../components/Modals";
@@ -16,7 +15,7 @@ import { toast } from "../../components/Utils/Toasts/Toasts.ts";
 
 const Home = () => {
   const { user, loading } = useAuth();
-  const navigate = useNavigate();
+
 
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
@@ -24,7 +23,6 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
   const [search, setSearch] = useState("");
-
   const filteredCards = cards.filter((card) => {
   if (!search.trim()) return true;
 
@@ -36,9 +34,27 @@ const Home = () => {
   );
 });
 
-
-
   const ITEMS_PER_PAGE = 6;
+  const visibleCards = filteredCards.filter((c) => !c.completed);
+
+
+useEffect(() => {
+  const totalPages = Math.max(
+    1,
+    Math.ceil(visibleCards.length / ITEMS_PER_PAGE)
+  );
+
+  setPage((prevPage) => {
+    const nextPage = Math.min(prevPage, totalPages - 1);
+
+    if (nextPage < prevPage) {
+      setDirection(-1); 
+    }
+
+    return nextPage;
+  });
+}, [visibleCards.length]);
+
 
 useEffect(() => {
   if (!user) return;
@@ -91,7 +107,7 @@ useEffect(() => {
 }
 
 
-  async function handleDeleteCard(id: string) {
+async function handleDeleteCard(id: string) {
   try {
     await apiFetch(`/cards/${id}`, { method: "DELETE" });
 
@@ -100,27 +116,15 @@ useEffect(() => {
         .filter((c) => c.id !== id)
         .map((c, index) => ({ ...c, position: index }));
 
-      const newTotalPages = Math.max(
-        1,
-        Math.ceil(next.length / ITEMS_PER_PAGE)
-      );
-
-      setPage((prevPage) => {
-        const lastValidPage = newTotalPages - 1;
-        return Math.min(prevPage, lastValidPage);
-      });
-
       return next;
     });
 
     toast.successDelete("Lista removida com sucesso!");
-
   } catch (err) {
     console.error(err);
     toast.error("Erro ao remover a lista");
   }
 }
-
 
   function handleChangePage(step: number) {
     setDirection(step);
@@ -187,7 +191,7 @@ useEffect(() => {
               transition={{ duration: 0.2 }}
             >
               <TaskBoard
-  cards={filteredCards.filter((c) => !c.completed)}
+          cards={visibleCards}
                 page={page}
                 direction={direction}
                 onChangePage={handleChangePage}
