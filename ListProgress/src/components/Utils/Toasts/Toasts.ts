@@ -29,9 +29,8 @@ export const toast = {
 
     successDelete(message: string) {
     Toast.fire({
-      icon: "error",
+      icon: "info",
       title: message,
-      iconColor: "#ff0000ff", 
     });
   },
   error(message: string) {

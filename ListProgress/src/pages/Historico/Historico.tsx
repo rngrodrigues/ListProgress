@@ -14,6 +14,40 @@ const Historico = () => {
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [search, setSearch] = useState("");
+
+    const filteredCompletedCards = cards.filter((card) => {
+  if (!card.completed) return false;
+
+  if (!search.trim()) return true;
+
+  const term = search.toLowerCase();
+
+  return (
+    card.title?.toLowerCase().includes(term) ||
+    card.category?.toLowerCase().includes(term)
+  );
+});
+
+   const ITEMS_PER_PAGE = 6;
+    const visibleCards = filteredCompletedCards.filter((c) => c.completed);
+
+    useEffect(() => {
+  const totalPages = Math.max(
+    1,
+    Math.ceil(visibleCards.length / ITEMS_PER_PAGE)
+  );
+
+  setPage((prevPage) => {
+    const nextPage = Math.min(prevPage, totalPages - 1);
+
+    if (nextPage < prevPage) {
+      setDirection(-1); 
+    }
+
+    return nextPage;
+  });
+}, [visibleCards.length]);
 
   function handleChangePage(step: number) {
     setDirection(step);
@@ -41,7 +75,8 @@ const Historico = () => {
       <MainContainer>
         {!selectedTask && (
           <HistoricoTopContainer>
-            <SearchInput />
+            <SearchInput value={search}
+  onChange={(e) => setSearch(e.target.value)} />
           </HistoricoTopContainer>
         )}
 
@@ -75,7 +110,7 @@ const Historico = () => {
 
         {!selectedTask && (
           <TaskBoard
-            cards={cards.filter(c => c.completed)}
+            cards={filteredCompletedCards}
             onEdit={(updated) =>
               setCards(prev =>
                 prev.map(c =>

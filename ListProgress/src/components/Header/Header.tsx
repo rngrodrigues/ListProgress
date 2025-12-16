@@ -10,21 +10,15 @@ import { ReactComponent as MetaIcon } from "../../assets/icons/meta.svg";
 import { ReactComponent as DayNightIcon } from "../../assets/icons/day-and-night.svg";
 import { ReactComponent as LogoutIcon } from "../../assets/icons/logout.svg";
 import { useAuth } from "../../contexts/authContext";
+import { toast } from "../Utils/Toasts/Toasts.ts";
 
 const Header = () => {
-  const { user, logout, loading } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  if (loading) return null;
-
-  function handleLogout() {
-    logout();
-    setOpen(false);
-    navigate("/login");
-  }
-
+  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -37,6 +31,17 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  
+ function handleLogout() {
+  logout();
+  setOpen(false);
+
+  toast.successDelete("Sessão encerrada!");
+
+  navigate("/login");
+}
+
 
   return (
     <MainContainer>
@@ -69,7 +74,7 @@ const Header = () => {
             }}
             onClick={() => setOpen((prev) => !prev)}
           >
-
+            
             <div
               style={{
                 padding: "0.5rem",
@@ -81,9 +86,10 @@ const Header = () => {
               {user.name ?? user.email}
             </div>
 
+            
             <button
               onClick={(e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
                 handleLogout();
               }}
               style={{

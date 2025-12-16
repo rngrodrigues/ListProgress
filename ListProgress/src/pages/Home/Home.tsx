@@ -23,6 +23,7 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
   const [search, setSearch] = useState("");
+  
   const filteredCards = cards.filter((card) => {
   if (!search.trim()) return true;
 

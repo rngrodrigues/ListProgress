@@ -18,6 +18,7 @@ import { GenericBtn, GenericBtnBlack } from "../../components/Utils/Buttons";
 import { NameInput, EmailInput, PasswordInput } from "../../components/Utils/Inputs";
 import { apiFetch } from "../../services/apiFetch";
 import { useAuth } from "../../contexts/authContext";
+import { toast } from "../../components/Utils/Toasts/Toasts.ts";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,46 +41,63 @@ const Login = () => {
     }, 200);
   };
 
-  async function handleLogin() {
-    if (!email || !password) return;
-
-    try {
-      setLoading(true);
-
-      const response = await apiFetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password })
-      });
-
-      login(response.user, response.token, rememberMe);
-      navigate("/");
-    } catch (err: any) {
-      console.error("Erro no login:", err);
-      alert("Email ou senha inválidos");
-    } finally {
-      setLoading(false);
-    }
+ async function handleLogin() {
+  if (!email || !password) {
+    toast.warning("Preencha todos os campos!");
+    return;
   }
 
-  async function handleRegister() {
-    if (!name || !email || !password) return;
+  try {
+    setLoading(true);
 
-    try {
-      setLoading(true);
+    const response = await apiFetch("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
 
-      const response = await apiFetch("/auth/register", {
-        method: "POST",
-        body: JSON.stringify({ name, email, password })
-      });
-      login(response.user, response.token, true);
-      navigate("/");
-    } catch (err: any) {
-      console.error("Erro no cadastro:", err);
-      alert("Erro ao cadastrar usuário");
-    } finally {
-      setLoading(false);
-    }
+    login(response.user, response.token, rememberMe);
+
+    toast.success(`Olá, ${response.user.name}! Bem-vindo, novamente.`);
+
+    navigate("/");
+  } catch (err: any) {
+    console.error("Erro no login:", err);
+    toast.error("Email ou senha inválidos!");
+  } finally {
+    setLoading(false);
   }
+}
+
+
+
+async function handleRegister() {
+  if (!name || !email || !password) {
+    toast.warning("Preencha todos os campos!");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const response = await apiFetch("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    login(response.user, response.token, true);
+
+    toast.success("Cadastro realizado com sucesso!");
+
+    navigate("/");
+  } catch (err: any) {
+  console.error("Erro no cadastro:", err);
+  toast.error(err?.message || "Erro ao cadastrar usuário!");
+}
+ finally {
+    setLoading(false);
+  }
+}
+
 
   return (
     <>
