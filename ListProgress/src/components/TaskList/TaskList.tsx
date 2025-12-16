@@ -21,7 +21,7 @@ import { CheckInput } from "../Utils/Inputs";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask } from "../../components/Modals";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { apiFetch } from "../../services/apiFetch";
 import { toast } from "../Utils/Toasts/Toasts";
 
@@ -194,21 +194,28 @@ useEffect(() => {
 
   return (
     <BodyList>
-      <ModalAddTask
-        isOpen={openAdd}
-        onClose={() => setOpenAdd(false)}
-        onAddTask={handleAddTask}
-        card_id={id}
-      />
+      <AnimatePresence>
+  {openAdd && (
+    <ModalAddTask
+      isOpen={openAdd}
+      onClose={() => setOpenAdd(false)}
+      onAddTask={handleAddTask}
+      card_id={id}
+    />
+  )}
+</AnimatePresence>
 
-      {selectedTask && (
-        <ModalEditTask
-    isOpen={openEdit}
-    onClose={() => setOpenEdit(false)}
-    task={selectedTask}
-    onEditTask={handleEditTask}
-  />
-      )}
+<AnimatePresence>
+  {openEdit && selectedTask && (
+    <ModalEditTask
+      isOpen={openEdit}
+      onClose={() => setOpenEdit(false)}
+      task={selectedTask}
+      onEditTask={handleEditTask}
+    />
+  )}
+</AnimatePresence>
+
 
       <TopContainer>
         <TaskCategory>{category}</TaskCategory>

@@ -3,13 +3,17 @@ import { ReactComponent as ArrowBackSvg } from "../../assets/icons/close.svg";
 
 export const BodyModal = styled.div`
   position: fixed;
-  top: env(safe-area-inset-top);
-  left: env(safe-area-inset-left);
-  right: env(safe-area-inset-right);
-  bottom: env(safe-area-inset-bottom);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.75);
-  z-index: 2;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
 
 
 export const MainContainer = styled.div`
