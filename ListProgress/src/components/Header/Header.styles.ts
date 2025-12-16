@@ -66,11 +66,11 @@ margin: 0 1rem;
 }
 `;
 export const LoginContainer = styled.div `
-border-radius: 5rem;
+border-radius: 2rem;
 background-color: white;
-padding: 1.2rem;
+padding: 1rem;
 margin: 0 2rem;
-box-shadow: 0 1px 1px 1px black;
+box-shadow: 0 2px 2px 1px black;
  a {
  color: black;
  text-decoration: none;
