@@ -1,9 +1,27 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { IconClose, BodyModal, MainContainer, MaxWidthForm, Title } from "./Modals.styles.ts";
-import { TitleInput, CategoryInput, DescriptionInput } from '../Utils/Inputs';
-import { ConfirmButton } from '../Utils/Buttons';
-import { ReactComponent as MetaIcon } from '../../assets/icons/meta.svg';
+import { createPortal } from "react-dom";
+
+import {
+  IconClose,
+  BodyModal,
+  MainContainer,
+  MaxWidthForm,
+  Title
+} from "./Modals.styles.ts";
+
+import {
+  TitleInput,
+  CategoryInput,
+  DescriptionInput
+} from "../Utils/Inputs";
+import { ConfirmButton } from "../Utils/Buttons";
+import { ReactComponent as MetaIcon } from "../../assets/icons/meta.svg";
+
+function ModalPortal({ children }: { children: React.ReactNode }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(children, document.body);
+}
 
 interface IModalAddCard {
   isOpen: boolean;
@@ -11,66 +29,77 @@ interface IModalAddCard {
   onAddCard: (card: any) => void;
 }
 
-export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCard }) => {
-
+export const ModalAddCard: React.FC<IModalAddCard> = ({
+  isOpen,
+  onClose,
+  onAddCard
+}) => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
 
-    useEffect(() => {
-  if (isOpen) {
-    setCategory("");
-    setTitle("");
-    setDescription("");
-  }
-}, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      setCategory("");
+      setTitle("");
+      setDescription("");
+    }
+  }, [isOpen]);
 
-   if (!isOpen) return null;
+  if (!isOpen) return null;
 
   function handleConfirm() {
-    const newCard = {
-  title,
-  category,
-  description,
-   };
-    onAddCard(newCard);   
-    onClose();            
+    onAddCard({ title, category, description });
+    onClose();
   }
 
   return (
-    <BodyModal
-      as={motion.div}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.1 }}
-        style={{
-          display: "flex", justifyContent: "center",
-          alignItems: "center", height: "100%"
-        }}
+    <ModalPortal>
+      <BodyModal
+        as={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
       >
-        <MainContainer>
-          <IconClose onClick={onClose} />
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.1 }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%"
+          }}
+        >
+          <MainContainer>
+            <IconClose onClick={onClose} />
 
-          <Title>
-            <MetaIcon className="icon" /> Adicionar lista
-          </Title>
+            <Title>
+              <MetaIcon className="icon" /> Adicionar lista
+            </Title>
 
-          <MaxWidthForm>
-            <CategoryInput value={category} onChange={(e) => setCategory(e.target.value)} />
-            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-            <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-          </MaxWidthForm>
+            <MaxWidthForm>
+              <CategoryInput
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              />
+              <TitleInput
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <DescriptionInput
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </MaxWidthForm>
 
-          <ConfirmButton onClick={handleConfirm} />
-        </MainContainer>
-      </motion.div>
-    </BodyModal>
+            <ConfirmButton onClick={handleConfirm} />
+          </MainContainer>
+        </motion.div>
+      </BodyModal>
+    </ModalPortal>
   );
 };
 
@@ -86,65 +115,59 @@ interface IModalEditCard {
   onEditCard: (updatedCard: any) => void;
 }
 
-export const ModalEditCard: React.FC<IModalEditCard> = ({ isOpen, onClose, card, onEditCard }) => {
-
+export const ModalEditCard: React.FC<IModalEditCard> = ({
+  isOpen,
+  onClose,
+  card,
+  onEditCard
+}) => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  if (!isOpen) return null;
+
   useEffect(() => {
-    if (card) {
+    if (card && isOpen) {
       setTitle(card.title);
       setCategory(card.category);
       setDescription(card.description);
     }
   }, [card, isOpen]);
 
-  function handleConfirm() {
-    const updatedCard = {
-      ...card,
-      title,
-      category,
-      description
-    };
+  if (!isOpen) return null;
 
-    onEditCard(updatedCard);
+  function handleConfirm() {
+    onEditCard({ ...card, title, category, description });
     onClose();
   }
+
   return (
-    <BodyModal
-      as={motion.div}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.1 }}
-        style={{
-          display: "flex", justifyContent: "center",
-          alignItems: "center", height: "100%"
-        }}
-      >
-        <MainContainer>
-          <IconClose onClick={onClose} />
+    <ModalPortal>
+      <BodyModal as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.1 }}
+          style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}
+        >
+          <MainContainer>
+            <IconClose onClick={onClose} />
 
-          <Title>
-            <MetaIcon className="icon" /> Editar lista
-          </Title>
+            <Title>
+              <MetaIcon className="icon" /> Editar lista
+            </Title>
 
-          <MaxWidthForm>
-            <CategoryInput value={category} onChange={(e) => setCategory(e.target.value)} />
-            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-            <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-          </MaxWidthForm>
+            <MaxWidthForm>
+              <CategoryInput value={category} onChange={(e) => setCategory(e.target.value)} />
+              <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
+              <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
+            </MaxWidthForm>
 
-          <ConfirmButton onClick={handleConfirm} />
-        </MainContainer>
-      </motion.div>
-    </BodyModal>
+            <ConfirmButton onClick={handleConfirm} />
+          </MainContainer>
+        </motion.div>
+      </BodyModal>
+    </ModalPortal>
   );
 };
 
@@ -155,80 +178,59 @@ interface IModalAddTask {
   card_id: string;
 }
 
-export const ModalAddTask: React.FC<IModalAddTask> = ({ 
-  isOpen, 
-  onClose, 
-  onAddTask, 
-  card_id 
+export const ModalAddTask: React.FC<IModalAddTask> = ({
+  isOpen,
+  onClose,
+  onAddTask,
+  card_id
 }) => {
-
-  const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
-  if (isOpen) {
-    setTitle("");
-    setDescription("");
-  }
-}, [isOpen]);
-
+    if (isOpen) {
+      setTitle("");
+      setDescription("");
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   function handleConfirm() {
-    const newTask = {
-      title,
-      description,
-      card_id, 
-    };
-
-    onAddTask(newTask);
+    onAddTask({ title, description, card_id });
     onClose();
   }
 
   return (
-    <BodyModal
-      as={motion.div}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.1 }}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%"
-        }}
-      >
-        <MainContainer>
-          <IconClose onClick={onClose} />
+    <ModalPortal>
+      <BodyModal as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.1 }}
+          style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}
+        >
+          <MainContainer>
+            <IconClose onClick={onClose} />
 
-          <Title>
-            <MetaIcon className="icon" /> Adicionar tarefa
-          </Title>
+            <Title>
+              <MetaIcon className="icon" /> Adicionar tarefa
+            </Title>
 
-          <MaxWidthForm>
-            <TitleInput 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-            />
-            <DescriptionInput 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)} 
-            />
-          </MaxWidthForm>
+            <MaxWidthForm>
+              <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
+              <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
+            </MaxWidthForm>
 
-          <ConfirmButton onClick={handleConfirm} />
-        </MainContainer>
-      </motion.div>
-    </BodyModal>
+            <ConfirmButton onClick={handleConfirm} />
+          </MainContainer>
+        </motion.div>
+      </BodyModal>
+    </ModalPortal>
   );
 };
+
 
 interface IModalEditTask {
   isOpen: boolean;
@@ -240,12 +242,17 @@ interface IModalEditTask {
   onEditTask: (updatedTask: any) => void;
 }
 
-export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task, onEditTask }) => {
-
+export const ModalEditTask: React.FC<IModalEditTask> = ({
+  isOpen,
+  onClose,
+  task,
+  onEditTask
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
   useEffect(() => {
-    if (task) {
+    if (task && isOpen) {
       setTitle(task.title);
       setDescription(task.description);
     }
@@ -254,47 +261,36 @@ export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task,
   if (!isOpen) return null;
 
   function handleConfirm() {
-    const updatedTask = {
-      ...task,
-      title,
-      description,
-    };
-
-    onEditTask(updatedTask);
+    onEditTask({ ...task, title, description });
     onClose();
   }
+
   return (
-    <BodyModal
-      as={motion.div}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.1 }}
-        style={{
-          display: "flex", justifyContent: "center",
-          alignItems: "center", height: "100%"
-        }}
-      >
-        <MainContainer>
-          <IconClose onClick={onClose} />
+    <ModalPortal>
+      <BodyModal as={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.1 }}
+          style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}
+        >
+          <MainContainer>
+            <IconClose onClick={onClose} />
 
-          <Title>
-            <MetaIcon className="icon" /> Editar tarefa
-          </Title>
+            <Title>
+              <MetaIcon className="icon" /> Editar tarefa
+            </Title>
 
-          <MaxWidthForm>
-            <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-            <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-          </MaxWidthForm>
+            <MaxWidthForm>
+              <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
+              <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
+            </MaxWidthForm>
 
-          <ConfirmButton onClick={handleConfirm} />
-        </MainContainer>
-      </motion.div>
-    </BodyModal>
+            <ConfirmButton onClick={handleConfirm} />
+          </MainContainer>
+        </motion.div>
+      </BodyModal>
+    </ModalPortal>
   );
 };

@@ -27,7 +27,20 @@ export class AuthService {
       throw new Error('Erro ao criar usuário');
     }
 
-    return newUser;
+     const token = jwt.sign(
+    { id: newUser.id, email: newUser.email },
+    JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+
+  return {
+    token,
+    user: {
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name
+    }
+  };
   }
 
   async login(email: string, password: string) {

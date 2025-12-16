@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { ReactComponent as ArrowBackSvg } from "../../assets/icons/arrow-back.svg";
+import { motion } from "framer-motion";
 
 export const BodyList = styled.div`
 display:  flex;
 flex-direction: column;
 border-radius: 5rem;
-min-height: 80rem;
+min-height: 94rem;
 background-color: white;
 padding: 3rem;
 box-shadow: 0 3px 5px 1px black;
@@ -65,7 +66,7 @@ width: 3rem;
     margin: auto 0.5rem;
   }
 `;
-export const ItemList = styled.ul`
+export const ItemList = styled(motion.ul)`
 border-radius: 2rem;
 min-height: 5rem;
 box-shadow: 0 2px 2px 1px lightgray;
@@ -74,7 +75,7 @@ align-items: center;
 position: relative;
 margin: 0 auto;
 width: 100%;
-max-width: 80rem;
+max-width: 120rem;
 padding: 0.3rem;
 font-size: 2.4rem;
  width: 100%;
@@ -95,16 +96,24 @@ font-size: 2.4rem;
     }
 `;
 export const TextList = styled.li`
- display: flex;
- aligm-items: center;
- text-decoration: none;
+display: flex;
+align-items: center;
+text-align: center;
+max-width: 99rem;
+  width: 100%;      
+  word-break: break-word;     
+
+list-style: none;
  &.completed {
     text-decoration: line-through;
   }
 `;
 
 export const ItemDescription = styled.p`
+padding: 1rem 0;
 text-align:center;
+max-width: 96%;     
+  word-break: break-word;  
  &.completed {
     text-decoration: line-through;
   }
