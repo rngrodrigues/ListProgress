@@ -11,10 +11,11 @@ import { ReactComponent as BackIcon } from "../../assets/icons/arrow-back.svg";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { motion, AnimatePresence } from "framer-motion";
-import { ModalEditCard } from "../../components/Modals";
+import { ModalEditCard, ModalConfirm } from "../../components/Modals";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { apiFetch } from "../../services/apiFetch";
 import { toast } from "../Utils/Toasts/Toasts";
+
 
 export type TaskCardProps = {
   className: string;
@@ -42,6 +43,8 @@ export const TaskCard = ({
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false);
   const [cardTasks, setCardTasks] = useState<any[]>([]);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
 
  
   useEffect(() => {
@@ -61,11 +64,11 @@ export const TaskCard = ({
     setIsFlipping(true);
     setTimeout(() => setExpanded(to), 150);
   }
-async function handleDeleteCard() {
-  if (!onDelete) return;
-
-  onDelete(id); 
+function handleDeleteCard() {
+  setConfirmDeleteOpen(true);
 }
+
+
 async function handleEditCard(updatedCard: any) {
   try {
     const data = await apiFetch(`/cards/${id}`, {
@@ -98,6 +101,23 @@ async function handleEditCard(updatedCard: any) {
           />
         )}
       </AnimatePresence>
+      
+            <AnimatePresence>
+  {confirmDeleteOpen && (
+    <ModalConfirm
+      isOpen={confirmDeleteOpen}
+      onClose={() => setConfirmDeleteOpen(false)}
+      message="Tem certeza que deseja remover essa card? Essa ação é permanente."
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      onConfirm={() => {
+        if (onDelete) onDelete(id);
+        setConfirmDeleteOpen(false);
+      }}
+    />
+  )}
+</AnimatePresence>
+
 
       <motion.div
         className={className}
@@ -117,13 +137,13 @@ async function handleEditCard(updatedCard: any) {
                     setOpen(true);
                   }}
                 />
-                <TrashIcon
-                  className="icons"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteCard();
-                  }}
-                />
+               <TrashIcon
+  className="icons"
+  onClick={(e) => {
+    e.stopPropagation();
+    handleDeleteCard();
+  }}
+/>
               </IconsList>
 
               <BackIcon

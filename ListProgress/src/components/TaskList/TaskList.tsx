@@ -19,7 +19,7 @@ import { ReactComponent as UpIcon } from "../../assets/icons/arrow-up.svg";
 import { AddBtn } from "../Utils/Buttons";
 import { CheckInput } from "../Utils/Inputs";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
-import { ModalAddTask, ModalEditTask } from "../../components/Modals";
+import { ModalAddTask, ModalEditTask, ModalConfirm } from "../../components/Modals";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { apiFetch } from "../../services/apiFetch";
@@ -45,9 +45,10 @@ export const TaskList = ({
   const [openEdit, setOpenEdit] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
-  const [flipState, setFlipState] = useState<
-    Record<string, { expanded: boolean; isFlipping: boolean }>
-  >({});
+  const [flipState, setFlipState] = useState<Record<string, { expanded: boolean; isFlipping: boolean }>>({});
+  
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
   function flip(taskId: string, to: boolean) {
     setFlipState((prev) => ({
@@ -66,40 +67,33 @@ export const TaskList = ({
     }, 150);
   }
 
-  
-useEffect(() => {
-  apiFetch(`/cards/${id}/tasks`)
-    .then((data) => {
-      const ordered = data.sort((a: any, b: any) => {
-        if (a.position == null) return 1;
-        if (b.position == null) return -1;
-        return a.position - b.position;
+  useEffect(() => {
+    apiFetch(`/cards/${id}/tasks`)
+      .then((data) => {
+        const ordered = data.sort((a: any, b: any) => {
+          if (a.position == null) return 1;
+          if (b.position == null) return -1;
+          return a.position - b.position;
+        });
+        setTasks(ordered);
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar tasks:", err);
+        toast.error("Erro ao carregar tarefas!");
       });
-      setTasks(ordered);
-    })
-    .catch((err) => {
-      console.error("Erro ao carregar tasks:", err);
-      toast.error("Erro ao carregar tarefas!");
-    });
-}, [id]);
+  }, [id]);
 
   async function handleAddTask(newTask: any) {
     try {
       const nextPosition = tasks.length;
-      const payload = {
-        ...newTask,
-        position: nextPosition,
-        card_id: id
-      };
+      const payload = { ...newTask, position: nextPosition, card_id: id };
 
       const createdTask = await apiFetch("/tasks", {
         method: "POST",
         body: JSON.stringify(payload)
       });
 
-      setTasks((prev) =>
-        [...prev, createdTask].sort((a, b) => a.position - b.position)
-      );
+      setTasks((prev) => [...prev, createdTask].sort((a, b) => a.position - b.position));
       toast.success("Tarefa adicionada com sucesso!");
     } catch (err) {
       console.error("Erro ao adicionar tarefa:", err);
@@ -108,28 +102,23 @@ useEffect(() => {
 
     setOpenAdd(false);
   }
-  
+
   async function handleEditTask(updatedTask: any) {
-  try {
-    const data = await apiFetch(`/tasks/${updatedTask.id}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedTask)
-    });
+    try {
+      const data = await apiFetch(`/tasks/${updatedTask.id}`, {
+        method: "PUT",
+        body: JSON.stringify(updatedTask)
+      });
 
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === updatedTask.id ? data : t
-      )
-    );
-    toast.info("Tarefa atualizada com sucesso!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao atualizar tarefa!");
+      setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? data : t)));
+      toast.info("Tarefa atualizada com sucesso!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao atualizar tarefa!");
+    }
+
+    setOpenEdit(false);
   }
-
-  setOpenEdit(false);
-}
-
 
   async function handleDeleteTask(taskId: string) {
     try {
@@ -137,13 +126,8 @@ useEffect(() => {
 
       setTasks((prev) => {
         const filtered = prev.filter((t) => t.id !== taskId);
+        const reindexed = filtered.map((t, index) => ({ ...t, position: index }));
 
-        const reindexed = filtered.map((t, index) => ({
-          ...t,
-          position: index
-        }));
-
-        
         reindexed.forEach(async (t) => {
           await apiFetch(`/tasks/${t.id}`, {
             method: "PUT",
@@ -172,10 +156,7 @@ useEffect(() => {
         body: JSON.stringify(updatedTask)
       });
 
-      const updatedTasks = tasks.map((t) =>
-        t.id === taskId ? dataTask : t
-      );
-
+      const updatedTasks = tasks.map((t) => (t.id === taskId ? dataTask : t));
       setTasks(updatedTasks);
 
       const allCompleted = updatedTasks.every((t) => t.completed);
@@ -195,27 +176,45 @@ useEffect(() => {
   return (
     <BodyList>
       <AnimatePresence>
-  {openAdd && (
-    <ModalAddTask
-      isOpen={openAdd}
-      onClose={() => setOpenAdd(false)}
-      onAddTask={handleAddTask}
-      card_id={id}
-    />
-  )}
-</AnimatePresence>
+        {openAdd && (
+          <ModalAddTask
+            isOpen={openAdd}
+            onClose={() => setOpenAdd(false)}
+            onAddTask={handleAddTask}
+            card_id={id}
+          />
+        )}
+      </AnimatePresence>
 
-<AnimatePresence>
-  {openEdit && selectedTask && (
-    <ModalEditTask
-      isOpen={openEdit}
-      onClose={() => setOpenEdit(false)}
-      task={selectedTask}
-      onEditTask={handleEditTask}
-    />
-  )}
-</AnimatePresence>
+      <AnimatePresence>
+        {openEdit && selectedTask && (
+          <ModalEditTask
+            isOpen={openEdit}
+            onClose={() => setOpenEdit(false)}
+            task={selectedTask}
+            onEditTask={handleEditTask}
+          />
+        )}
+      </AnimatePresence>
 
+      <AnimatePresence>
+        {confirmDeleteOpen && taskToDelete && (
+          <ModalConfirm
+  isOpen={confirmDeleteOpen}
+  onClose={() => setConfirmDeleteOpen(false)}
+  message="Tem certeza que deseja excluir essa tarefa? Essa ação é permanente."
+  onConfirm={async () => {
+    if (!taskToDelete) return;
+    await handleDeleteTask(taskToDelete);
+    setTaskToDelete(null);
+    setConfirmDeleteOpen(false);
+  }}
+  confirmText="Excluir"
+  cancelText="Cancelar"
+/>
+
+        )}
+      </AnimatePresence>
 
       <TopContainer>
         <TaskCategory>{category}</TaskCategory>
@@ -237,10 +236,11 @@ useEffect(() => {
               style={{ transformStyle: "preserve-3d" }}
             >
               <ItemList layout transition={{ duration: 0.2, ease: "easeInOut" }}>
-
                 {expanded ? (
                   <>
-                    <ItemDescription className={task.completed ? "completed" : ""} >{task.description}</ItemDescription>
+                    <ItemDescription className={task.completed ? "completed" : ""}>
+                      {task.description}
+                    </ItemDescription>
                     <UpIcon
                       className="BackIcon"
                       onClick={(e) => {
@@ -269,7 +269,10 @@ useEffect(() => {
                       />
                       <TrashIcon
                         className="icon"
-                        onClick={() => handleDeleteTask(task.id)}
+                        onClick={() => {
+                          setTaskToDelete(task.id);
+                          setConfirmDeleteOpen(true);
+                        }}
                       />
                       <IIcon
                         className="icon IIcon"
@@ -289,9 +292,7 @@ useEffect(() => {
 
       <BottomContainer>
         <TaskProgress tasks={tasks} />
-        <AddBtn onClick={() => setOpenAdd(true)}>
-          Adicionar tarefa
-        </AddBtn>
+        <AddBtn onClick={() => setOpenAdd(true)}>Adicionar tarefa</AddBtn>
       </BottomContainer>
     </BodyList>
   );

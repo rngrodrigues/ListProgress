@@ -7,7 +7,12 @@ import {
   BodyModal,
   MainContainer,
   MaxWidthForm,
-  Title
+  Title,
+  ConfirmMessage,
+  ConfirmContainer,
+  ModalConfirmBtn,
+  ModalCancelBtn
+ 
 } from "./Modals.styles.ts";
 
 import {
@@ -18,13 +23,11 @@ import {
 import { ConfirmButton } from "../Utils/Buttons";
 import { ReactComponent as MetaIcon } from "../../assets/icons/meta.svg";
 
-// Portal
 function ModalPortal({ children }: { children: React.ReactNode }) {
   if (typeof document === "undefined") return null;
   return createPortal(children, document.body);
 }
 
-// BaseModal reutilizável
 interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -67,9 +70,6 @@ export const BaseModal: React.FC<BaseModalProps> = ({ isOpen, onClose, children 
   );
 };
 
-// ----------------- MODAIS -----------------
-
-// ModalAddCard
 interface IModalAddCard {
   isOpen: boolean;
   onClose: () => void;
@@ -115,7 +115,6 @@ export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCa
   );
 };
 
-// ModalEditCard
 interface IModalEditCard {
   isOpen: boolean;
   onClose: () => void;
@@ -167,7 +166,6 @@ export const ModalEditCard: React.FC<IModalEditCard> = ({ isOpen, onClose, card,
   );
 };
 
-// ModalAddTask
 interface IModalAddTask {
   isOpen: boolean;
   onClose: () => void;
@@ -211,7 +209,7 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTa
   );
 };
 
-// ModalEditTask
+
 interface IModalEditTask {
   isOpen: boolean;
   onClose: () => void;
@@ -253,6 +251,53 @@ export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task,
         </MaxWidthForm>
 
         <ConfirmButton onClick={handleConfirm} />
+      </MainContainer>
+    </BaseModal>
+  );
+};
+interface IModalConfirm {
+  isOpen: boolean;
+  onClose: () => void;
+  message: string;
+  onConfirm: () => void;
+  confirmText?: string;
+  cancelText?: string;
+}
+
+export const ModalConfirm: React.FC<IModalConfirm> = ({
+  isOpen,
+  onClose,
+  message,
+  onConfirm,
+  confirmText = "OK",
+  cancelText = "Cancelar"
+}) => {
+  const [loading, setLoading] = useState(false);
+
+  function handleConfirm() {
+    setLoading(true);
+    onConfirm();
+    setLoading(false);
+    onClose();
+  }
+
+  return (
+    <BaseModal isOpen={isOpen} onClose={onClose}>
+      <MainContainer>
+        <IconClose onClick={onClose} />
+
+        <Title>
+           Confirmação
+        </Title>
+
+        <ConfirmMessage>{message}</ConfirmMessage>
+
+        <ConfirmContainer>
+          <ModalConfirmBtn onClick={handleConfirm} disabled={loading}>
+            {confirmText}
+          </ModalConfirmBtn>
+          <ModalCancelBtn onClick={onClose}>{cancelText}</ModalCancelBtn>
+        </ConfirmContainer>
       </MainContainer>
     </BaseModal>
   );

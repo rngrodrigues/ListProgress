@@ -111,7 +111,6 @@ list-style: none;
 
 export const ItemDescription = styled.p`
 padding: 1rem 0;
-text-align:center;
 max-width: 96%;     
   word-break: break-word;  
  &.completed {
