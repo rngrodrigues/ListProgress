@@ -24,7 +24,8 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
   const [search, setSearch] = useState("");
-  
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const filteredCards = cards.filter((card) => {
   if (!search.trim()) return true;
 
@@ -171,7 +172,10 @@ async function handleDeleteCard(id: string) {
                 title={selectedTask.title}
                 category={selectedTask.category}
                 description={selectedTask.description}
-                onBack={() => setSelectedTask(null)}
+                 onBack={() => {
+    setSelectedTask(null);
+    setRefreshKey(prev => prev + 1);
+  }}
                 onCardUpdate={(updatedCard) => {
                   setCards((prev) =>
                     prev.map((c) =>
@@ -190,6 +194,7 @@ async function handleDeleteCard(id: string) {
               transition={{ duration: 0.2 }}
             >
               <TaskBoard
+              key={refreshKey}
           cards={visibleCards}
                 page={page}
                 direction={direction}

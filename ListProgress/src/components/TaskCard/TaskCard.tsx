@@ -13,7 +13,8 @@ import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard, ModalConfirm } from "../../components/Modals";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
-import { apiFetch } from "../../services/apiFetch";
+import { useCardService } from "../../hooks/useCardServices";
+import { useTaskService } from "../../hooks/useTaskServices";
 import { toast } from "../Utils/Toasts/Toasts";
 
 
@@ -44,21 +45,22 @@ export const TaskCard = ({
   const [open, setOpen] = useState(false);
   const [cardTasks, setCardTasks] = useState<any[]>([]);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const cardService = useCardService();
+  const taskService = useTaskService();
 
-
- 
-  useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const data = await apiFetch(`/cards/${id}/tasks`);
-        setCardTasks(data);
-      } catch (err) {
-        console.error("Erro ao carregar tasks:", err);
-      }
+useEffect(() => {
+  async function fetchTasks() {
+    try {
+      const data = await taskService.listByCard(id);
+      setCardTasks(data);
+    } catch (err) {
+      console.error("Erro ao carregar tasks:", err);
     }
+  }
 
-    fetchTasks();
-  }, [id]);
+  fetchTasks();
+}, [id, taskService]);
+
 
   function flip(to: boolean) {
     setIsFlipping(true);
@@ -71,21 +73,18 @@ function handleDeleteCard() {
 
 async function handleEditCard(updatedCard: any) {
   try {
-    const data = await apiFetch(`/cards/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedCard),
-    });
+    const data = await cardService.update(id, updatedCard);
 
     if (onEdit) onEdit(data);
 
     toast.info("Lista atualizada com sucesso!");
     setOpen(false);
-
   } catch (err) {
     console.error(err);
     toast.error("Erro ao atualizar a lista");
   }
 }
+
 
 
 

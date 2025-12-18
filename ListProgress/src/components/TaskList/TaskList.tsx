@@ -22,7 +22,8 @@ import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask, ModalConfirm } from "../../components/Modals";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { apiFetch } from "../../services/apiFetch";
+import { useTaskService } from "../../hooks/useTaskServices";
+import { useCardService } from "../../hooks/useCardServices";
 import { toast } from "../Utils/Toasts/Toasts";
 
 type TaskListProps = TaskCardProps & {
@@ -46,9 +47,10 @@ export const TaskList = ({
   const [tasks, setTasks] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [flipState, setFlipState] = useState<Record<string, { expanded: boolean; isFlipping: boolean }>>({});
-  
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+  const taskService = useTaskService();
+  const cardService = useCardService();
 
   function flip(taskId: string, to: boolean) {
     setFlipState((prev) => ({
@@ -68,110 +70,115 @@ export const TaskList = ({
   }
 
   useEffect(() => {
-    apiFetch(`/cards/${id}/tasks`)
-      .then((data) => {
-        const ordered = data.sort((a: any, b: any) => {
-          if (a.position == null) return 1;
-          if (b.position == null) return -1;
-          return a.position - b.position;
-        });
-        setTasks(ordered);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar tasks:", err);
-        toast.error("Erro ao carregar tarefas!");
+  taskService
+    .listByCard(id)
+    .then((data: any[]) => {
+      const ordered = data.sort((a, b) => {
+        if (a.position == null) return 1;
+        if (b.position == null) return -1;
+        return a.position - b.position;
       });
-  }, [id]);
+      setTasks(ordered);
+    })
+    .catch((err: any) => {
+      console.error("Erro ao carregar tasks:", err);
+      toast.error("Erro ao carregar tarefas!");
+    });
+}, [id, taskService]);
+
 
   async function handleAddTask(newTask: any) {
-    try {
-      const nextPosition = tasks.length;
-      const payload = { ...newTask, position: nextPosition, card_id: id };
+  try {
+    const nextPosition = tasks.length;
+    const payload = { ...newTask, position: nextPosition, card_id: id };
 
-      const createdTask = await apiFetch("/tasks", {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
+    const createdTask = await taskService.create(payload);
 
-      setTasks((prev) => [...prev, createdTask].sort((a, b) => a.position - b.position));
-      toast.success("Tarefa adicionada com sucesso!");
-    } catch (err) {
-      console.error("Erro ao adicionar tarefa:", err);
-      toast.error("Erro ao adicionar tarefa!");
-    }
+    setTasks((prev) =>
+      [...prev, createdTask].sort((a, b) => a.position - b.position)
+    );
 
-    setOpenAdd(false);
+    toast.success("Tarefa adicionada com sucesso!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao adicionar tarefa!");
   }
+
+  setOpenAdd(false);
+}
+
 
   async function handleEditTask(updatedTask: any) {
-    try {
-      const data = await apiFetch(`/tasks/${updatedTask.id}`, {
-        method: "PUT",
-        body: JSON.stringify(updatedTask)
-      });
+  try {
+    const data = await taskService.update(updatedTask.id, updatedTask);
 
-      setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? data : t)));
-      toast.info("Tarefa atualizada com sucesso!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Erro ao atualizar tarefa!");
-    }
+    setTasks((prev) =>
+      prev.map((t) => (t.id === updatedTask.id ? data : t))
+    );
 
-    setOpenEdit(false);
+    toast.info("Tarefa atualizada com sucesso!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao atualizar tarefa!");
   }
+
+  setOpenEdit(false);
+}
+
 
   async function handleDeleteTask(taskId: string) {
-    try {
-      await apiFetch(`/tasks/${taskId}`, { method: "DELETE" });
+  try {
+    await taskService.delete(taskId);
 
-      setTasks((prev) => {
-        const filtered = prev.filter((t) => t.id !== taskId);
-        const reindexed = filtered.map((t, index) => ({ ...t, position: index }));
+    setTasks((prev) => {
+      const filtered = prev.filter((t) => t.id !== taskId);
 
-        reindexed.forEach(async (t) => {
-          await apiFetch(`/tasks/${t.id}`, {
-            method: "PUT",
-            body: JSON.stringify({ position: t.position })
-          });
-        });
+      const reindexed = filtered.map((t, index) => ({
+        ...t,
+        position: index,
+      }));
 
-        return reindexed;
+      reindexed.forEach((t) => {
+        taskService.update(t.id, { position: t.position });
       });
-      toast.successDelete("Tarefa removida com sucesso!");
-    } catch (err) {
-      console.error("Erro ao deletar tarefa:", err);
-      toast.error("Erro ao remover tarefa!");
-    }
+
+      return reindexed;
+    });
+
+    toast.successDelete("Tarefa removida com sucesso!");
+  } catch (err) {
+    console.error("Erro ao deletar tarefa:", err);
+    toast.error("Erro ao remover tarefa!");
   }
+}
+
 
   async function toggleTaskCompleted(taskId: string) {
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
+  const task = tasks.find((t) => t.id === taskId);
+  if (!task) return;
 
-    const updatedTask = { ...task, completed: !task.completed };
+  const updatedTask = { ...task, completed: !task.completed };
 
-    try {
-      const dataTask = await apiFetch(`/tasks/${taskId}`, {
-        method: "PUT",
-        body: JSON.stringify(updatedTask)
-      });
+  try {
+    const savedTask = await taskService.update(taskId, updatedTask);
 
-      const updatedTasks = tasks.map((t) => (t.id === taskId ? dataTask : t));
-      setTasks(updatedTasks);
+    const updatedTasks = tasks.map((t) =>
+      t.id === taskId ? savedTask : t
+    );
 
-      const allCompleted = updatedTasks.every((t) => t.completed);
-      const updatedCard = { completed: allCompleted };
+    setTasks(updatedTasks);
 
-      await apiFetch(`/cards/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(updatedCard)
-      });
+    const allCompleted = updatedTasks.every((t) => t.completed);
 
-      if (onCardUpdate) onCardUpdate({ id, ...updatedCard });
-    } catch (err) {
-      console.error("Erro ao atualizar tarefa ou card:", err);
-    }
+    await cardService.update(id, { completed: allCompleted });
+
+    if (onCardUpdate)
+      onCardUpdate({ id, completed: allCompleted });
+  } catch (err) {
+    console.error("Erro ao atualizar tarefa ou card:", err);
   }
+}
+
 
   return (
     <BodyList>
@@ -253,7 +260,7 @@ export const TaskList = ({
                   <>
                     <TextList className={task.completed ? "completed" : ""}>
                       <CheckInput
-                        checked={task.completed}
+                        checked={task.completed ?? false}
                         onChange={() => toggleTaskCompleted(task.id)}
                       />
                       {task.title}

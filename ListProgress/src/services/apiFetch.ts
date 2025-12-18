@@ -29,8 +29,11 @@ const headers: Record<string, string> = {
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
-
-   
+if (!token) {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "/login"; 
+  }
 
     throw new Error(errorBody.error || "Erro na requisição");
   }
