@@ -8,15 +8,16 @@ import { TaskList } from "../../components/TaskList/TaskList";
 import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
-import { apiFetch } from "../../services/apiFetch";
 import { useAuth } from "../../contexts/authContext";
 import { toast } from "../../components/Utils/Toasts/Toasts.ts";
+import { useCardService } from "../../hooks/useCardServices.ts";
+
 
 
 const Home = () => {
-  const { user, loading } = useAuth();
 
-
+  const { loading } = useAuth();
+  const cardsService = useCardService();
   const [open, setOpen] = useState(false);
   const [cards, setCards] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
@@ -58,34 +59,30 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if (!user) return;
 
-  apiFetch("/cards")
+  cardsService.list()
     .then((data) => {
       const ordered = data.sort((a: any, b: any) => {
         if (a.position == null) return 1;
         if (b.position == null) return -1;
         return a.position - b.position;
       });
-
       setCards(ordered);
     })
     .catch((err) => {
       console.error("Erro ao carregar cards:", err);
-      toast.error("Erro ao carregar suas listas");
+      toast.error("Erro ao carregar suas listas.");
     });
-}, [user]);
-
+}, [cardsService]); 
+ 
 
   async function handleAddCard(newCard: any) {
   try {
     const nextPosition = cards.length;
     const payload = { ...newCard, position: nextPosition };
 
-    const createdCard = await apiFetch("/cards", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+   const createdCard = await cardsService.create(payload);
+
 
     setCards((prev) => {
       const list = [...prev, { ...createdCard, tasks: [] }];
@@ -110,7 +107,8 @@ useEffect(() => {
 
 async function handleDeleteCard(id: string) {
   try {
-    await apiFetch(`/cards/${id}`, { method: "DELETE" });
+    await cardsService.delete(id);
+
 
     setCards((prevCards) => {
       const next = prevCards
