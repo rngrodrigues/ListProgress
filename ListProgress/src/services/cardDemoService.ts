@@ -1,9 +1,23 @@
+import { TaskDemoService } from './taskDemoService.ts';
 import { v4 as uuidv4 } from "uuid";
 
 const KEY = "demo_cards";
 
 const getStored = () => JSON.parse(localStorage.getItem(KEY) || "[]");
 const saveStored = (cards: any[]) => localStorage.setItem(KEY, JSON.stringify(cards));
+
+const removeCompletedCards = async () => {
+  const cards = getStored();
+  const remainingCards = cards.filter((card: any) => card.completed !== true);
+  saveStored(remainingCards);
+
+  const completedCards = cards.filter((card: any) => card.completed === true);
+
+    for (const card of completedCards) {
+      const tasks = await TaskDemoService.listByCard(card.id);
+      tasks.forEach((task: any) => TaskDemoService.delete(task.id));
+  }
+};
 
 export const CardDemoService = {
   create: async (card: any) => {
@@ -13,16 +27,21 @@ export const CardDemoService = {
     return newCard;
   },
 
-  list: async () => getStored(),
+  list: async () => {
+    return getStored();
+  },
 
   delete: async (id: string) => {
     const cards = getStored().filter((c: any) => c.id !== id);
     saveStored(cards);
+    const tasks = await TaskDemoService.listByCard(id); 
+    tasks.forEach((task: any) => TaskDemoService.delete(task.id)); 
   },
 
   update: async (id: string, card: any) => {
     const cards = getStored().map((c: any) => (c.id === id ? { ...c, ...card } : c));
     saveStored(cards);
+    removeCompletedCards(); 
     return card;
   },
 

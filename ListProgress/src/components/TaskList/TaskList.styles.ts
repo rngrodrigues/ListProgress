@@ -110,6 +110,7 @@ list-style: none;
 `;
 
 export const ItemDescription = styled.p`
+white-space: pre-line;
 padding: 1rem 0;
 max-width: 96%;     
   word-break: break-word;  

@@ -25,6 +25,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTaskService } from "../../hooks/useTaskServices";
 import { useCardService } from "../../hooks/useCardServices";
 import { toast } from "../Utils/Toasts/Toasts";
+import { useNavigate } from "react-router-dom";
 
 type TaskListProps = TaskCardProps & {
   id: string;
@@ -51,6 +52,7 @@ export const TaskList = ({
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const taskService = useTaskService();
   const cardService = useCardService();
+  const navigate = useNavigate();
 
   function flip(taskId: string, to: boolean) {
     setFlipState((prev) => ({
@@ -153,31 +155,32 @@ export const TaskList = ({
 }
 
 
-  async function toggleTaskCompleted(taskId: string) {
-  const task = tasks.find((t) => t.id === taskId);
-  if (!task) return;
+   async function toggleTaskCompleted(taskId: string) {
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return;
 
-  const updatedTask = { ...task, completed: !task.completed };
+    const updatedTask = { ...task, completed: !task.completed };
 
-  try {
-    const savedTask = await taskService.update(taskId, updatedTask);
+    try {
+      const savedTask = await taskService.update(taskId, updatedTask);
 
-    const updatedTasks = tasks.map((t) =>
-      t.id === taskId ? savedTask : t
-    );
+      const updatedTasks = tasks.map((t) => (t.id === taskId ? savedTask : t));
 
-    setTasks(updatedTasks);
+      setTasks(updatedTasks);
 
-    const allCompleted = updatedTasks.every((t) => t.completed);
+      const allCompleted = updatedTasks.every((t) => t.completed);
+      await cardService.update(id, { completed: allCompleted });
+      if (onCardUpdate) onCardUpdate({ id, completed: allCompleted });
 
-    await cardService.update(id, { completed: allCompleted });
-
-    if (onCardUpdate)
-      onCardUpdate({ id, completed: allCompleted });
-  } catch (err) {
-    console.error("Erro ao atualizar tarefa ou card:", err);
+      
+      if (allCompleted) {
+        navigate('/home');
+        toast.success("Parabéns! Você completou essa lista."); 
+      }
+    } catch (err) {
+      console.error("Erro ao atualizar tarefa ou card:", err);
+    }
   }
-}
 
 
   return (
