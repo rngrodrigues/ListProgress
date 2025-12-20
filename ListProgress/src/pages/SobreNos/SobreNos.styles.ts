@@ -3,20 +3,20 @@ import styled from "styled-components";
 
 export const Container = styled(motion.div)`
 
-max-width: 900px;
+  max-width: 900px;
   border-radius: 5rem;
   margin: 5rem auto;
   background: whitesmoke;
-   box-shadow: 0 0 5px 0 black;
+  box-shadow: 0 0 5px 0 black;
   padding: 2rem 2rem;
   display: flex;
   align-items: center;
   jusitfy-content: center;
   flex-direction: column;
   @media(max-width:800px){
-box-shadow: 0 0 1px 0 black;
- border-radius: 0;
-  margin-top: 0;
+  box-shadow: 0 0 1px 0 black;
+  border-radius: 0;
+  margin-top: 4.8rem;
 }
 `;
 

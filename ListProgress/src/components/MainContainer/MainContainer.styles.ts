@@ -5,7 +5,7 @@ export const Container = styled(motion.div)`
 @media(max-width:800px){
 box-shadow: 0 0 1px 0 black;
  border-radius: 0;
-  margin-top: 0;
+margin-top: 4.9rem;
 }
   display: flex;
   flex-direction: column;

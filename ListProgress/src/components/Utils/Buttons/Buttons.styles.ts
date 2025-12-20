@@ -33,7 +33,7 @@ align-items: center;
 grid-column: 2;
 justify-self: center;
 margin: 1rem;
-padding: 0.5rem 2rem;
+padding: 0.5rem 1.25rem;
 box-shadow: 0 2px 3px 0 black;
 border-radius: 5rem;
 background-color: #ffffffff;
@@ -46,7 +46,7 @@ box-shadow: 0 3px 6px 3px black;
  .icon {
 width: 2rem;
 height: 2rem;
-margin-right: 1rem;
+margin-right: 0.6rem;
 }
 `;
 export const ConfirmButton = styled.button `

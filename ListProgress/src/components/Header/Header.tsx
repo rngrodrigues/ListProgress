@@ -46,9 +46,10 @@ const Header = () => {
   return (
     <>
       <MainContainer>
-          <MobileMenuButton>
-          <MenuIcon onClick={() => setMobileMenuOpen(true)} />
+        <MobileMenuButton>
+          <MenuIcon onClick={() => setMobileMenuOpen(prev => !prev)} />
         </MobileMenuButton>
+
         <LogoContainer>
           <Link to="/">
             <MetaIcon className="icon" />
@@ -57,14 +58,14 @@ const Header = () => {
         </LogoContainer>
 
         <MenuContainer>
-          <NavLink to="/" end>Home</NavLink>
+          <NavLink className="home" to="/" end>
+            Home
+          </NavLink>
           <NavLink to="/historico">Histórico</NavLink>
           <NavLink to="/comousar">Como usar?</NavLink>
           <NavLink to="/sobre">Sobre nós</NavLink>
           <DayNightIcon className="icon" />
         </MenuContainer>
-
-      
 
         <LoginContainer>
           {user ? (
@@ -81,6 +82,7 @@ const Header = () => {
               onClick={() => setOpen((prev) => !prev)}
             >
               <div
+              
                 style={{
                   padding: "0.5rem",
                   textAlign: "center",
@@ -97,6 +99,7 @@ const Header = () => {
                   handleLogout();
                 }}
                 style={{
+                 
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -106,7 +109,14 @@ const Header = () => {
                   border: "none",
                   background: "white",
                   cursor: "pointer",
+                  transition: "background 0.2s",
                 }}
+                 onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "lightgray")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "white")
+              }
               >
                 <LogoutIcon
                   style={{
@@ -124,10 +134,12 @@ const Header = () => {
         </LoginContainer>
       </MainContainer>
 
-      {mobileMenuOpen && (
-        <MobileMenuOverlay onClick={() => setMobileMenuOpen(false)}>
-          <MobileMenu onClick={(e) => e.stopPropagation()}>
-            <NavLink to="/" end onClick={() => setMobileMenuOpen(false)}>
+       
+        <MobileMenuOverlay $open={mobileMenuOpen}
+        onClick={() => setMobileMenuOpen(false)}>
+          <MobileMenu  $open={mobileMenuOpen}
+          onClick={(e) => e.stopPropagation()}>
+            <NavLink className="home-mobile" to="/" end onClick={() => setMobileMenuOpen(false)}>
               Home
             </NavLink>
             <NavLink to="/historico" onClick={() => setMobileMenuOpen(false)}>
@@ -139,9 +151,104 @@ const Header = () => {
             <NavLink to="/sobre" onClick={() => setMobileMenuOpen(false)}>
               Sobre nós
             </NavLink>
+        
+            <div
+              style={{
+                marginTop: "auto",
+                padding: "2rem",
+                borderTop: "1px solid rgba(0,0,0,0.15)",
+                textAlign: "center",
+              }}
+            >
+              {user ? (
+                <div
+              ref={menuRef}
+              style={{
+                
+                fontSize:"2.2rem",
+                fontWeight:"bold",
+                background: "#fff",
+                borderRadius: "10px",
+                overflow: "hidden",
+                cursor: "pointer",
+                transition: "max-height 0.3s ease",
+                maxWidth:"80px",
+                margin: "0 auto",
+                maxHeight: open ? "120px" : "30px",
+              }}
+              
+            >
+              <div
+              onClick={() => setOpen((prev) => !prev)}
+                style={{
+                  padding: "0.5rem",
+                  textAlign: "center",
+                  borderBottom: open ? "1px solid black" : "none",
+                }}
+              >
+                {user.name ?? user.email}
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLogout();
+                }}
+                style={{
+                fontSize: "20px !important",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                  width: "100%",
+                  padding: "0.5rem 0",
+                  border: "none",
+                  background: "white",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                }}
+                 onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "lightgray")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "white")
+              }
+              >
+                <LogoutIcon
+                  style={{
+                    width: "14px",
+                    height: "14px",
+                    marginRight: "4px",
+                    
+                  }}
+                />
+                Sair
+              </button>
+            </div>
+              ) : (
+                <NavLink   className="mobile-login"
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                 
+                >
+                  Fazer login
+                </NavLink>
+                
+              )}
+               <DayNightIcon
+    style={{
+      width: "3rem",
+    height: "3rem",
+      position: "absolute",
+      bottom: "2.5rem",
+      right: "1rem",
+      cursor: "pointer",
+    }}
+  />
+            </div>
           </MobileMenu>
         </MobileMenuOverlay>
-      )}
+      
     </>
   );
 };

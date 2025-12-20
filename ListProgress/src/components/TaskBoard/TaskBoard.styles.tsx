@@ -5,7 +5,7 @@ interface GridProps {
 }
 export const GridContainer = styled.div<GridProps> `
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+grid-template-columns: repeat(auto-fit, minmax(27rem, 1fr));
 gap: 5rem;
 padding: clamp(1rem, 5vw, 5rem);
 min-height: 80%;

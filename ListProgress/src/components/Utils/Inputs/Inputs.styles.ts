@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const SearchContainer = styled.div `
-background: white;
+background: transparent;
 grid-column: 3;
 justify-self: end;
 display: flex;
@@ -14,12 +14,13 @@ border: 2px solid black;
   }
 `;
 export const SearchInput = styled.input`
+background: transparent;
   padding: 0.5rem;
   border: none; 
   border-bottom: 1px solid black; 
   outline: none; 
   color: black;
-  font-size: 1rem;
+  font-size: 1.2rem;
   width: 10rem;
   transition: border-color 0.3s ease;  
 `;
