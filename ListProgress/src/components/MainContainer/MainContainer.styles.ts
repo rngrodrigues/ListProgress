@@ -2,6 +2,11 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 export const Container = styled(motion.div)`
+@media(max-width:800px){
+box-shadow: 0 0 1px 0 black;
+ border-radius: 0;
+  margin-top: 0;
+}
   display: flex;
   flex-direction: column;
   max-width: 1300px;

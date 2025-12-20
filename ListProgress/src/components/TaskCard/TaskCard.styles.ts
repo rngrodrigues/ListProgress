@@ -22,7 +22,12 @@ top: 3rem;
 right: 2rem;
 width: 4rem;
 height: 4rem;
+transition: transform 0.3s ease;
 }
+
+ .icon:hover {
+    transform: scale(1.1); 
+  }
 `;
 
 export const TaskCategory = styled.h2 `
@@ -50,5 +55,13 @@ cursor: pointer;
 width: 3rem;
 height: 3rem;
 margin: 1rem;
+transition: fill 0.3s ease;
 }
+ .delete:hover {
+    fill:red;
+  }
+    .edit:hover{
+      fill:blue;
+    }
+
 `;

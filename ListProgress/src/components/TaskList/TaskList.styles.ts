@@ -55,12 +55,9 @@ export const TaskTitle = styled.h1`
 `;
 
 export const IconsList = styled.div`
-margin-left: auto;
-.IIcon {
-width: 3rem;
-}
+
 .icon {
-    width: 3rem;
+    width: 3.5rem;
     height: 2.5rem;
     cursor: pointer;
     margin: auto 0.5rem;

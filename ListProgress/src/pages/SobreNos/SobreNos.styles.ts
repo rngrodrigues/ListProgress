@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Container = styled(motion.div)`
+
 max-width: 900px;
   border-radius: 5rem;
   margin: 5rem auto;
@@ -12,6 +13,11 @@ max-width: 900px;
   align-items: center;
   jusitfy-content: center;
   flex-direction: column;
+  @media(max-width:800px){
+box-shadow: 0 0 1px 0 black;
+ border-radius: 0;
+  margin-top: 0;
+}
 `;
 
 export const Title = styled.h1`

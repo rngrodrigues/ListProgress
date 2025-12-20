@@ -130,14 +130,14 @@ async function handleEditCard(updatedCard: any) {
             <>
               <IconsList>
                 <EditIcon
-                  className="icons"
+                  className="icons edit"
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpen(true);
                   }}
                 />
                <TrashIcon
-  className="icons"
+  className="icons delete"
   onClick={(e) => {
     e.stopPropagation();
     handleDeleteCard();
