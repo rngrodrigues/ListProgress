@@ -8,8 +8,11 @@ flex-direction: column;
 border-radius: 5rem;
 min-height: 94rem;
 background-color: white;
-padding: 3rem;
+padding: 1.5rem;
 box-shadow: 0 3px 5px 1px black;
+@media(max-width:800px){
+margin-top: 1.5rem;
+}
 `;
 export const ArrowBack = styled(ArrowBackSvg)`
   width: 5rem;
@@ -32,7 +35,7 @@ display: flex;
 flex-direction: column;
 flex: 8;
 gap: 1rem;
-padding: 5rem;
+padding: 1rem;
 border-radius: 5rem;
 `;
 export const BottomContainer = styled.div`
@@ -44,10 +47,12 @@ align-items: center;
 justify-content: center;
 `;
 export const TaskCategory = styled.h2`
+
   font-size: clamp(2rem, 3vw, 2.8rem);
   font-weight: normal;
 `;
 export const TaskTitle = styled.h1`
+
   text-align:center;
   font-size: clamp(4rem, 3vw, 5rem);
   font-weight: 700;
@@ -55,10 +60,11 @@ export const TaskTitle = styled.h1`
 `;
 
 export const IconsList = styled.div`
-
+display: flex;
+  flex-wrap: nowrap;
 .icon {
-    width: 3.5rem;
-    height: 2.5rem;
+    max-width: 2.2rem;
+    max-height: 2.2rem;
     cursor: pointer;
     margin: auto 0.5rem;
   }
@@ -76,12 +82,11 @@ max-width: 120rem;
 padding: 0.3rem;
 font-size: 2.4rem;
  width: 100%;
- padding-left: 1rem;
+
  input {
- width: 3rem;
-    height: 3rem;
-    margin-right: 1.5rem;
+    margin-right: 1rem;
     cursor: pointer;
+    flex-shrink: 0
  }
 .BackIcon {
     position: absolute;
@@ -91,25 +96,33 @@ font-size: 2.4rem;
     height: 2.5rem;
     cursor: pointer;
     }
+    .UpIcon {
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 2.5rem;
+    margin-left: auto;
+    }
+
 `;
 export const TextList = styled.li`
 display: flex;
 align-items: center;
 text-align: center;
-max-width: 99rem;
-  width: 100%;      
-  word-break: break-word;     
-
+width: 100%;          
 list-style: none;
+
  &.completed {
     text-decoration: line-through;
   }
 `;
 
 export const ItemDescription = styled.p`
+
+text-align: center; 
 white-space: pre-line;
-padding: 1rem 0;
-max-width: 96%;     
+padding: 1rem;
+    
   word-break: break-word;  
  &.completed {
     text-decoration: line-through;

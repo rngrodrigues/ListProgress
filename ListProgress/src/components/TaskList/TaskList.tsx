@@ -248,16 +248,19 @@ export const TaskList = ({
               <ItemList layout transition={{ duration: 0.2, ease: "easeInOut" }}>
                 {expanded ? (
                   <>
+             
                     <ItemDescription className={task.completed ? "completed" : ""}>
                       {task.description}
                     </ItemDescription>
                     <UpIcon
-                      className="BackIcon"
+                      className="UpIcon"
                       onClick={(e) => {
                         e.stopPropagation();
                         flip(task.id, false);
                       }}
+                      
                     />
+                   
                   </>
                 ) : (
                   <>

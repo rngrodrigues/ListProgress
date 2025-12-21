@@ -6,6 +6,7 @@ html {
     font-size: 62.5%;
   }
 body {
+  overflow-wrap: break-word;
     max-height: 100vh;
   background:
     url('https://transparenttextures.com/patterns/asfalt-dark.png'),

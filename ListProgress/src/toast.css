@@ -8,12 +8,11 @@
 }
 
 .custom-toast-title {
+  text-align: center !important;
   font-size: 1.8rem !important;
   font-weight: 500 !important;
   line-height: 1.4;
   margin: 0 !important;
-  white-space: nowrap !important;
-
 }
 
 .swal2-icon {
