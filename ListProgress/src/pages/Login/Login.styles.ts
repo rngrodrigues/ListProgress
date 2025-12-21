@@ -11,6 +11,34 @@ export const LoginMainContainer = styled(motion.div)`
   backdrop-filter: blur(0.2rem);
   box-shadow: 0 0 10px 0 black;
   overflow: hidden;
+    .mobile-text {
+  display: none;
+  }
+  .mobile-link {
+  display: none;
+  }
+  @media(max-width:800px){
+border-radius:0;
+margin-top:5.9rem;
+margin-bottom: 1rem;
+min-height:80rem;
+  .mobile-text {
+  display: inline-block;
+  font-size: 1.6rem;
+  text-align: center;
+  }
+  .mobile-link {
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.3rem;
+  color: black;
+  font-weight: bold;
+  }
+  }
+
+ 
 `;
 
 export const WhiteContainer = styled.div`
@@ -21,6 +49,9 @@ export const WhiteContainer = styled.div`
   width: 50%;
   min-height: 80rem;
   border-radius: 5rem 0 0 5rem;
+  @media(max-width:800px){
+  display:none;
+  }
 `;
 
 export const GrayContainer = styled.div`
@@ -31,6 +62,11 @@ export const GrayContainer = styled.div`
   width: 50%;
   background: rgba(211, 211, 211, 0.25);
   border-radius: 0 5rem 5rem 0;
+   @media(max-width:800px){
+width:100%;
+margin: 3rem;
+  }
+
 `;
 
 export const MaxWidthContainerWhite = styled.div`
@@ -51,7 +87,7 @@ export const MaxWidthContainerGray = styled.div`
   height: 30rem;
 
   #gambiarra {
-    margin-top: 3rem;
+    margin: 2rem 0;
   }
 `;
 
@@ -71,7 +107,7 @@ export const AnswerContainer = styled.p`
 `;
 
 export const TitleGrayContainer = styled.h1`
-  font-size: clamp(2rem, 3vw, 3.5rem);
+  font-size: clamp(2.4rem, 3vw, 3.5rem);
   margin-bottom: 3rem;
   color: black;
 `;

@@ -174,13 +174,19 @@ async function handleRegister() {
                     <label htmlFor="rememberMe" style={{ fontSize: "1.8rem" }}>
                       Manter conectado
                     </label>
-                  </div>
 
+                    
+                  </div>
+                      
                   <div id="gambiarra">
                     <GenericBtnBlack disabled={loading}>
                       {loading ? "Entrando..." : "Entrar"}
                     </GenericBtnBlack>
                   </div>
+                  <p className="mobile-text">
+                      Ainda não possui uma conta? <button  type="button" className="mobile-link" onClick={() => triggerSwitch(false)}>Cadastre-se </button> 
+                    </p>
+  
                 </form>
               ) : (
                 <form
@@ -209,6 +215,16 @@ async function handleRegister() {
                       {loading ? "Cadastrando..." : "Cadastrar"}
                     </GenericBtnBlack>
                   </div>
+                    <p className="mobile-text">
+    Já possui uma conta?{" "}
+    <button
+      type="button"
+      className="mobile-link"
+      onClick={() => triggerSwitch(true)}
+    >
+      Entrar
+    </button>
+  </p>
                 </form>
               )}
             </FadeWrapper>
