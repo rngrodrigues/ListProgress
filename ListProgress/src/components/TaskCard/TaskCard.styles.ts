@@ -5,17 +5,18 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 border-radius: 5rem;
-background-color: white;
+background: ${({ theme }) => theme.colors.card};
 padding: 3rem;
 position: relative;
-box-shadow: 0 3px 5px 1px black;
+box-shadow: 0 3px 5px 1px ${({ theme }) => theme.colors.shadow};
 transition: all ease 0.3s;
 aspect-ratio: 1 / 1;
 overflow: hidden;
 &:hover {
-box-shadow: 0 3px 15px 5px black;
+box-shadow: 0 3px 15px 5px ${({ theme }) => theme.colors.shadow};
 }
 .icon {
+fill: ${({ theme }) => theme.colors.text};
 position: absolute;
 cursor: pointer;
 top: 3rem;
@@ -36,6 +37,7 @@ export const TaskCategory = styled.h2 `
   font-weight: 500;
 `;
 export const TaskTitle = styled.h1 `
+  color: ${({ theme }) => theme.colors.text};
   font-size: clamp(2rem, 2vw, 2.8rem);
   font-weight: 700;
   margin-bottom: 5rem;
@@ -51,6 +53,7 @@ position: absolute;
 top: 2rem;
 left: 2rem;
 .icons {
+fill: ${({ theme }) => theme.colors.text};
 cursor: pointer;
 width: 3rem;
 height: 3rem;

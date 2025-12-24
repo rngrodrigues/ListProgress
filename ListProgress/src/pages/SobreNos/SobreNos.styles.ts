@@ -6,8 +6,8 @@ export const Container = styled(motion.div)`
   max-width: 900px;
   border-radius: 5rem;
   margin: 5rem auto;
-  background: whitesmoke;
-  box-shadow: 0 0 5px 0 black;
+  background: ${({ theme }) => theme.colors.bg};
+  box-shadow: 0 0 5px 0 ${({ theme }) => theme.colors.shadow};
   padding: 2rem 2rem;
   display: flex;
   align-items: center;
@@ -16,14 +16,15 @@ export const Container = styled(motion.div)`
   @media(max-width:800px){
   box-shadow: 0 0 1px 0 black;
   border-radius: 0;
-  margin-top: 4.8rem;
+  margin-top: 6rem;
+  margin-bottom: 1rem;
 }
 `;
 
 export const Title = styled.h1`
   text-align: center;
   letter-spacing: 1px;
-    font-size: clamp(1.6rem, 2vw, 3.5rem);
+    font-size: clamp(2.4rem, 2vw, 3.5rem);
     margin: 3rem;
 `;
 
@@ -37,7 +38,7 @@ export const Subtitle = styled.h2`
 
 export const Text = styled.p`
   font-size: clamp(1.5rem, 2vw, 2.3rem);
-  color: #444;
+  color: ${({ theme }) => theme.colors.text};
 margin: 1rem auto;
   padding-left: 1rem;
 `;
@@ -61,7 +62,7 @@ export const TeamCard = styled.div`
   padding: 20px;
   border-radius: 12px;
   width: 220px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px ${({ theme }) => theme.colors.shadow};;
   text-align: center;
   transition: 0.3s;
   h3 {
@@ -86,12 +87,13 @@ export const TeamImage = styled.img`
 `;
 
 export const Button = styled.button`
+ color:${({ theme }) => theme.colors.text};
   display: block;
   margin: 30px auto 0;
   padding: 12px 22px;
   border: none;
-  background: white;
-box-shadow: 0 2px 3px 0 black;
+  background: ${({ theme }) => theme.colors.bg};
+box-shadow: 0 2px 3px 0 ${({ theme }) => theme.colors.shadow};
   font-size: 16px;
   cursor: pointer;
   border-radius: 6px;

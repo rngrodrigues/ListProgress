@@ -13,6 +13,7 @@ export const BodyModal = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
 `;
 
 
@@ -30,14 +31,16 @@ export const MainContainer = styled.div`
   max-height: 65rem;
   padding: 2.5rem;
   margin: 0 auto;
-  background-color: white;
-  border-radius: 2rem;  
+  background-color: ${({ theme }) => theme.colors.bg};
+  border-radius: 2rem; 
+  border: 1px solid ${({ theme }) => theme.colors.text}; 
   @media (max-width: 460px) {
     max-width: 23rem;
   }
 `;
 
 export const IconClose = styled(ArrowBackSvg)`
+fill:${({ theme }) => theme.colors.text};
   width: 1.5rem;
   height: 1.5rem;
   cursor: pointer;
@@ -56,6 +59,7 @@ align-items: center;
 
 gap: 1rem;
   .icon {
+   fill: ${({ theme }) => theme.colors.text};
    stroke: currentColor;
    stroke-width: 3;
     width: 2.5rem;

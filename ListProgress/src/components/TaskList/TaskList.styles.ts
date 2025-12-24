@@ -7,7 +7,7 @@ display:  flex;
 flex-direction: column;
 border-radius: 5rem;
 min-height: 94rem;
-background-color: white;
+background: ${({ theme }) => theme.colors.card};
 padding: 1.5rem;
 box-shadow: 0 3px 5px 1px black;
 @media(max-width:800px){
@@ -15,6 +15,7 @@ margin-top: 1.5rem;
 }
 `;
 export const ArrowBack = styled(ArrowBackSvg)`
+ fill:${({ theme }) => theme.colors.text};
   width: 5rem;
   height: 5rem;
   cursor: pointer;
@@ -63,6 +64,7 @@ export const IconsList = styled.div`
 display: flex;
   flex-wrap: nowrap;
 .icon {
+   fill: ${({ theme }) => theme.colors.text};
     max-width: 2.2rem;
     max-height: 2.2rem;
     cursor: pointer;
@@ -72,7 +74,7 @@ display: flex;
 export const ItemList = styled(motion.ul)`
 border-radius: 2rem;
 min-height: 5rem;
-box-shadow: 0 2px 2px 1px lightgray;
+box-shadow: 0 1px 2px 1px gray;
 display: flex;
 align-items: center;
 position: relative;
@@ -82,7 +84,7 @@ max-width: 120rem;
 padding: 0.3rem;
 font-size: 2.4rem;
  width: 100%;
-
+background: ${({ theme }) => theme.colors.itemList};
  input {
     margin-right: 1rem;
     cursor: pointer;
@@ -97,6 +99,7 @@ font-size: 2.4rem;
     cursor: pointer;
     }
     .UpIcon {
+    fill:${({ theme }) => theme.colors.text};
     cursor: pointer;
     flex-shrink: 0;
     width: 3rem;
@@ -106,6 +109,7 @@ font-size: 2.4rem;
 
 `;
 export const TextList = styled.li`
+color: ${({ theme }) => theme.colors.text};
 display: flex;
 align-items: center;
 text-align: center;
@@ -118,7 +122,7 @@ list-style: none;
 `;
 
 export const ItemDescription = styled.p`
-
+color:${({ theme }) => theme.colors.text};
 text-align: center; 
 white-space: pre-line;
 padding: 1rem;

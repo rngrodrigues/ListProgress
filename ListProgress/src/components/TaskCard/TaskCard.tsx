@@ -64,7 +64,7 @@ useEffect(() => {
 
   function flip(to: boolean) {
     setIsFlipping(true);
-    setTimeout(() => setExpanded(to), 150);
+    setTimeout(() => setExpanded(to), 50);
   }
 function handleDeleteCard() {
   setConfirmDeleteOpen(true);

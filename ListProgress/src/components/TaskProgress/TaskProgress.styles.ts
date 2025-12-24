@@ -12,7 +12,7 @@ export const TaskProgressContainer = styled.div<{ $progress: number }>`
   margin-top: 5rem;
   width: 100%;
   height: clamp(1.5rem, 2.5vw, 2.3rem);
-  background-color: #d9d9d9;
+  background-color: ${({ theme }) => theme.colors.progress};
   border-radius: 1rem;
   position: relative;
   overflow: hidden;

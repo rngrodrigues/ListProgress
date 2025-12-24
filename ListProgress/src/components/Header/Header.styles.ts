@@ -9,13 +9,13 @@ export const MainContainer = styled.div`
   justify-content: center;
   font-size: 2rem;
   color: ${({ theme }) => theme.colors.text};
-
+  
   @media (max-width: 800px) {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: ${({ theme }) => theme.colors.bg};
+    backdrop-filter: blur(0.4rem);
     box-shadow: 2px 0 10px ${({ theme }) => theme.colors.shadow};
     margin: 0;
     padding: 1rem;
@@ -77,7 +77,7 @@ export const MenuContainer = styled.div`
 
   a:hover {
    color: white;
-    background: gray;
+    background: lightgray;
     border-radius: 5rem;
   }
 
@@ -125,7 +125,7 @@ export const MobileMenuButton = styled.div`
     display: flex;
 
     svg {
-      fill: ${({ theme }) => theme.colors.text};
+   
       width: 4rem;
       height: 4rem;
       cursor: pointer;
@@ -158,7 +158,7 @@ export const MobileMenu = styled.div<{ $open: boolean }>`
   border-radius: 0 0 1rem 0;
   transform: ${({ $open }) =>
     $open ? "translateX(0)" : "translateX(-100%)"};
-  transition: transform 0.35s ease-in-out;
+  transition: all 0.35s ease-in-out;
 
   a {
     min-height: 100px;

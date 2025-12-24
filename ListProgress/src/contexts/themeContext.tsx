@@ -1,19 +1,35 @@
 import { createContext, useContext, useState } from "react";
+import type { ReactNode } from "react";
 import { ThemeProvider } from "styled-components";
-import { lightTheme, darkTheme } from "../themes.ts";
+import { lightTheme, darkTheme } from "../themes";
 
-const ThemeContext = createContext({ toggleTheme: () => {} });
+interface ThemeContextType {
+  toggleTheme: () => void;
+}
 
-export const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+const ThemeContext = createContext<ThemeContextType>({
+  toggleTheme: () => {},
+});
 
-  function toggleTheme() {
-    setTheme(prev => (prev === "light" ? "dark" : "light"));
-  }
+export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
+  const [themeName, setThemeName] = useState<"light" | "dark">(() => {
+    const saved = localStorage.getItem("theme");
+    return saved === "dark" ? "dark" : "light";
+  });
+
+  const toggleTheme = () => {
+    setThemeName(prev => {
+      const next = prev === "light" ? "dark" : "light";
+      localStorage.setItem("theme", next);
+      return next;
+    });
+  };
+
+  const theme = themeName === "light" ? lightTheme : darkTheme;
 
   return (
     <ThemeContext.Provider value={{ toggleTheme }}>
-      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+      <ThemeProvider theme={theme}>
         {children}
       </ThemeProvider>
     </ThemeContext.Provider>

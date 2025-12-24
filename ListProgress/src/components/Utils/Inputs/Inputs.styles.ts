@@ -6,11 +6,11 @@ export const SearchContainer = styled.div`
   justify-self: end;
   display: flex;
   align-items: center;
-  border: 1px solid gray;
+  border: 1px solid ${({ theme }) => theme.colors.text};;
   border-radius: 5rem;
-  padding: 1rem;
+  padding: 0.75rem;
   &:focus-within {
-    border: 2px solid black;
+    border: 2px solid ${({ theme }) => theme.colors.text};
   }
   @media (max-width: 800px) {
     border-radius: 1.5rem;
@@ -22,6 +22,7 @@ export const SearchContainer = styled.div`
     }
   }
     .icon{
+fill: ${({ theme }) => theme.colors.text};
 width: 2rem;
 height:2rem;
 margin: 0;
@@ -33,7 +34,7 @@ export const SearchInput = styled.input`
   padding: 0.5rem;
   margin-left: 0.5rem;
   border: none;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.text};;
   outline: none;
   color: black;
   font-size: 1.2rem;
@@ -54,11 +55,12 @@ export const TitleLabel = styled.label`
   margin-bottom: 0.25rem;
 `;
 export const TitleInput = styled.input`
+color: ${({ theme }) => theme.colors.text};
 background: transparent; 
 margin: 1rem;
 padding: 0.5rem;
  font-size: 1rem;
- border: 1px solid black;
+ border: 1px solid ${({ theme }) => theme.colors.text};
  height: 1.5rem;
 `;
 
@@ -69,11 +71,12 @@ export const CategoryLabel = styled.label`
 `;
 
 export const CategoryInput = styled.input `
+color: ${({ theme }) => theme.colors.text};
 background: transparent; 
 margin: 1rem;
 padding: 0.5rem;
 font-size: 1rem;
-border: 1px solid black;
+border: 1px solid ${({ theme }) => theme.colors.text};
 width: 19rem;
 height: 1.5rem;
 `;
@@ -85,11 +88,12 @@ export const DescriptionLabel = styled.label`
 `;
 
 export const DescriptionInput = styled.textarea `
+color: ${({ theme }) => theme.colors.text};
 margin: 1rem;
 padding: 0.5rem;
 background: transparent;
 font-size: 1rem; 
-border: 1px solid black;
+border: 1px solid ${({ theme }) => theme.colors.text};
 height: 6rem;
 `;
 export const CheckInput = styled.input`
@@ -101,10 +105,11 @@ export const CheckInput = styled.input`
   border: 2px solid lightgray;
   border-radius: 4px;
   position: relative;
-
+  padding:1rem;
   &:checked {
+    padding:1rem;
     background-color: black;
-    border-color: black;
+    border:1px solid lightgray;
   }
 
   &:checked::after {
@@ -138,7 +143,7 @@ font-size: 2rem;
 border: none;
 height: 2.5rem;
 &:has(input:focus) {
-border: 2px solid black;
+border: 2px solid ${({ theme }) => theme.colors.text};
   }
 `;
 export const PasswordContainer = styled.div `
@@ -162,7 +167,7 @@ font-size: 2rem;
 border: none;
 height: 2.5rem;
 &:has(input:focus) {
-border: 2px solid black;
+border: 2px solid ${({ theme }) => theme.colors.text};
   }
 `;
 export const EmailContainer = styled.div `
@@ -186,7 +191,7 @@ font-size: 2rem;
 border: none;
 height: 2.5rem;
 &:has(input:focus) {
-border: 2px solid black;
+border: 2px solid ${({ theme }) => theme.colors.text};
   }
 `;
 

@@ -5,11 +5,10 @@ import Login from "./pages/Login";
 import Historico from "./pages/Historico";
 import ComoUsar from "./pages/ComoUsar";
 import Faq from "./pages/SobreNos";
-import { ThemeContextProvider } from "./contexts/themeContext";
 
 const App = () => {
   return (
-    <ThemeContextProvider>
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
@@ -22,7 +21,7 @@ const App = () => {
           </Route>
         </Routes>
       </BrowserRouter>
-    </ThemeContextProvider>
+
   );
 };
 

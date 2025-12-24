@@ -37,6 +37,7 @@ align-items: center;
   font-size: 2.4rem;
   text-align: center;
   button {
+  color: ${({ theme }) => theme.colors.text};
   font-size: 2.4rem;
   cursor: pointer;
   background: transparent;

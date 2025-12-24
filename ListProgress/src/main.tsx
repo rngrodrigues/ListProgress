@@ -1,14 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { AuthProvider } from "./contexts/authContext.tsx";
-import './main.css'
-import App from './App.tsx'
+import { ThemeContextProvider } from "./contexts/themeContext";
+import { GlobalStyle } from "./GlobalStyle.ts";
+import App from './App.tsx';
+import "./reset.css";
 import "./toast.css";
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-    <App />
-    </AuthProvider>
+    <ThemeContextProvider>
+      <GlobalStyle />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </ThemeContextProvider>
   </StrictMode>
-)
+);

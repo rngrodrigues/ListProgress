@@ -8,6 +8,11 @@ declare module "styled-components" {
       shadow: string;
       hover: string;
       hoverText: string;
+      bodyBg: string;
+      card:string;
+      progress:string;
+      itemList:string;
     };
+    bgImage: string;
   }
 }
