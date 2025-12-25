@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MainContainer from "../../components/MainContainer";
 import Footer from "../../components/Footer";
 import { ModalAddCard } from "../../components/Modals";
@@ -9,129 +9,102 @@ import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { useAuth } from "../../contexts/authContext";
-import { toast } from "../../components/Utils/Toasts/Toasts.ts";
-import { useCardService } from "../../hooks/useCardServices.ts";
+import { toast } from "../../components/Utils/Toasts/Toasts";
+import { useCards } from "../../hooks/useCards";
+import type { Card } from "../../types/Card";
+
+const ITEMS_PER_PAGE = 6;
+
+const Home: React.FC = () => {
+  const { loading: authLoading } = useAuth();
+  const {
+    cards,
+    setCards,
+    addCard,
+    updateCard,
+    deleteCard,
+    loading: cardsLoading,
+  } = useCards();
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<Card | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [direction, setDirection] = useState<number>(0);
+  const [search, setSearch] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
 
 
-const Home = () => {
 
-  const { loading } = useAuth();
-  const cardsService = useCardService();
-  const [open, setOpen] = useState(false);
-  const [cards, setCards] = useState<any[]>([]);
-  const [selectedTask, setSelectedTask] = useState<any | null>(null);
-  const [page, setPage] = useState(0);
-  const [direction, setDirection] = useState(0);
-  const [search, setSearch] = useState("");
-  const [refreshKey, setRefreshKey] = useState(0);
+  const filteredCards = useMemo<Card[]>(() => {
+    if (!search.trim()) return cards;
 
-  const filteredCards = cards.filter((card) => {
-  if (!search.trim()) return true;
+    const term = search.toLowerCase();
 
-  const term = search.toLowerCase();
+    return cards.filter(
+      (card) =>
+        card.title.toLowerCase().includes(term) ||
+        card.category?.toLowerCase().includes(term)
+    );
+  }, [cards, search]);
 
-  return (
-    card.title?.toLowerCase().includes(term) ||
-    card.category?.toLowerCase().includes(term)
-  );
-});
+  const visibleCards = useMemo<Card[]>(() => {
+    return filteredCards.filter((c) => !c.completed);
+  }, [filteredCards]);
 
-  const ITEMS_PER_PAGE = 6;
-  const visibleCards = filteredCards.filter((c) => !c.completed);
+  const totalPages = useMemo<number>(() => {
+    return Math.max(1, Math.ceil(visibleCards.length / ITEMS_PER_PAGE));
+  }, [visibleCards.length]);
 
+  useEffect(() => {
+    setPage((prevPage) => {
+      const nextPage = Math.min(prevPage, totalPages - 1);
 
-useEffect(() => {
-  const totalPages = Math.max(
-    1,
-    Math.ceil(visibleCards.length / ITEMS_PER_PAGE)
-  );
+      if (nextPage < prevPage) {
+        setDirection(-1);
+      }
 
-  setPage((prevPage) => {
-    const nextPage = Math.min(prevPage, totalPages - 1);
-
-    if (nextPage < prevPage) {
-      setDirection(-1); 
-    }
-
-    return nextPage;
-  });
-}, [visibleCards.length]);
-
-
-useEffect(() => {
-
-  cardsService.list()
-    .then((data) => {
-      const ordered = data.sort((a: any, b: any) => {
-        if (a.position == null) return 1;
-        if (b.position == null) return -1;
-        return a.position - b.position;
-      });
-      setCards(ordered);
-    })
-    .catch((err) => {
-      console.error("Erro ao carregar cards:", err);
-      toast.error("Erro ao carregar suas listas.");
+      return nextPage;
     });
-}, [cardsService]); 
- 
-
-  async function handleAddCard(newCard: any) {
-  try {
-    const nextPosition = cards.length;
-    const payload = { ...newCard, position: nextPosition };
-
-   const createdCard = await cardsService.create(payload);
-
-
-    setCards((prev) => {
-      const list = [...prev, { ...createdCard, tasks: [] }];
-      const newIndex = list.length - 1;
-      const newPage = Math.floor(newIndex / ITEMS_PER_PAGE);
-
-      setDirection(newPage > page ? 1 : -1);
-      setPage(newPage);
-
-      return list.sort((a, b) => a.position - b.position);
-    });
-
-    toast.success("Lista criada com sucesso!");
-    setOpen(false);
-
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao criar a lista");
-  }
-}
-
-
-async function handleDeleteCard(id: string) {
-  try {
-    await cardsService.delete(id);
-
-
-    setCards((prevCards) => {
-      const next = prevCards
-        .filter((c) => c.id !== id)
-        .map((c, index) => ({ ...c, position: index }));
-
-      return next;
-    });
-
-    toast.successDelete("Lista removida com sucesso!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao remover a lista");
-  }
-}
+  }, [totalPages]);
 
   function handleChangePage(step: number) {
     setDirection(step);
     setPage((prev) => prev + step);
   }
 
-  if (loading) return null;
+  async function handleEditCard(id: string, updatedCard: Partial<Card>) {
+  try {
+    await updateCard(id, updatedCard);
+  } catch (err) {
+    console.error(err);
+    toast.error("Erro ao atualizar a lista");
+  }
+}
+
+
+if (authLoading || cardsLoading) return null;
+
+  async function handleAddCard(newCard: Partial<Card>) {
+    try {
+      await addCard(newCard);
+
+      const newIndex = cards.length;
+      const newPage = Math.floor(newIndex / ITEMS_PER_PAGE);
+
+      setDirection(newPage > page ? 1 : -1);
+      setPage(newPage);
+
+      toast.success("Lista criada com sucesso!");
+      setOpen(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao criar a lista");
+    }
+  }
+
+ async function handleDeleteCard(id: string) {
+  return deleteCard(id);
+}
 
   return (
     <>
@@ -148,12 +121,14 @@ async function handleDeleteCard(id: string) {
       <MainContainer>
         {!selectedTask && (
           <TopContainer>
-            <AddBtn onClick={() => setOpen(true)}>Adicionar lista</AddBtn>
-            <SearchInput
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
+            <AddBtn onClick={() => setOpen(true)}>
+              Adicionar lista
+            </AddBtn>
 
+            <SearchInput
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </TopContainer>
         )}
 
@@ -167,19 +142,21 @@ async function handleDeleteCard(id: string) {
               transition={{ duration: 0.3 }}
             >
               <TaskList
-                className="task-card"
+                
                 id={selectedTask.id}
                 title={selectedTask.title}
                 category={selectedTask.category}
                 description={selectedTask.description}
-                 onBack={() => {
-    setSelectedTask(null);
-    setRefreshKey(prev => prev + 1);
-  }}
-                onCardUpdate={(updatedCard) => {
+                onBack={() => {
+                  setSelectedTask(null);
+                  setRefreshKey((prev) => prev + 1);
+                }}
+                onCardUpdate={(updatedCard: Card) => {
                   setCards((prev) =>
                     prev.map((c) =>
-                      c.id === updatedCard.id ? { ...c, ...updatedCard } : c
+                      c.id === updatedCard.id
+                        ? { ...c, ...updatedCard }
+                        : c
                     )
                   );
                 }}
@@ -194,22 +171,17 @@ async function handleDeleteCard(id: string) {
               transition={{ duration: 0.2 }}
             >
               <TaskBoard
-              key={refreshKey}
-          cards={visibleCards}
-                page={page}
-                direction={direction}
-                onChangePage={handleChangePage}
-                onEdit={(updated) =>
-                  setCards((prev) =>
-                    prev.map((c) =>
-                      c.id === updated.id ? { ...c, ...updated } : c
-                    )
-                  )
-                }
-                onDelete={handleDeleteCard}
-                onSelect={setSelectedTask}
-                emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
-              />
+  key={refreshKey}
+  cards={visibleCards}
+  page={page}
+  direction={direction}
+  onChangePage={handleChangePage}
+  onEdit={handleEditCard}
+  onDelete={handleDeleteCard}
+  onSelect={setSelectedTask}
+  emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
+/>
+
             </motion.div>
           )}
         </AnimatePresence>

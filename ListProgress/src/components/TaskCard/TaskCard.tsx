@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   IconsList,
   TaskCategory,
@@ -13,10 +13,7 @@ import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalEditCard, ModalConfirm } from "../../components/Modals";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
-import { useCardService } from "../../hooks/useCardServices";
-import { useTaskService } from "../../hooks/useTaskServices";
-import { toast } from "../Utils/Toasts/Toasts";
-
+import { useTask } from "../../hooks/useTask";
 
 export type TaskCardProps = {
   className: string;
@@ -25,8 +22,8 @@ export type TaskCardProps = {
   category: string;
   description: string;
   onClick?: () => void;
-  onEdit?: (updatedCard: any) => void;
-  onDelete?: (id: string) => void;
+  onEdit?: (id: string, updatedCard: any) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
 };
 
 export const TaskCard = ({
@@ -39,54 +36,18 @@ export const TaskCard = ({
   onEdit,
   onDelete
 }: TaskCardProps) => {
-
   const [expanded, setExpanded] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [open, setOpen] = useState(false);
-  const [cardTasks, setCardTasks] = useState<any[]>([]);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const cardService = useCardService();
-  const taskService = useTaskService();
 
-useEffect(() => {
-  async function fetchTasks() {
-    try {
-      const data = await taskService.listByCard(id);
-      setCardTasks(data);
-    } catch (err) {
-      console.error("Erro ao carregar tasks:", err);
-    }
-  }
 
-  fetchTasks();
-}, [id, taskService]);
-
+  const { tasks } = useTask(id);
 
   function flip(to: boolean) {
     setIsFlipping(true);
     setTimeout(() => setExpanded(to), 50);
   }
-function handleDeleteCard() {
-  setConfirmDeleteOpen(true);
-}
-
-
-async function handleEditCard(updatedCard: any) {
-  try {
-    const data = await cardService.update(id, updatedCard);
-
-    if (onEdit) onEdit(data);
-
-    toast.info("Lista atualizada com sucesso!");
-    setOpen(false);
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao atualizar a lista");
-  }
-}
-
-
-
 
   return (
     <>
@@ -96,27 +57,29 @@ async function handleEditCard(updatedCard: any) {
             isOpen={open}
             onClose={() => setOpen(false)}
             card={{ id, title, category, description }}
-              onEditCard={handleEditCard}
+            onEditCard={async (updatedCard) => {
+              if (onEdit) await onEdit(id, updatedCard);
+              setOpen(false);
+            }}
           />
         )}
       </AnimatePresence>
-      
-            <AnimatePresence>
-  {confirmDeleteOpen && (
-    <ModalConfirm
-      isOpen={confirmDeleteOpen}
-      onClose={() => setConfirmDeleteOpen(false)}
-      message="Tem certeza que deseja remover essa card? Essa ação é permanente."
-      confirmText="Excluir"
-      cancelText="Cancelar"
-      onConfirm={() => {
-        if (onDelete) onDelete(id);
-        setConfirmDeleteOpen(false);
-      }}
-    />
-  )}
-</AnimatePresence>
 
+      <AnimatePresence>
+        {confirmDeleteOpen && (
+          <ModalConfirm
+            isOpen={confirmDeleteOpen}
+            onClose={() => setConfirmDeleteOpen(false)}
+            message="Tem certeza que deseja remover essa card? Essa ação é permanente."
+            confirmText="Excluir"
+            cancelText="Cancelar"
+            onConfirm={async () => {
+              if (onDelete) await onDelete(id);
+              setConfirmDeleteOpen(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <motion.div
         className={className}
@@ -136,13 +99,13 @@ async function handleEditCard(updatedCard: any) {
                     setOpen(true);
                   }}
                 />
-               <TrashIcon
-  className="icons delete"
-  onClick={(e) => {
-    e.stopPropagation();
-    handleDeleteCard();
-  }}
-/>
+                <TrashIcon
+                  className="icons delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmDeleteOpen(true);
+                  }}
+                />
               </IconsList>
 
               <BackIcon
@@ -160,7 +123,7 @@ async function handleEditCard(updatedCard: any) {
               <TaskCategory>{category}</TaskCategory>
               <TaskTitle>{title}</TaskTitle>
 
-              <TaskProgress tasks={cardTasks} />
+              <TaskProgress tasks={tasks} />
 
               <IIcon
                 className="icon"

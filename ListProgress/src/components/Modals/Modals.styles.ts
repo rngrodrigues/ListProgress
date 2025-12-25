@@ -101,7 +101,7 @@ export const ModalConfirmBtn = styled.button<{ disabled?: boolean }>`
   pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
   transition: background-color 0.2s;
   &:hover {
-    background-color: #45a049;
+    background-color: #b95c5cff;
   }
 `;
 

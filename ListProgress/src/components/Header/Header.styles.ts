@@ -87,6 +87,7 @@ export const MenuContainer = styled.div`
     height: 2.5rem;
     margin: 0 1rem;
     cursor: pointer;
+      transition: transform 0.4s ease;
   }
 
   @media (max-width: 800px) {
@@ -285,6 +286,7 @@ export const MobileThemeToggle = styled.div`
   svg {
     width: 2.2rem;
     height: 2.2rem;
+      transition: transform 0.4s ease;
   }
 `;
 

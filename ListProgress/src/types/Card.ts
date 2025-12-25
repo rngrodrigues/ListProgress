@@ -5,4 +5,5 @@ export interface Card {
   description?: string;
   created_at: string;
   completed: boolean;
+  position: number;
 }

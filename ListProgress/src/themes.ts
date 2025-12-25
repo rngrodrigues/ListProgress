@@ -8,7 +8,7 @@ export const lightTheme: DefaultTheme = {
     shadow: "rgba(0,0,0,0.8)",
     hover: "black",
     hoverText: "white",
-    card: "linear-gradient(to left, white, whitesmoke)",
+    card: "linear-gradient(to left, white, ghostwhite)",
     progress:"#d9d9d9",
     itemList:"white",
   },

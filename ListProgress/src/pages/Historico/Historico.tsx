@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MainContainer from "../../components/MainContainer";
 import Footer from "../../components/Footer";
 import { motion } from "framer-motion";
@@ -6,77 +6,59 @@ import { TaskList } from "../../components/TaskList/TaskList";
 import { HistoricoTopContainer } from "./Historico.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
+import { useCards } from "../../hooks/useCards";
 
-import { apiFetch } from "../../services/apiFetch";
+const ITEMS_PER_PAGE = 6;
 
 const Historico = () => {
-  const [cards, setCards] = useState<any[]>([]);
+  const { cards, setCards, updateCard, deleteCard, loading } = useCards();
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(0);
   const [search, setSearch] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
-    const filteredCompletedCards = cards.filter((card) => {
-  if (!card.completed) return false;
+  const filteredCompletedCards = useMemo(() => {
+    return cards.filter((card) => {
+      if (!card.completed) return false;
+      if (!search.trim()) return true;
 
-  if (!search.trim()) return true;
+      const term = search.toLowerCase();
+      return (
+        card.title?.toLowerCase().includes(term) ||
+        card.category?.toLowerCase().includes(term)
+      );
+    });
+  }, [cards, search]);
 
-  const term = search.toLowerCase();
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredCompletedCards.length / ITEMS_PER_PAGE));
+  }, [filteredCompletedCards.length]);
 
-  return (
-    card.title?.toLowerCase().includes(term) ||
-    card.category?.toLowerCase().includes(term)
-  );
-});
-
-   const ITEMS_PER_PAGE = 6;
-    const visibleCards = filteredCompletedCards.filter((c) => c.completed);
-
-    useEffect(() => {
-  const totalPages = Math.max(
-    1,
-    Math.ceil(visibleCards.length / ITEMS_PER_PAGE)
-  );
-
-  setPage((prevPage) => {
-    const nextPage = Math.min(prevPage, totalPages - 1);
-
-    if (nextPage < prevPage) {
-      setDirection(-1); 
-    }
-
-    return nextPage;
-  });
-}, [visibleCards.length]);
+  useEffect(() => {
+    setPage((prevPage) => {
+      const nextPage = Math.min(prevPage, totalPages - 1);
+      if (nextPage < prevPage) setDirection(-1);
+      return nextPage;
+    });
+  }, [totalPages]);
 
   function handleChangePage(step: number) {
     setDirection(step);
-    setPage(prev => prev + step);
+    setPage((prev) => prev + step);
   }
 
-  useEffect(() => {
-    apiFetch("/cards")
-      .then((data) => {
-        const ordered = data.sort((a: any, b: any) => {
-          if (a.position == null) return 1;
-          if (b.position == null) return -1;
-          return a.position - b.position;
-        });
-
-        setCards(ordered);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar cards:", err);
-      });
-  }, []);
+  if (loading) return null;
 
   return (
     <>
       <MainContainer>
         {!selectedTask && (
           <HistoricoTopContainer>
-            <SearchInput value={search}
-  onChange={(e) => setSearch(e.target.value)} />
+            <SearchInput
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </HistoricoTopContainer>
         )}
 
@@ -89,18 +71,18 @@ const Historico = () => {
             style={{ width: "100%" }}
           >
             <TaskList
-              className="task-card"
               id={selectedTask.id}
               title={selectedTask.title}
               category={selectedTask.category}
               description={selectedTask.description}
-              onBack={() => setSelectedTask(null)}
+              onBack={() => {
+                setSelectedTask(null);
+                setRefreshKey((prev) => prev + 1);
+              }}
               onCardUpdate={(updatedCard) => {
-                setCards(prev =>
-                  prev.map(c =>
-                    c.id === updatedCard.id
-                      ? { ...c, ...updatedCard }
-                      : c
+                setCards((prev) =>
+                  prev.map((c) =>
+                    c.id === updatedCard.id ? { ...c, ...updatedCard } : c
                   )
                 );
               }}
@@ -111,23 +93,14 @@ const Historico = () => {
         {!selectedTask && (
           <TaskBoard
             cards={filteredCompletedCards}
-            onEdit={(updated) =>
-              setCards(prev =>
-                prev.map(c =>
-                  c.id === updated.id
-                    ? { ...c, ...updated }
-                    : c
-                )
-              )
-            }
-            onDelete={(id) =>
-              setCards(prev => prev.filter(c => c.id !== id))
-            }
-            onSelect={setSelectedTask}
-            emptyMessage="Todas as suas tarefas concluídas aparecerão aqui."
             page={page}
             direction={direction}
             onChangePage={handleChangePage}
+            onEdit={updateCard}
+            onDelete={deleteCard}
+            onSelect={setSelectedTask}
+            emptyMessage="Todas as suas tarefas concluídas aparecerão aqui."
+            key={refreshKey}
           />
         )}
       </MainContainer>

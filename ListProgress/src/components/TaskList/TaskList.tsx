@@ -11,7 +11,7 @@ import {
   TextList,
   ItemDescription
 } from "./TaskList.styles";
-import type { TaskCardProps } from "../TaskCard/TaskCard";
+
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg";
 import { ReactComponent as IIcon } from "../../assets/icons/i.svg";
@@ -20,39 +20,33 @@ import { AddBtn } from "../Utils/Buttons";
 import { CheckInput } from "../Utils/Inputs";
 import { TaskProgress } from "../TaskProgress/TaskProgress";
 import { ModalAddTask, ModalEditTask, ModalConfirm } from "../../components/Modals";
-import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTaskService } from "../../hooks/useTaskServices";
-import { useCardService } from "../../hooks/useCardServices";
-import { toast } from "../Utils/Toasts/Toasts";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "../Utils/Toasts/Toasts";
+import type { Task } from "../../types/Task";
+import type { Card } from "../../types/Card";
+import { useTask } from "../../hooks/useTask";
 
-type TaskListProps = TaskCardProps & {
+type TaskListProps = {
   id: string;
   title: string;
-  description: string;
-  category: string;
+  description?: string;
+  category?: string;
   onBack: () => void;
-  onCardUpdate?: (updatedCard: any) => void;
+  onCardUpdate?: (updatedCard: Card) => void;
 };
 
-export const TaskList = ({
-  id,
-  title,
-  category,
-  onBack,
-  onCardUpdate
-}: TaskListProps) => {
+export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskListProps) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [selectedTask, setSelectedTask] = useState<any | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [flipState, setFlipState] = useState<Record<string, { expanded: boolean; isFlipping: boolean }>>({});
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
-  const taskService = useTaskService();
-  const cardService = useCardService();
   const navigate = useNavigate();
+
+  const { tasks, addTask, editTask, deleteTask, toggleCompleted: toggleTaskCompletion } = useTask(id, onCardUpdate);
 
   function flip(taskId: string, to: boolean) {
     setFlipState((prev) => ({
@@ -63,125 +57,25 @@ export const TaskList = ({
     setTimeout(() => {
       setFlipState((prev) => ({
         ...prev,
-        [taskId]: {
-          expanded: to,
-          isFlipping: false
-        }
+        [taskId]: { expanded: to, isFlipping: false }
       }));
     }, 150);
   }
 
-  useEffect(() => {
-  taskService
-    .listByCard(id)
-    .then((data: any[]) => {
-      const ordered = data.sort((a, b) => {
-        if (a.position == null) return 1;
-        if (b.position == null) return -1;
-        return a.position - b.position;
-      });
-      setTasks(ordered);
-    })
-    .catch((err: any) => {
-      console.error("Erro ao carregar tasks:", err);
-      toast.error("Erro ao carregar tarefas!");
-    });
-}, [id, taskService]);
 
-
-  async function handleAddTask(newTask: any) {
-  try {
-    const nextPosition = tasks.length;
-    const payload = { ...newTask, position: nextPosition, card_id: id };
-
-    const createdTask = await taskService.create(payload);
-
-    setTasks((prev) =>
-      [...prev, createdTask].sort((a, b) => a.position - b.position)
-    );
-
-    toast.success("Tarefa adicionada com sucesso!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao adicionar tarefa!");
-  }
-
-  setOpenAdd(false);
-}
-
-
-  async function handleEditTask(updatedTask: any) {
-  try {
-    const data = await taskService.update(updatedTask.id, updatedTask);
-
-    setTasks((prev) =>
-      prev.map((t) => (t.id === updatedTask.id ? data : t))
-    );
-
-    toast.info("Tarefa atualizada com sucesso!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao atualizar tarefa!");
-  }
-
-  setOpenEdit(false);
-}
-
-
-  async function handleDeleteTask(taskId: string) {
-  try {
-    await taskService.delete(taskId);
-
-    setTasks((prev) => {
-      const filtered = prev.filter((t) => t.id !== taskId);
-
-      const reindexed = filtered.map((t, index) => ({
-        ...t,
-        position: index,
-      }));
-
-      reindexed.forEach((t) => {
-        taskService.update(t.id, { position: t.position });
-      });
-
-      return reindexed;
-    });
-
-    toast.successDelete("Tarefa removida com sucesso!");
-  } catch (err) {
-    console.error("Erro ao deletar tarefa:", err);
-    toast.error("Erro ao remover tarefa!");
-  }
-}
-
-
-   async function toggleTaskCompleted(taskId: string) {
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
-
-    const updatedTask = { ...task, completed: !task.completed };
-
+  async function toggleCompleted(taskId: string) {
     try {
-      const savedTask = await taskService.update(taskId, updatedTask);
-
-      const updatedTasks = tasks.map((t) => (t.id === taskId ? savedTask : t));
-
-      setTasks(updatedTasks);
-
-      const allCompleted = updatedTasks.every((t) => t.completed);
-      await cardService.update(id, { completed: allCompleted });
-      if (onCardUpdate) onCardUpdate({ id, completed: allCompleted });
-
-      
+      await toggleTaskCompletion(taskId);
+      const allCompleted = tasks.every((t) => t.id === taskId ? !t.completed : t.completed);
       if (allCompleted) {
-        navigate('/home');
-        toast.success("Parabéns! Você completou essa lista."); 
+        toast.success("Parabéns! Você completou essa lista.");
+        navigate("/home");
       }
     } catch (err) {
-      console.error("Erro ao atualizar tarefa ou card:", err);
+      console.error("Erro ao atualizar tarefa:", err);
+      toast.error("Erro ao atualizar tarefa");
     }
   }
-
 
   return (
     <BodyList>
@@ -190,7 +84,10 @@ export const TaskList = ({
           <ModalAddTask
             isOpen={openAdd}
             onClose={() => setOpenAdd(false)}
-            onAddTask={handleAddTask}
+            onAddTask={async (task) => {
+              await addTask(task);
+              setOpenAdd(false);
+            }}
             card_id={id}
           />
         )}
@@ -202,7 +99,10 @@ export const TaskList = ({
             isOpen={openEdit}
             onClose={() => setOpenEdit(false)}
             task={selectedTask}
-            onEditTask={handleEditTask}
+            onEditTask={async (task) => {
+              await editTask(task);
+              setOpenEdit(false);
+            }}
           />
         )}
       </AnimatePresence>
@@ -210,27 +110,25 @@ export const TaskList = ({
       <AnimatePresence>
         {confirmDeleteOpen && taskToDelete && (
           <ModalConfirm
-  isOpen={confirmDeleteOpen}
-  onClose={() => setConfirmDeleteOpen(false)}
-  message="Tem certeza que deseja excluir essa tarefa? Essa ação é permanente."
-  onConfirm={async () => {
-    if (!taskToDelete) return;
-    await handleDeleteTask(taskToDelete);
-    setTaskToDelete(null);
-    setConfirmDeleteOpen(false);
-  }}
-  confirmText="Excluir"
-  cancelText="Cancelar"
-/>
-
+            isOpen={confirmDeleteOpen}
+            onClose={() => setConfirmDeleteOpen(false)}
+            message="Tem certeza que deseja excluir essa tarefa? Essa ação é permanente."
+            onConfirm={async () => {
+              if (!taskToDelete) return;
+              await deleteTask(taskToDelete);
+              setTaskToDelete(null);
+              setConfirmDeleteOpen(false);
+            }}
+            confirmText="Excluir"
+            cancelText="Cancelar"
+          />
         )}
       </AnimatePresence>
 
       <TopContainer>
-        <TaskCategory>{category}</TaskCategory>
+        <TaskCategory>{category ?? ""}</TaskCategory>
         <ArrowBack className="icon" onClick={onBack} />
       </TopContainer>
-
       <TaskTitle>{title}</TaskTitle>
 
       <MidContainer>
@@ -239,61 +137,25 @@ export const TaskList = ({
           const isFlipping = flipState[task.id]?.isFlipping ?? false;
 
           return (
-            <motion.div
-              key={task.id}
-              animate={{ rotateX: isFlipping ? 90 : 0 }}
-              transition={{ duration: 0.2 }}
-              style={{ transformStyle: "preserve-3d" }}
-            >
+            <motion.div key={task.id} animate={{ rotateX: isFlipping ? 90 : 0 }} transition={{ duration: 0.2 }} style={{ transformStyle: "preserve-3d" }}>
               <ItemList layout transition={{ duration: 0.2, ease: "easeInOut" }}>
                 {expanded ? (
                   <>
-             
                     <ItemDescription className={task.completed ? "completed" : ""}>
-                      {task.description}
+                      {task.description ?? ""}
                     </ItemDescription>
-                    <UpIcon
-                      className="UpIcon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        flip(task.id, false);
-                      }}
-                      
-                    />
-                   
+                    <UpIcon className="UpIcon" onClick={(e) => { e.stopPropagation(); flip(task.id, false); }} />
                   </>
                 ) : (
                   <>
                     <TextList className={task.completed ? "completed" : ""}>
-                      <CheckInput
-                        checked={task.completed ?? false}
-                        onChange={() => toggleTaskCompleted(task.id)}
-                      />
+                      <CheckInput checked={task.completed ?? false} onChange={() => toggleCompleted(task.id)} />
                       {task.title}
                     </TextList>
-
                     <IconsList>
-                      <EditIcon
-                        className="icon"
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setOpenEdit(true);
-                        }}
-                      />
-                      <TrashIcon
-                        className="icon"
-                        onClick={() => {
-                          setTaskToDelete(task.id);
-                          setConfirmDeleteOpen(true);
-                        }}
-                      />
-                      <IIcon
-                        className="icon IIcon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          flip(task.id, true);
-                        }}
-                      />
+                      <EditIcon className="icon edit" onClick={() => { setSelectedTask(task); setOpenEdit(true); }} />
+                      <TrashIcon className="icon trash" onClick={() => { setTaskToDelete(task.id); setConfirmDeleteOpen(true); }} />
+                      <IIcon className="icon IIcon" onClick={(e) => { e.stopPropagation(); flip(task.id, true); }} />
                     </IconsList>
                   </>
                 )}

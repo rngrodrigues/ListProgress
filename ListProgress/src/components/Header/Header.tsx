@@ -35,6 +35,15 @@ const Header = () => {
   const desktopMenuRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
+  const [isDark, setIsDark] = useState(false);
+
+  function handleToggleTheme() {
+  setIsDark(prev => !prev );
+  toggleTheme();
+}
+
+
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
@@ -84,7 +93,14 @@ const Header = () => {
           <NavLink to="/historico">Histórico</NavLink>
           <NavLink to="/comousar">Como usar?</NavLink>
           <NavLink to="/sobre">Sobre nós</NavLink>
-          <DayNightIcon className="icon" onClick={toggleTheme} />
+          <DayNightIcon
+  className="icon"
+  style={{
+    transform: isDark ? "rotate(180deg)" : "rotate(0deg)",
+  }}
+  onClick={handleToggleTheme}
+/>
+
         </MenuContainer>
 
         <LoginContainer>
@@ -171,7 +187,13 @@ const Header = () => {
             )}
 
             <MobileThemeToggle>
-              <DayNightIcon onClick={toggleTheme} />
+              <DayNightIcon
+  style={{
+    transform: isDark ? "rotate(180deg)" : "rotate(0deg)",
+  }}
+  onClick={handleToggleTheme}
+/>
+
             </MobileThemeToggle>
           </MobileFooter>
         </MobileMenu>

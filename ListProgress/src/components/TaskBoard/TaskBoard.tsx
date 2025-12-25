@@ -1,7 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { GridContainer, MainParagrafo, PaginationContainer } from "./TaskBoard.styles";
+import {
+  GridContainer,
+  MainParagrafo,
+  PaginationContainer
+} from "./TaskBoard.styles";
 import { TaskCard } from "../TaskCard";
 import { usePagination } from "../../hooks/usePagination";
+import type { Card } from "../../types/Card";
 
 const pageVariants = {
   enter: (direction: number) => ({
@@ -21,6 +26,17 @@ const pageVariants = {
   })
 };
 
+type TaskBoardProps = {
+  cards: Card[];
+  onEdit?: (id: string, updatedCard: Partial<Card>) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+  onSelect: (card: Card) => void;
+  emptyMessage: string;
+  page: number;
+  direction: number;
+  onChangePage: (direction: number) => void;
+};
+
 export const TaskBoard = ({
   cards,
   onEdit,
@@ -30,25 +46,16 @@ export const TaskBoard = ({
   page,
   direction,
   onChangePage,
-}: {
-  cards: any[];
-  onEdit: (card: any) => void;
-  onDelete: (id: string) => void;
-  onSelect: (card: any) => void;
-  emptyMessage: string;
-  page: number;
-  direction: number;
-  onChangePage: (direction: number) => void;
-}) => {
+}: TaskBoardProps) => {
 
   const {
     totalPages,
     currentTasks,
-  } = usePagination(cards, 6, page); 
+  } = usePagination(cards, 6, page);
+
   return (
     <>
       <AnimatePresence initial={false} custom={direction}>
-        
         <motion.div
           key={page}
           variants={pageVariants}
@@ -59,7 +66,6 @@ export const TaskBoard = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
           style={{ width: "100%" }}
         >
-          
           <GridContainer $isSingle={currentTasks.length === 1}>
             {cards.length === 0 && (
               <MainParagrafo>{emptyMessage}</MainParagrafo>
@@ -67,17 +73,16 @@ export const TaskBoard = ({
 
             {currentTasks.map(card => (
               <TaskCard
-                className="task-card"
                 key={card.id}
+                className="task-card"
                 {...card}
                 onClick={() => onSelect(card)}
                 onEdit={onEdit}
-                onDelete={(id) => onDelete(id)}
+                onDelete={onDelete}
               />
             ))}
           </GridContainer>
         </motion.div>
-       
       </AnimatePresence>
 
       <PaginationContainer>

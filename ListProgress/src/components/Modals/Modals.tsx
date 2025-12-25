@@ -121,8 +121,8 @@ interface IModalEditCard {
   card: {
     id: string;
     title: string;
-    category: string;
-    description: string;
+    category?: string;
+    description?: string;
   };
   onEditCard: (updatedCard: any) => void;
 }
@@ -132,13 +132,14 @@ export const ModalEditCard: React.FC<IModalEditCard> = ({ isOpen, onClose, card,
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    if (card && isOpen) {
-      setTitle(card.title);
-      setCategory(card.category);
-      setDescription(card.description);
-    }
-  }, [card, isOpen]);
+useEffect(() => {
+  if (card && isOpen) {
+    setTitle(card.title);
+    setCategory(card.category ?? "");
+    setDescription(card.description ?? "");
+  }
+}, [card, isOpen]);
+
 
   function handleConfirm() {
     onEditCard({ ...card, title, category, description });
@@ -215,7 +216,7 @@ interface IModalEditTask {
   onClose: () => void;
   task: {
     title: string;
-    description: string;
+    description?: string;
   };
   onEditTask: (updatedTask: any) => void;
 }
@@ -227,7 +228,7 @@ export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task,
   useEffect(() => {
     if (task && isOpen) {
       setTitle(task.title);
-      setDescription(task.description);
+      setDescription(task.description ?? "");
     }
   }, [task, isOpen]);
 

@@ -24,6 +24,10 @@ export const ArrowBack = styled(ArrowBackSvg)`
   right: 5rem;
   margin-right: 0;
   cursor: pointer;
+  transition: transform 0.35s ease;
+  &:hover {
+  transform:scale(1.1);
+  }
 `;
 export const TopContainer = styled.div`
 display: flex;
@@ -70,6 +74,25 @@ display: flex;
     cursor: pointer;
     margin: auto 0.5rem;
   }
+     .IIcon {
+     transition: transform 0.15s ease;
+     }
+     .IIcon:hover {
+     transform:scale(1.25);
+     }
+     
+     .edit {
+    transition: fill 0.25s ease;
+    }
+    .edit:hover {
+    fill: darkblue;
+    }
+    .trash {
+    transition: fill 0.25s ease;
+    }
+    .trash:hover {
+    fill: red;
+    }
 `;
 export const ItemList = styled(motion.ul)`
 border-radius: 2rem;
