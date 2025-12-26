@@ -30,6 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     storage.setItem("user", JSON.stringify(user));
     storage.setItem("token", token);
+    localStorage.removeItem("demo_start_time");
+
 
     setUser(user);
   }

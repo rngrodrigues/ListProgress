@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "../components/Utils/Toasts/Toasts";
 import { useCardService } from "./useCardServices";
+import { isDemoExpired, clearDemoData } from "../services/cardDemoService";
 
 export function useCards() {
   const cardsService = useCardService();
@@ -9,6 +10,19 @@ export function useCards() {
 
   useEffect(() => {
     const fetchCards = async () => {
+      const demoExpired = isDemoExpired();
+      
+      if (demoExpired) {
+        toast.info("Modo Demo expirado!");
+        clearDemoData();
+
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1000); 
+
+        return; 
+      }
+
       try {
         const data = await cardsService.list();
         const ordered = data.sort((a: any, b: any) => {
@@ -28,7 +42,18 @@ export function useCards() {
     fetchCards();
   }, [cardsService]);
 
+  // Adicionando um card
   async function addCard(newCard: any) {
+    const demoExpired = isDemoExpired(); 
+    if (demoExpired) {
+      toast.info("Modo Demo expirado!");
+      clearDemoData();
+      setTimeout(() => {
+        window.location.href = "/login";  
+      }, 1000);
+      return; // Não continua com a criação do card
+    }
+
     try {
       const payload = { ...newCard, position: cards.length };
       const created = await cardsService.create(payload);
@@ -41,7 +66,18 @@ export function useCards() {
     }
   }
 
+  // Atualizando um card
   async function updateCard(id: string, updatedCard: any) {
+    const demoExpired = isDemoExpired(); 
+    if (demoExpired) {
+      toast.info("Modo Demo expirado!");
+      clearDemoData();
+      setTimeout(() => {
+        window.location.href = "/login";  
+      }, 1000);
+      return; // Não continua com a atualização do card
+    }
+
     try {
       const data = await cardsService.update(id, updatedCard);
       setCards((prev) =>
@@ -54,14 +90,24 @@ export function useCards() {
     }
   }
 
+  // Deletando um card
   async function deleteCard(id: string) {
+    const demoExpired = isDemoExpired(); 
+    if (demoExpired) {
+      toast.info("Modo Demo expirado!");
+      clearDemoData();
+      setTimeout(() => {
+        window.location.href = "/login";  
+      }, 1000);
+      return; // Não continua com a exclusão do card
+    }
+
     try {
       await cardsService.delete(id);
       setCards((prev) =>
         prev
           .filter((c) => c.id !== id)
-          .map((c, index) => ({ ...c, position: index }))
-      );
+          .map((c, index) => ({ ...c, position: index })));
       toast.successDelete("Lista removida com sucesso!");
     } catch (err) {
       console.error("Erro ao deletar card:", err);

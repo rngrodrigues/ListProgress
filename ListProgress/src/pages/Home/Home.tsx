@@ -9,7 +9,6 @@ import { TopContainer } from "./Home.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { useAuth } from "../../contexts/authContext";
-import { toast } from "../../components/Utils/Toasts/Toasts";
 import { useCards } from "../../hooks/useCards";
 import type { Card } from "../../types/Card";
 
@@ -19,7 +18,6 @@ const Home: React.FC = () => {
   const { loading: authLoading } = useAuth();
   const {
     cards,
-    setCards,
     addCard,
     updateCard,
     deleteCard,
@@ -30,16 +28,11 @@ const Home: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [direction, setDirection] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
-  const [refreshKey, setRefreshKey] = useState<number>(0);
-
-
-
 
   const filteredCards = useMemo<Card[]>(() => {
     if (!search.trim()) return cards;
 
     const term = search.toLowerCase();
-
     return cards.filter(
       (card) =>
         card.title.toLowerCase().includes(term) ||
@@ -72,39 +65,7 @@ const Home: React.FC = () => {
     setPage((prev) => prev + step);
   }
 
-  async function handleEditCard(id: string, updatedCard: Partial<Card>) {
-  try {
-    await updateCard(id, updatedCard);
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro ao atualizar a lista");
-  }
-}
-
-
-if (authLoading || cardsLoading) return null;
-
-  async function handleAddCard(newCard: Partial<Card>) {
-    try {
-      await addCard(newCard);
-
-      const newIndex = cards.length;
-      const newPage = Math.floor(newIndex / ITEMS_PER_PAGE);
-
-      setDirection(newPage > page ? 1 : -1);
-      setPage(newPage);
-
-      toast.success("Lista criada com sucesso!");
-      setOpen(false);
-    } catch (err) {
-      console.error(err);
-      toast.error("Erro ao criar a lista");
-    }
-  }
-
- async function handleDeleteCard(id: string) {
-  return deleteCard(id);
-}
+  if (authLoading || cardsLoading) return null;
 
   return (
     <>
@@ -113,7 +74,7 @@ if (authLoading || cardsLoading) return null;
           <ModalAddCard
             isOpen={open}
             onClose={() => setOpen(false)}
-            onAddCard={handleAddCard}
+            onAddCard={addCard}  
           />
         )}
       </AnimatePresence>
@@ -142,24 +103,12 @@ if (authLoading || cardsLoading) return null;
               transition={{ duration: 0.3 }}
             >
               <TaskList
-                
                 id={selectedTask.id}
                 title={selectedTask.title}
                 category={selectedTask.category}
                 description={selectedTask.description}
-                onBack={() => {
-                  setSelectedTask(null);
-                  setRefreshKey((prev) => prev + 1);
-                }}
-                onCardUpdate={(updatedCard: Card) => {
-                  setCards((prev) =>
-                    prev.map((c) =>
-                      c.id === updatedCard.id
-                        ? { ...c, ...updatedCard }
-                        : c
-                    )
-                  );
-                }}
+                onBack={() => setSelectedTask(null)}
+                onCardUpdate={(updatedCard: Card) => updateCard(updatedCard.id, updatedCard)}  
               />
             </motion.div>
           ) : (
@@ -171,17 +120,15 @@ if (authLoading || cardsLoading) return null;
               transition={{ duration: 0.2 }}
             >
               <TaskBoard
-  key={refreshKey}
-  cards={visibleCards}
-  page={page}
-  direction={direction}
-  onChangePage={handleChangePage}
-  onEdit={handleEditCard}
-  onDelete={handleDeleteCard}
-  onSelect={setSelectedTask}
-  emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
-/>
-
+                cards={visibleCards}
+                page={page}
+                direction={direction}
+                onChangePage={handleChangePage}
+                onEdit={updateCard}  
+                onDelete={deleteCard}  
+                onSelect={setSelectedTask}
+                emptyMessage="Clique em “Adicionar lista” para criar a sua primeira meta."
+              />
             </motion.div>
           )}
         </AnimatePresence>

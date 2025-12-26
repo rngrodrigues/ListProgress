@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 
-const KEY = "demo_tasks";
+export const TASKS_KEY = "demo_tasks";
 
 const getStored = () =>
-  JSON.parse(localStorage.getItem(KEY) || "[]");
+  JSON.parse(localStorage.getItem(TASKS_KEY) || "[]");
 
 const saveStored = (tasks: any[]) =>
-  localStorage.setItem(KEY, JSON.stringify(tasks));
+  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
 
 export const TaskDemoService = {
   create: async (task: any) => {
