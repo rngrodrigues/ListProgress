@@ -25,19 +25,6 @@ export const clearDemoData = () => {
    localStorage.removeItem(TASKS_KEY);
 };
 
-const removeCompletedCards = async () => {
-  const cards = getStored();
-  const remainingCards = cards.filter((card: any) => card.completed !== true);
-  saveStored(remainingCards);
-
-  const completedCards = cards.filter((card: any) => card.completed === true);
-
-  for (const card of completedCards) {
-    const tasks = await TaskDemoService.listByCard(card.id);
-    tasks.forEach((task: any) => TaskDemoService.delete(task.id));
-  }
-};
-
 export const CardDemoService = {
 
   startDemo: () => {
@@ -87,7 +74,6 @@ list: async () => {
     
     const cards = getStored().map((c: any) => (c.id === id ? { ...c, ...card } : c));
     saveStored(cards);
-    removeCompletedCards(); 
     return card;
   },
 
