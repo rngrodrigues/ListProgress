@@ -87,7 +87,7 @@ export const ConfirmContainer = styled.div`
 export const ConfirmMessage = styled.p`
   font-size: 16px;
   margin: 2.5rem 0;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const ModalConfirmBtn = styled.button<{ disabled?: boolean }>`

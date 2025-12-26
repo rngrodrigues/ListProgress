@@ -42,7 +42,7 @@ export function useCards() {
     fetchCards();
   }, [cardsService]);
 
-  // Adicionando um card
+
   async function addCard(newCard: any) {
     const demoExpired = isDemoExpired(); 
     if (demoExpired) {
@@ -51,7 +51,7 @@ export function useCards() {
       setTimeout(() => {
         window.location.href = "/login";  
       }, 1000);
-      return; // Não continua com a criação do card
+      return; 
     }
 
     try {
@@ -66,7 +66,7 @@ export function useCards() {
     }
   }
 
-  // Atualizando um card
+
   async function updateCard(id: string, updatedCard: any) {
     const demoExpired = isDemoExpired(); 
     if (demoExpired) {
@@ -75,7 +75,7 @@ export function useCards() {
       setTimeout(() => {
         window.location.href = "/login";  
       }, 1000);
-      return; // Não continua com a atualização do card
+      return;
     }
 
     try {
@@ -90,7 +90,7 @@ export function useCards() {
     }
   }
 
-  // Deletando um card
+
   async function deleteCard(id: string) {
     const demoExpired = isDemoExpired(); 
     if (demoExpired) {
@@ -99,7 +99,7 @@ export function useCards() {
       setTimeout(() => {
         window.location.href = "/login";  
       }, 1000);
-      return; // Não continua com a exclusão do card
+      return; 
     }
 
     try {

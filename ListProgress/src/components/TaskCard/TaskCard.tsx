@@ -70,7 +70,7 @@ export const TaskCard = ({
           <ModalConfirm
             isOpen={confirmDeleteOpen}
             onClose={() => setConfirmDeleteOpen(false)}
-            message="Tem certeza que deseja remover essa card? Essa ação é permanente."
+            message="Tem certeza que deseja remover esse card? Essa ação é permanente."
             confirmText="Excluir"
             cancelText="Cancelar"
             onConfirm={async () => {

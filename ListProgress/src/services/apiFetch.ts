@@ -16,8 +16,6 @@ const headers: Record<string, string> = {
   ...(options.headers as Record<string, string>),
 };
 
-
-
   if (options.auth !== false && token) {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -29,11 +27,6 @@ const headers: Record<string, string> = {
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
-if (!token) {
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.href = "/login"; 
-  }
 
     throw new Error(errorBody.error || "Erro na requisição");
   }

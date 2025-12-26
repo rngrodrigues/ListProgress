@@ -13,39 +13,37 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  // 🔍 1. Header Authorization
+
   const authHeader = req.headers.authorization;
-  console.log("🔐 AUTH HEADER:", authHeader);
+  console.log("AUTH HEADER:", authHeader);
 
   if (!authHeader) {
-    console.log("❌ Token NÃO informado");
+    console.log("Token NÃO informado");
     return res.status(401).json({ message: "Token não informado" });
   }
 
   const [, token] = authHeader.split(" ");
-  console.log("🎫 TOKEN RECEBIDO:", token);
+  console.log("TOKEN RECEBIDO:", token);
 
   try {
-    // 🔍 2. Decode do JWT
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    console.log("✅ JWT DECODED:", decoded);
 
-    // 🔍 3. Attach no req.user
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    console.log("JWT DECODED:", decoded);
+
     req.user = {
       id: decoded.id,
       email: decoded.email
     };
 
-    console.log("👤 REQ.USER DEFINIDO:", req.user);
+    console.log("REQ.USER DEFINIDO:", req.user);
 
     next();
   } catch (err) {
-    console.log("❌ Token inválido:", err);
+    console.log("Token inválido:", err);
     return res.status(401).json({ message: "Token inválido" });
   }
 }
 
-// 👇 extensão do Request (TypeScript)
 declare global {
   namespace Express {
     interface Request {
