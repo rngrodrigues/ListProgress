@@ -68,7 +68,7 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
       await toggleTaskCompletion(taskId);
       const allCompleted = tasks.every((t) => t.id === taskId ? !t.completed : t.completed);
       if (allCompleted) {
-        toast.success("Parabéns! Você completou essa lista.");
+        toast.success("Você completou essa lista!");
         navigate("/home");
       }
     } catch (err) {

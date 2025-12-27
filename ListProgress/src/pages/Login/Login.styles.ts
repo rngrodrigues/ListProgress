@@ -86,7 +86,7 @@ export const MaxWidthContainerGray = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 0 5px 0 black;
+  box-shadow: 0 0 5px 0 ${({ theme }) => theme.colors.shadow};
   border-radius: 1rem;
   height: 30rem;
 

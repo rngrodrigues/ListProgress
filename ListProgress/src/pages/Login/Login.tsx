@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import {
   LoginMainContainer,
@@ -16,23 +15,18 @@ import {
 } from "./Login.styles.ts";
 import { GenericBtn, GenericBtnBlack } from "../../components/Utils/Buttons";
 import { NameInput, EmailInput, PasswordInput } from "../../components/Utils/Inputs";
-import { apiFetch } from "../../services/apiFetch";
-import { useAuth } from "../../contexts/authContext";
-import { toast } from "../../components/Utils/Toasts/Toasts.ts";
+import { useLogin } from "../../hooks/useLogin"; 
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [isLogin, setIsLogin] = useState(true);
   const [fade, setFade] = useState(false);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
 
+  const { handleLogin, handleRegister, loading } = useLogin(); 
   const triggerSwitch = (toLogin: boolean) => {
     setFade(true);
     setTimeout(() => {
@@ -40,55 +34,6 @@ const Login = () => {
       setFade(false);
     }, 200);
   };
- async function handleLogin() {
-    if (!email || !password) {
-    toast.warning("Preencha todos os campos!");
-    return;
-  }
-
-    try {
-      setLoading(true);
-
-      const response = await apiFetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password })
-      });
-
-      login(response.user, response.token, rememberMe);
-      toast.success(`Olá, ${response.user.name}!`);
-      navigate("/");
-    } catch (err: any) {
-      console.error("Erro no login:", err);
-      toast.error("Email ou senha inválidos!");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-
-  async function handleRegister() {
-     if (!name || !email || !password) {
-    toast.warning("Preencha todos os campos!");
-    return;
-  }
-
-    try {
-      setLoading(true);
-
-      const response = await apiFetch("/auth/register", {
-        method: "POST",
-        body: JSON.stringify({ name, email, password })
-      });
-      login(response.user, response.token, true);
-      navigate("/");
-    } catch (err: any) {
-      console.error("Erro no cadastro:", err);
-      toast.error("Email já cadastrado!");
-    } finally {
-      setLoading(false);
-    }
-  }
-
 
   return (
     <>
@@ -132,11 +77,11 @@ const Login = () => {
             <FadeWrapper $fade={fade}>
               {isLogin ? (
                 <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleLogin();
-                  }}
-                >
+  onSubmit={(e) => {
+    e.preventDefault();
+    handleLogin(email, password); 
+  }}
+>
                   <TitleGrayContainer>Login</TitleGrayContainer>
 
                   <EmailInput
@@ -165,27 +110,31 @@ const Login = () => {
                     <label htmlFor="rememberMe" style={{ fontSize: "1.8rem" }}>
                       Manter conectado
                     </label>
-
-                    
                   </div>
-                      
+
                   <div id="gambiarra">
                     <GenericBtnBlack disabled={loading}>
                       {loading ? "Entrando..." : "Entrar"}
                     </GenericBtnBlack>
                   </div>
                   <p className="mobile-text">
-                      Ainda não possui uma conta? <button  type="button" className="mobile-link" onClick={() => triggerSwitch(false)}>Cadastre-se </button> 
-                    </p>
-  
+                    Ainda não possui uma conta?{" "}
+                    <button
+                      type="button"
+                      className="mobile-link"
+                      onClick={() => triggerSwitch(false)}
+                    >
+                      Cadastre-se
+                    </button>
+                  </p>
                 </form>
               ) : (
                 <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleRegister();
-                  }}
-                >
+  onSubmit={(e) => {
+    e.preventDefault();
+    handleRegister(name, email, password); 
+  }}
+>
                   <TitleGrayContainer>Cadastre-se</TitleGrayContainer>
 
                   <NameInput
@@ -206,16 +155,17 @@ const Login = () => {
                       {loading ? "Cadastrando..." : "Cadastrar"}
                     </GenericBtnBlack>
                   </div>
-                    <p className="mobile-text">
-    Já possui uma conta?{" "}
-    <button
-      type="button"
-      className="mobile-link"
-      onClick={() => triggerSwitch(true)}
-    >
-      Entrar
-    </button>
-  </p>
+
+                  <p className="mobile-text">
+                    Já possui uma conta?{" "}
+                    <button
+                      type="button"
+                      className="mobile-link"
+                      onClick={() => triggerSwitch(true)}
+                    >
+                      Entrar
+                    </button>
+                  </p>
                 </form>
               )}
             </FadeWrapper>
