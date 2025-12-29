@@ -1,11 +1,8 @@
 import { ReactComponent as AddIcon } from '../../../assets/icons/add.svg';
 import * as S from "./Buttons.styles.ts";
 
-export interface IButtonProps {
-  onClick?: () => void;
-  children?: React.ReactNode;
-  disabled?: boolean;
-}
+export type IButtonProps =
+  React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const GenericBtn: React.FC<IButtonProps> = ({
   onClick,

@@ -90,7 +90,7 @@ export const MaxWidthContainerGray = styled.div`
   border-radius: 1rem;
   height: 30rem;
 
-  #gambiarra {
+  #div-btn {
     margin: 2rem 0;
   }
 `;

@@ -54,12 +54,13 @@ margin-right: 0.6rem;
 export const ConfirmButton = styled.button `
 border: none;
 border-radius: 5rem;
-margin: 1rem;
 padding: 0.5rem 1rem;
 box-shadow: 0 3px 3px 0 ${({ theme }) => theme.colors.shadow};
 background-color: #BAE8B1;
 cursor: pointer;
 transition: all ease 0.5s;
+max-width: 80px;
+margin: 2rem auto 0 auto;
 &:hover {
 box-shadow: 0 3px 6px 3px ${({ theme }) => theme.colors.shadow};
 }

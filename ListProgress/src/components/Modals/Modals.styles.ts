@@ -31,7 +31,9 @@ export const MainContainer = styled.div`
   max-height: 65rem;
   padding: 2.5rem;
   margin: 0 auto;
-  background-color: ${({ theme }) => theme.colors.bg};
+  background: 
+      url(${({ theme }) => theme.bgImage}),
+      ${({ theme }) => theme.colors.bodyBg};
   border-radius: 2rem; 
   border: 1px solid ${({ theme }) => theme.colors.text}; 
   @media (max-width: 460px) {
@@ -68,7 +70,7 @@ gap: 1rem;
   }
 `;
 
-export const MaxWidthForm = styled.div `
+export const MaxWidthForm = styled.form`
 display: flex;
 flex-direction: column;
 justify-content: center;

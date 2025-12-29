@@ -89,7 +89,8 @@ export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCa
     }
   }, [isOpen]);
 
-  function handleConfirm() {
+   function handleConfirm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     onAddCard({ title, category, description });
     onClose();
   }
@@ -103,13 +104,15 @@ export const ModalAddCard: React.FC<IModalAddCard> = ({ isOpen, onClose, onAddCa
           <MetaIcon className="icon" /> Adicionar lista
         </Title>
 
-        <MaxWidthForm>
-          <CategoryInput value={category} onChange={(e) => setCategory(e.target.value)} />
-          <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-          <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-        </MaxWidthForm>
+      <MaxWidthForm onSubmit={handleConfirm}>
+  <CategoryInput required value={category} onChange={(e) => setCategory(e.target.value)} />
+  <TitleInput required value={title} onChange={(e) => setTitle(e.target.value)} />
+  <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
 
-        <ConfirmButton onClick={handleConfirm} />
+  <ConfirmButton type="submit" />
+</MaxWidthForm>
+
+        
       </MainContainer>
     </BaseModal>
   );
@@ -141,7 +144,8 @@ useEffect(() => {
 }, [card, isOpen]);
 
 
-  function handleConfirm() {
+  function handleConfirm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     onEditCard({ ...card, title, category, description });
     onClose();
   }
@@ -155,13 +159,13 @@ useEffect(() => {
           <MetaIcon className="icon" /> Editar lista
         </Title>
 
-        <MaxWidthForm>
-          <CategoryInput value={category} onChange={(e) => setCategory(e.target.value)} />
-          <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-          <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-        </MaxWidthForm>
+       <MaxWidthForm onSubmit={handleConfirm}>
+  <CategoryInput required value={category} onChange={(e) => setCategory(e.target.value)} />
+  <TitleInput required value={title} onChange={(e) => setTitle(e.target.value)} />
+  <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
 
-        <ConfirmButton onClick={handleConfirm} />
+  <ConfirmButton type="submit" />
+</MaxWidthForm>
       </MainContainer>
     </BaseModal>
   );
@@ -185,7 +189,8 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTa
     }
   }, [isOpen]);
 
-  function handleConfirm() {
+  function handleConfirm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     onAddTask({ title, description, card_id });
     onClose();
   }
@@ -199,12 +204,12 @@ export const ModalAddTask: React.FC<IModalAddTask> = ({ isOpen, onClose, onAddTa
           <MetaIcon className="icon" /> Adicionar tarefa
         </Title>
 
-        <MaxWidthForm>
-          <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-          <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-        </MaxWidthForm>
+        <MaxWidthForm onSubmit={handleConfirm}>
+  <TitleInput required value={title} onChange={(e) => setTitle(e.target.value)} />
+  <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
 
-        <ConfirmButton onClick={handleConfirm} />
+  <ConfirmButton type="submit" />
+</MaxWidthForm>
       </MainContainer>
     </BaseModal>
   );
@@ -232,7 +237,8 @@ export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task,
     }
   }, [task, isOpen]);
 
-  function handleConfirm() {
+   function handleConfirm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     onEditTask({ ...task, title, description });
     onClose();
   }
@@ -246,12 +252,12 @@ export const ModalEditTask: React.FC<IModalEditTask> = ({ isOpen, onClose, task,
           <MetaIcon className="icon" /> Editar tarefa
         </Title>
 
-        <MaxWidthForm>
-          <TitleInput value={title} onChange={(e) => setTitle(e.target.value)} />
-          <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
-        </MaxWidthForm>
+      <MaxWidthForm onSubmit={handleConfirm}>
+  <TitleInput required value={title} onChange={(e) => setTitle(e.target.value)} />
+  <DescriptionInput value={description} onChange={(e) => setDescription(e.target.value)} />
 
-        <ConfirmButton onClick={handleConfirm} />
+  <ConfirmButton type="submit" />
+</MaxWidthForm>
       </MainContainer>
     </BaseModal>
   );

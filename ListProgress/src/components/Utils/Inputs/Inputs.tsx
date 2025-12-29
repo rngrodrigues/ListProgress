@@ -5,10 +5,10 @@ import { ReactComponent as PasswordIcon } from '../../../assets/icons/password.s
 import * as S from "./Inputs.styles.ts";
 import React from "react";
 
-interface IInputProps<T extends HTMLInputElement | HTMLTextAreaElement> {
-  value: string;
-  onChange: (e: React.ChangeEvent<T>) => void;
-}
+type IInputProps<T extends HTMLElement> =
+  React.InputHTMLAttributes<T> & {
+    value: string;
+  };
 
 export const SearchInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
   return (
@@ -31,6 +31,7 @@ export const TitleInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =
     <>
       <S.TitleLabel>Título</S.TitleLabel>
       <S.TitleInput
+        required
         type="text"
         aria-label="Título"
         placeholder="Escreva um título..."
@@ -47,6 +48,7 @@ export const CategoryInput = ({ value, onChange }: IInputProps<HTMLInputElement>
     <>
       <S.CategoryLabel>Categoria</S.CategoryLabel>
       <S.CategoryInput
+        required
         type="text"
         aria-label="Categoria"
         placeholder="Escreva uma categoria..."
@@ -88,6 +90,7 @@ export const NameInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =>
     <S.NameContainer>
       <NameIcon className="icon" />
       <S.NameInput
+        required
         type="text"
         aria-label="Nome"
         placeholder="Nome"
@@ -104,6 +107,7 @@ export const EmailInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =
     <S.EmailContainer>
       <EmailIcon className="icon" />
       <S.EmailInput
+        required
         type="email"
         aria-label="Email"
         placeholder="Email"
@@ -120,6 +124,7 @@ export const PasswordInput = ({ value, onChange, isLogin = true }: IInputProps<H
     <S.PasswordContainer>
       <PasswordIcon className="icon" />
       <S.PasswordInput
+        required
         type="password"
         aria-label="Senha"
         placeholder="Senha"

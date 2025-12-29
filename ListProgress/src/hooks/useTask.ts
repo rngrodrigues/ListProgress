@@ -40,7 +40,7 @@ export function useTask(cardId: string, onCardUpdate?: (updatedCard: Card) => vo
     try {
       const data = await taskService.update(updatedTask.id, updatedTask);
       setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? data : t)));
-      toast.success("Tarefa atualizada com sucesso!");
+      toast.success("Tarefa atualizada!");
     } catch (err) {
       console.error("Erro ao editar tarefa:", err);
       toast.error("Erro ao editar a tarefa.");
@@ -54,7 +54,7 @@ export function useTask(cardId: string, onCardUpdate?: (updatedCard: Card) => vo
         const filtered = prev.filter((t) => t.id !== taskId);
         const reindexed = filtered.map((t, i) => ({ ...t, position: i }));
         reindexed.forEach((t) => taskService.update(t.id, { position: t.position }));
-        toast.success("Tarefa removida com sucesso!");
+        toast.warning("Tarefa removida!");
         return reindexed;
       });
     } catch (err) {

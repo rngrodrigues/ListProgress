@@ -112,7 +112,7 @@ const Login = () => {
                     </label>
                   </div>
 
-                  <div id="gambiarra">
+                  <div id="div-btn">
                     <GenericBtnBlack disabled={loading}>
                       {loading ? "Entrando..." : "Entrar"}
                     </GenericBtnBlack>
