@@ -1,5 +1,5 @@
-import { CardRepository } from "../repository/cardRepository.ts";
-import { TaskRepository } from "../repository/taskRepository.ts";
+import { CardRepository } from "../repositories/cardRepository.ts";
+import { TaskRepository } from "../repositories/taskRepository.ts";
 
 export const CardService = {
   create: (card: any, userId: string) =>
