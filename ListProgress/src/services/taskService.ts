@@ -1,4 +1,4 @@
-import { TaskRepository } from "../repository/taskRepository.ts";
+import { TaskRepository } from "../repositories/taskRepository.ts";
 
 export const TaskService = {
   async create(task: any, userId: string) {

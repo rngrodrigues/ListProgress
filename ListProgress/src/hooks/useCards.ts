@@ -77,7 +77,7 @@ export function useCards() {
         setCards(ordered);
       } catch (err) {
         console.error("Erro ao carregar cards:", err);
-        toast.error("Erro ao carregar suas listas.");
+        toast.error("Erro ao carregar seus cards.");
       } finally {
         setLoading(false);
       }
@@ -105,11 +105,11 @@ export function useCards() {
       const payload = { ...newCard, position: cards.length };
       const created = await cardsService.create(payload);
       setCards((prev) => [...prev, created]);
-      toast.success("Lista criada com sucesso!");
+      toast.success("Card criado com sucesso!");
       return created;
     } catch (err) {
       console.error("Erro ao criar card:", err);
-      toast.error("Erro ao criar a lista");
+      toast.error("Erro ao criar card!");
     }
   }
 
@@ -159,7 +159,7 @@ export function useCards() {
         prev
           .filter((c) => c.id !== id)
           .map((c, index) => ({ ...c, position: index })));
-      toast.successDelete("Lista removida com sucesso!");
+      toast.successDelete("Card removido!");
     } catch (err) {
       console.error("Erro ao deletar card:", err);
       toast.error("Erro ao remover a lista");
