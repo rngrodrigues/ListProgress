@@ -25,10 +25,10 @@ Cada usuário pode criar seus próprios cards e tarefas, acompanhar o progresso 
 ## 📸 Preview
 
 ### Desktop
-![Home Desktop](https://github.com/rngrodrigues/list-progress/ListProgress/src/assets/img/desktop-home.png?raw=true)
+![Home Desktop](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/src/assets/icons/img/desktop-home.png)
 
 ### Mobile
-![Home Mobile](https://github.com/rngrodrigues/list-progress/ListProgress/src/assets/img/mobile-home.png?raw=true)
+![Home Mobile](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/src/assets/icons/img/mobile-home.png)
 
 ---
 
