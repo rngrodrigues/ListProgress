@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src", "backend/src/config", "backend/src/contexts", "backend/src/controllers", "backend/src/repositories", "backend/src/services", "backend/src/routes", "backend/src/server.ts", "backend/src/middlewares", "frontend/src/src", "frontend/src/components", "frontend/src/hooks", "frontend/src/pages", "frontend/src/types", "frontend/src/app.ts", "frontend/src/App.tsx", "frontend/src/GlobalStyle.ts", "frontend/src/main.tsx", "frontend/src/styles.d.ts", "frontend/src/themes.ts", "frontend/src/services/cardServiceClient.ts", "frontend/src/services/taskDemoService.ts", "frontend/src/services/cardDemoService.ts", "frontend/src/services/apiFetch.ts", "frontend/src/services/taskServiceClient.ts", "../backend/src/types"]
+}
