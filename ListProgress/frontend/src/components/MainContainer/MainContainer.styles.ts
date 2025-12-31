@@ -6,6 +6,7 @@ export const Container = styled(motion.div)`
 box-shadow: 0 0 0 0 black;
 margin-top: 6rem;
 margin-bottom: 1rem;
+  backdrop-filter: blur(0rem);
 }
 @media(max-width:1500px){
  border-radius: 1rem;

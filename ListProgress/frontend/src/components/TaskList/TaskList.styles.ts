@@ -18,11 +18,7 @@ export const ArrowBack = styled(ArrowBackSvg)`
  fill:${({ theme }) => theme.colors.text};
   width: 5rem;
   height: 5rem;
-  cursor: pointer;
-  position: absolute;
-  top: 5rem;
-  right: 5rem;
-  margin-right: 0;
+  margin-left: auto;
   cursor: pointer;
   transition: transform 0.35s ease;
   &:hover {
@@ -105,7 +101,7 @@ margin: 0 auto;
 width: 100%;
 max-width: 120rem;
 padding: 0.3rem;
-font-size: 2.4rem;
+font-size: clamp(1.6rem, 2.5vw,2.4rem);
  width: 100%;
 background: ${({ theme }) => theme.colors.itemList};
  input {

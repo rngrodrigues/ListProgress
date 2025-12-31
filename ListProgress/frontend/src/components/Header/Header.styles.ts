@@ -15,7 +15,7 @@ export const MainContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    backdrop-filter: blur(0.4rem);
+    backdrop-filter: blur(0.15rem);
     box-shadow: 2px 0 10px ${({ theme }) => theme.colors.shadow};
     margin: 0;
     padding: 1rem;
@@ -124,9 +124,7 @@ export const MobileMenuButton = styled.div`
   
   @media (max-width: 800px) {
     display: flex;
-
     svg {
-   
       width: 4rem;
       height: 4rem;
       cursor: pointer;

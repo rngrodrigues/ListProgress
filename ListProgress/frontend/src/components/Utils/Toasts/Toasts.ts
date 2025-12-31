@@ -5,6 +5,7 @@ const Toast = Swal.mixin({
   position: "top",
   showConfirmButton: false,
   timer: 2000,
+  timerProgressBar: false,
 
   customClass: {
     popup: "custom-toast",
@@ -23,21 +24,20 @@ export const toast = {
     Toast.fire({
       icon: "success",
       title: message,
-      iconColor: "#22c55e", 
     });
   },
 
-    successDelete(message: string) {
+  successDelete(message: string) {
     Toast.fire({
       icon: "info",
       title: message,
     });
   },
+
   error(message: string) {
     Toast.fire({
       icon: "error",
       title: message,
-      iconColor: "#ef4444", 
     });
   },
 
@@ -45,7 +45,6 @@ export const toast = {
     Toast.fire({
       icon: "warning",
       title: message,
-      iconColor: "#f59e0b", 
     });
   },
 
@@ -53,7 +52,6 @@ export const toast = {
     Toast.fire({
       icon: "info",
       title: message,
-      iconColor: "#3b82f6", 
     });
   },
 };
