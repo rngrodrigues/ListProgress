@@ -131,7 +131,6 @@ export const TextList = styled.li`
 color: ${({ theme }) => theme.colors.text};
 display: flex;
 align-items: center;
-text-align: center;
 width: 100%;          
 list-style: none;
 

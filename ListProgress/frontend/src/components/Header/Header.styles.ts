@@ -125,6 +125,7 @@ export const MobileMenuButton = styled.div`
   @media (max-width: 800px) {
     display: flex;
     svg {
+     fill: ${({ theme }) => theme.colors.text};
       width: 4rem;
       height: 4rem;
       cursor: pointer;

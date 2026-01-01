@@ -13,7 +13,7 @@ import {
   ModalConfirmBtn,
   ModalCancelBtn
  
-} from "./Modals.styles.ts";
+} from "./Modals.styles";
 
 import {
   TitleInput,

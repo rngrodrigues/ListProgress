@@ -1,4 +1,4 @@
-import { PFooter } from "./Footer.styles.ts";
+import { PFooter } from "./Footer.styles";
 
 const Footer = () => {
     return (

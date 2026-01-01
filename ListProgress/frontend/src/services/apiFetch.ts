@@ -1,4 +1,5 @@
-const BASE_URL = "https://listprogress-server.up.railway.app";
+const BASE_URL = "http://192.168.1.9:3001";
+// https://listprogress-server.up.railway.app"
 
 type ApiFetchOptions = RequestInit & {
   auth?: boolean;

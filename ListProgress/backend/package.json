@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node src/server.ts"
+    "dev": "ts-node src/server.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",
