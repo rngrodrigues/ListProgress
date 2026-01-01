@@ -146,7 +146,7 @@ Servidor ficará em: http://localhost:3001
 
 > Abra outro terminal;
 > ⚠️ Certifique-se de estar na pasta correta
-> > Por **exemplo**, no terminal:  
+> Por **exemplo**, no terminal:  
 > `cd seu-usuario/listprogress/frontend`
 
 ```bash
