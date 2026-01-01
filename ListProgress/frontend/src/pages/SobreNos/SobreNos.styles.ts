@@ -62,7 +62,7 @@ export const TeamCard = styled.div`
   padding: 20px;
   border-radius: 12px;
   width: 220px;
-  box-shadow: 0 2px 12px ${({ theme }) => theme.colors.shadow};;
+  box-shadow: 0 2px 12px ${({ theme }) => theme.colors.shadow};
   text-align: center;
   transition: 0.3s;
   h3 {
@@ -82,24 +82,8 @@ export const TeamCard = styled.div`
 
 export const TeamImage = styled.img`
   width: 100%;
+  max-height: 250px;
   border-radius: 12px;
   margin-bottom: 12px;
 `;
 
-export const Button = styled.button`
- color:${({ theme }) => theme.colors.text};
-  display: block;
-  margin: 30px auto 0;
-  padding: 12px 22px;
-  border: none;
-  background: ${({ theme }) => theme.colors.bg};
-box-shadow: 0 2px 3px 0 ${({ theme }) => theme.colors.shadow};
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: 0.3s;
-
-  &:hover {
-    box-shadow: 0 3px 6px 3px black;
-  }
-`;

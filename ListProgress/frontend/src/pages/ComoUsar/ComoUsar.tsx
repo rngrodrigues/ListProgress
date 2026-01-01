@@ -5,37 +5,45 @@ import MainContainer from "../../components/MainContainer";
 
 const stepsData = [
   {
-    title: "Criar nova tarefa",
-    text: "Basta clicar no grande botão escrito 'Adicionar lista'. Basta clicar no grande botão escrito 'Adicionar lista'.  Basta clicar no grande botão escrito 'Adicionar lista'. "
+    title: "Navegação pelos menus",
+    text: "Utilize o menu principal para acessar suas listas, consultar o histórico, obter informações sobre o sistema ou realizar login."
   },
   {
-    title: "Navegar pelos menus",
-    text: "Use o menu lateral para acessar suas listas. Basta clicar no grande botão escrito 'Adicionar lista'.  Basta clicar no grande botão escrito 'Adicionar lista'. "
+    title: "Como gerenciar um card?",
+    text: "Clique no ícone de informação (I), localizado acima do card, para visualizar sua descrição e acessar as opções de edição ou exclusão."
   },
   {
-    title: "Editar tarefas",
-    text: "Clique na tarefa para editar seu conteúdo.adsf gawergrae grea "
+    title: "Como criar um novo card?",
+    text: "Clique no botão “Adicionar lista”. Informe um título, selecione uma categoria e, opcionalmente, adicione uma descrição para facilitar a organização."
   },
   {
-    title: "Excluir tarefas",
-    text: "Use o ícone de lixeira para remover uma tarefa."
-  },  {
-    title: "Excluir tarefas",
-    text: "Use o ícone de lixeira para remover uma tarefa."
-  },
-   {
-    title: "Excluir tarefas",
-    text: "Use o ícone de lixeira para remover uma tarefa."
-  },
-   {
-    title: "Excluir tarefas",
-    text: "Use o ícone de lixeira para remover uma tarefa."
+    title: "Como editar um card?",
+    text: "Clique no ícone de lápis no card desejado para alterar suas informações."
   },
   {
-    title: "Excluir tarefas",
-    text: "Use o ícone de lixeira para remover uma tarefa."
+    title: "Como excluir um card?",
+    text: "Clique no ícone de lixeira para remover o card selecionado. Atenção: essa ação é permanente e não poderá ser desfeita."
+  },
+  {
+    title: "Como criar uma tarefa?",
+    text: "Acesse o card desejado e clique em “Adicionar tarefa”. Informe um título e, se necessário, inclua uma descrição."
+  },
+  {
+    title: "Como editar uma tarefa?",
+    text: "Clique no ícone de lápis da tarefa para editar seus dados."
+  },
+  {
+    title: "Como excluir uma tarefa?",
+    text: "Utilize o ícone de lixeira para excluir a tarefa selecionada."
+  },
+  {
+    title: "Como se cadastrar?",
+    text: "Clique em “Login” e, em seguida, selecione a opção “Cadastre-se”. Preencha os dados solicitados e finalize o processo de cadastro."
   }
 ];
+
+
+
 
 const ComoUsar = () => {
   const [openItems, setOpenItems] = useState(
