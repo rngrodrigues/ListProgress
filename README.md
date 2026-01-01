@@ -12,7 +12,9 @@ Este projeto foi desenvolvido com o objetivo de aplicar, na prática, conceitos 
 
 Foi utilizado Vercel para hospedagem do frontend e Railway para hospedagem da API.
 
-[Clique aqui para acessar o ListProgress.](https://listprogress.vercel.app/login)
+<a href="https://listprogress.vercel.app/login" target="_blank" rel="noopener noreferrer">
+  Clique aqui para acessar o ListProgress.
+</a>
 
 ---
 
