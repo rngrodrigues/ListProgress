@@ -4,9 +4,11 @@ import { useCardService } from "./useCardServices";
 import { isDemoExpired, clearDemoData } from "../services/cardDemoService"; 
 import jwt_decode from "jwt-decode";  
 
+// Verifica se o token JWT (Modo Demo) armazenado está expirado, após login/cadastro o token é excluido.
 const isTokenExpired = () => {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
+  // Sem token não há expiração a validar
   if (!token) {
     return false; 
   }
@@ -14,33 +16,24 @@ const isTokenExpired = () => {
   try {
     const decodedToken: any = jwt_decode(token);
     const currentTime = Date.now() / 1000; 
+
     return decodedToken.exp < currentTime; 
   } catch (error) {
     console.error("Erro ao verificar a expiração do token:", error);
     return true; 
   }
 };
-
-const clearAuthData = () => {
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  sessionStorage.removeItem("user");
-  sessionStorage.removeItem("token");
-};
-
+// Hook de gerenciamento de cards com CRUD, validação de sessão e modo demo. <<--
 export function useCards() {
   const cardsService = useCardService();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Valida token e força login se estiver expirado
   const checkTokenExpiration = () => {
 
-    
     if (isTokenExpired()) {
-
-       toast.error("Sessão expirada!");
-
-      clearAuthData();
+      toast.error("Sessão expirada!");
 
       setTimeout(() => {
         window.location.href = "/login";
@@ -54,6 +47,7 @@ export function useCards() {
   useEffect(() => {
     const fetchCards = async () => {
       
+      // Bloqueia uso se o modo demo tiver expirado
       const demoExpired = isDemoExpired();
       if (demoExpired) {
         toast.info("Modo Demo expirado!");
@@ -65,15 +59,19 @@ export function useCards() {
         return; 
       }
   
+      // Evita chamadas à API com token inválido
       if (checkTokenExpiration()) return; 
 
       try {
         const data = await cardsService.list();
-        const ordered = data.sort((a: any, b: any) => {
-          if (a.position == null) return 1;
-          if (b.position == null) return -1;
-          return a.position - b.position;
-        });
+
+        // Ordena cards pela posição para manter consistência visual
+       const ordered = [...data].sort((a: any, b: any) => {
+  if (a.position == null) return 1;
+  if (b.position == null) return -1;
+  return a.position - b.position;
+});
+ 
         setCards(ordered);
       } catch (err) {
         console.error("Erro ao carregar cards:", err);
@@ -98,12 +96,13 @@ export function useCards() {
       return; 
     }
 
-    
     if (checkTokenExpiration()) return;
 
     try {
+      // Define posição inicial do card
       const payload = { ...newCard, position: cards.length };
       const created = await cardsService.create(payload);
+
       setCards((prev) => [...prev, created]);
       toast.success("Card criado com sucesso!");
       return created;
@@ -129,6 +128,8 @@ export function useCards() {
 
     try {
       const data = await cardsService.update(id, updatedCard);
+
+      // Atualiza apenas o card modificado
       setCards((prev) =>
         prev.map((c) => (c.id === id ? { ...c, ...data } : c))
       );
@@ -155,10 +156,14 @@ export function useCards() {
 
     try {
       await cardsService.delete(id);
+
+      // Reorganiza posições após remoção
       setCards((prev) =>
         prev
           .filter((c) => c.id !== id)
-          .map((c, index) => ({ ...c, position: index })));
+          .map((c, index) => ({ ...c, position: index }))
+      );
+
       toast.successDelete("Card removido!");
     } catch (err) {
       console.error("Erro ao deletar card:", err);

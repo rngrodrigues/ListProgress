@@ -1,3 +1,8 @@
+/**
+ * Calcula paginação  de uma lista a partir da página atual e do limite por pagina,
+ * evitando páginas invalidas e retornando apenas os itens visíveis.
+ */
+
 export const usePagination = (
   items: any[],
   ITEMS_PER_PAGE: number,

@@ -23,7 +23,7 @@ text-align: center;
 display: flex;
 align-items: center;
 justify-content: center;
-min-height:50rem;
+min-height:65rem;
 width: auto
 `;
 export const PaginationContainer = styled.div `

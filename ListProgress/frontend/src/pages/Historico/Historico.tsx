@@ -18,6 +18,7 @@ const Historico = () => {
   const [search, setSearch] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // Filtra apenas cards concluídos e que correspondam ao termo de busca
   const filteredCompletedCards = useMemo(() => {
     return cards.filter((card) => {
       if (!card.completed) return false;

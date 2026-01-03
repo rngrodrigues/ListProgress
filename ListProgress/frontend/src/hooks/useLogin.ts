@@ -4,6 +4,17 @@ import { apiFetch } from "../services/apiFetch";
 import { useAuth } from "../contexts/authContext";
 import { toast } from "../components/Utils/Toasts/Toasts";
 
+/**
+ Hook responsável por gerenciar autenticação de usuários.
+ 
+ - Realiza login e cadastro via API
+ - Valida preenchimento de campos
+ - Armazena usuário e token no contexto de autenticação
+ - Controla estado de carregamento
+ - Exibe feedbacks visuais e redireciona após sucesso
+ 
+ **/
+
 export function useLogin() {
   const { login } = useAuth();
   const navigate = useNavigate();  
