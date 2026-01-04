@@ -20,25 +20,30 @@ export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) 
 
   let headers = buildHeaders(token ?? undefined);
 
-  const refreshAccessToken = async (): Promise<string> => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (!refreshToken) throw new Error("Refresh token não encontrado");
+ const refreshAccessToken = async (): Promise<string> => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) throw new Error("Refresh token não encontrado");
 
-    const refreshResp = await fetch(`${BASE_URL}/auth/refresh-token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-    });
+  const refreshResp = await fetch(`${BASE_URL}/auth/refresh-token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken }),
+  });
 
-    if (!refreshResp.ok) throw new Error("Refresh token inválido");
+  if (!refreshResp.ok) throw new Error("Refresh token inválido");
 
-    const data = await refreshResp.json();
+  const data = await refreshResp.json();
 
-    if (!data.accessToken) throw new Error("Novo access token não recebido");
+  if (!data.accessToken || !data.refreshToken) {
+    throw new Error("Tokens não recebidos");
+  }
 
-    localStorage.setItem("accessToken", data.accessToken);
-    return data.accessToken;
-  };
+  // Atualiza os dois tokens
+  localStorage.setItem("accessToken", data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
+
+  return data.accessToken;
+};
 
   // Tenta requisição original
   let response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
@@ -56,6 +61,7 @@ export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) 
       localStorage.removeItem("refreshToken");
       window.location.href = "/login";
       throw new Error("Sessão expirada, faça login novamente");
+        
     }
   }
 

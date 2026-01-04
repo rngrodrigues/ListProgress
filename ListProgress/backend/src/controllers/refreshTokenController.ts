@@ -25,7 +25,7 @@ export async function refreshTokenController(req: Request, res: Response) {
       return res.status(401).json({ message: "Token inválido para refresh" });
     }
 
-    // Cria novo access token com type "access"
+    // --- Gera novos tokens ---
     const newAccessToken = jwt.sign(
       {
         id: decoded.id,
@@ -36,11 +36,25 @@ export async function refreshTokenController(req: Request, res: Response) {
       { expiresIn: '1h' }
     );
 
-    // Mostra payload no console para debug
-    const tokenPayload = jwt.decode(newAccessToken);
-    console.log("Novo access token payload:", tokenPayload);
+    const newRefreshToken = jwt.sign(
+      {
+        id: decoded.id,
+        email: decoded.email,
+        type: "refresh"
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
 
-    return res.json({ accessToken: newAccessToken });
+    console.log("Novo access token payload:", jwt.decode(newAccessToken));
+    console.log("Novo refresh token payload:", jwt.decode(newRefreshToken));
+
+    // Retorna os dois tokens
+    return res.json({ 
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    });
+
   } catch (err) {
     console.error('Erro ao validar refresh token:', err);
     return res.status(401).json({ message: 'Refresh token inválido ou expirado' });
