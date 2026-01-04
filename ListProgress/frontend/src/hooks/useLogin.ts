@@ -9,11 +9,10 @@ import { toast } from "../components/Utils/Toasts/Toasts";
  
  - Realiza login e cadastro via API
  - Valida preenchimento de campos
- - Armazena usuário e token no contexto de autenticação
+ - Armazena usuário, access token e refresh token no contexto
  - Controla estado de carregamento
  - Exibe feedbacks visuais e redireciona após sucesso
- 
- **/
+**/
 
 export function useLogin() {
   const { login } = useAuth();
@@ -34,7 +33,13 @@ export function useLogin() {
         body: JSON.stringify({ email, password })
       });
 
-      login(response.user, response.token, true);
+      login(
+        response.user, 
+        response.accessToken, 
+        response.refreshToken, 
+        true 
+      );
+
       toast.success(`Olá, ${response.user.name}!`);
       navigate("/"); 
     } catch (err: any) {
@@ -59,7 +64,14 @@ export function useLogin() {
         body: JSON.stringify({ name, email, password })
       });
 
-      login(response.user, response.token, true);
+
+      login(
+        response.user, 
+        response.accessToken, 
+        response.refreshToken, 
+        true
+      );
+
       toast.success("Cadastro realizado com sucesso!");
       navigate("/");  
     } catch (err: any) {

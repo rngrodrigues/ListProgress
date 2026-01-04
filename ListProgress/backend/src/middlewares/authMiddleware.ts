@@ -29,7 +29,13 @@ export function authMiddleware(
 
   try {
     // Verifica e decodifica token
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload & { type: string };
+
+// Permitir apenas access tokens
+if (decoded.type !== "access") {
+  return res.status(401).json({ message: "Token inválido para essa rota" });
+}
+
     console.log("JWT DECODED:", decoded);
 
     // Adiciona usuário autenticado à requisição para acesso nos controllers

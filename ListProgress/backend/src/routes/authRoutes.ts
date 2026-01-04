@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { AuthService } from '../services/authService.ts';
+import { refreshTokenController } from '../controllers/refreshTokenController.ts';
 
 const router = Router();
 const authService = new AuthService();
@@ -23,5 +24,7 @@ router.post('/login', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
+router.post('/refresh-token', refreshTokenController);
 
 export default router;

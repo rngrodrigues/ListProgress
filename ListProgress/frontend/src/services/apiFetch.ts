@@ -5,34 +5,64 @@ type ApiFetchOptions = RequestInit & {
   auth?: boolean; // Define se a requisição deve incluir token de autenticação
 };
 
-export async function apiFetch(
-  endpoint: string, // Caminho da API a ser chamado
-  options: ApiFetchOptions = {} // Configurações adicionais da requisição
-) {
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token"); // Busca token JWT
+export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) {
+  // Pega accessToken do localStorage
+  let token: string | null = localStorage.getItem("accessToken");
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json", // Define tipo de conteúdo
-    ...(options.headers as Record<string, string>), // Permite sobrescrever ou adicionar headers
+  const buildHeaders = (token?: string) => {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(options.headers as Record<string, string>),
+    };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return headers;
   };
 
-  // Adiciona token se a requisição requer autenticação
-  if (options.auth !== false && token) {
-    headers.Authorization = `Bearer ${token}`;
+  let headers = buildHeaders(token ?? undefined);
+
+  const refreshAccessToken = async (): Promise<string> => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) throw new Error("Refresh token não encontrado");
+
+    const refreshResp = await fetch(`${BASE_URL}/auth/refresh-token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!refreshResp.ok) throw new Error("Refresh token inválido");
+
+    const data = await refreshResp.json();
+
+    if (!data.accessToken) throw new Error("Novo access token não recebido");
+
+    localStorage.setItem("accessToken", data.accessToken);
+    return data.accessToken;
+  };
+
+  // Tenta requisição original
+  let response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
+
+  // Se 401, tenta refresh (somente se houver refresh token)
+  if (response.status === 401) {
+    try {
+      token = await refreshAccessToken();
+      headers = buildHeaders(token);
+      response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
+    } catch (err) {
+      // Se refresh falhar, limpa storage e força logout
+      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/login";
+      throw new Error("Sessão expirada, faça login novamente");
+    }
   }
 
-  // Executa requisição HTTP
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    ...options, // Merge das opções passadas (method, body, etc)
-    headers, // Usa headers preparados acima
-  });
-
-  // Trata respostas de erro
   if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({})); // Tenta ler mensagem de erro do backend
-    throw new Error(errorBody.error || "Erro na requisição"); // Lança erro com mensagem do backend ou genérica
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.error || "Erro na requisição");
   }
 
-  return response.json(); 
+  return response.json();
 }

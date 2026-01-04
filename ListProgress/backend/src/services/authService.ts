@@ -7,103 +7,97 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
 
 export class AuthService {
 
-  /**
-   * Registra um novo usuário.
-   * - Verifica se o email já está cadastrado
-   * - Cria hash da senha
-   * - Insere usuário no banco
-   * - Gera token JWT de 1 hora
-   */
-  async register(email: string, password: string, name?: string) {
-    try {
-      // Checa se usuário já existe
-      const existingUser = await userRepository.getUserByEmail(email);
-      if (existingUser) {
-        console.error('Email já cadastrado:', email);
-        throw { statusCode: 400, message: 'Email já cadastrado' };
-      }
+  // Gera Access Token (válido 1h)
+  private generateAccessToken(id: string, email: string) {
+    return jwt.sign(
+      { id, email, type: 'access' }, 
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+  }
 
-      // Gera hash da senha para segurança
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Cria usuário no banco
-      const newUser = await userRepository.createUser({
-        email,
-        password: hashedPassword,
-        name
-      });
-
-      if (!newUser) {
-        console.error('Erro ao criar usuário para o email:', email);
-        throw { statusCode: 500, message: 'Erro ao criar usuário' };
-      }
-
-      // Gera token JWT com id e email
-      const token = jwt.sign(
-        { id: newUser.id, email: newUser.email },
-        JWT_SECRET,
-        { expiresIn: '1h' }
-      );
-
-      console.log('Usuário criado com sucesso:', newUser.email);
-
-      return {
-        token,
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name
-        }
-      };
-    } catch (error) {
-      console.error('Erro no registro de usuário:', error);
-      throw error; 
-    }
+  // Gera Refresh Token (válido 7 dias)
+  private generateRefreshToken(id: string, email: string) {
+    return jwt.sign(
+      { id, email, type: 'refresh' }, 
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
   }
 
   /**
-   * Login de usuário existente.
-   * - Verifica se usuário existe
-   * - Compara senha com hash armazenado
-   * - Gera token JWT de 1 hora
+   * Registro de usuário
+   */
+  async register(email: string, password: string, name?: string) {
+    const existingUser = await userRepository.getUserByEmail(email);
+    if (existingUser) throw { statusCode: 400, message: 'Email já cadastrado' };
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await userRepository.createUser({
+      email,
+      password: hashedPassword,
+      name
+    });
+
+    if (!newUser) throw { statusCode: 500, message: 'Erro ao criar usuário' };
+
+    const accessToken = this.generateAccessToken(newUser.id, newUser.email);
+    const refreshToken = this.generateRefreshToken(newUser.id, newUser.email);
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name
+      }
+    };
+  }
+
+  /**
+   * Login de usuário
    */
   async login(email: string, password: string) {
+    const user = await userRepository.getUserByEmail(email);
+    if (!user) throw { statusCode: 404, message: 'Usuário não encontrado' };
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) throw { statusCode: 401, message: 'Senha incorreta' };
+
+    if (!user.id || !user.email) throw new Error('Usuário inválido: faltando id ou email');
+
+    const accessToken = this.generateAccessToken(user.id, user.email);
+    const refreshToken = this.generateRefreshToken(user.id, user.email);
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name
+      }
+    };
+  }
+
+  /**
+   * Valida e gera um novo Access Token a partir do Refresh Token
+   */
+  async refreshAccessToken(refreshToken: string) {
     try {
-      // Busca usuário pelo email
-      const user = await userRepository.getUserByEmail(email);
-
-      if (!user) {
-        console.error('Usuário não encontrado:', email);
-        throw { statusCode: 404, message: 'Usuário não encontrado' };
+      const decoded = jwt.verify(refreshToken, JWT_SECRET) as { id: string; email: string; type: string };
+      
+      if (decoded.type !== 'refresh') {
+        throw new Error('Token inválido para refresh');
       }
 
-      // Compara senha informada com hash do banco
-      const isValid = await bcrypt.compare(password, user.password);
-      if (!isValid) {
-        console.error('Senha incorreta para o email:', email);
-        throw { statusCode: 401, message: 'Senha incorreta' };
-      }
-
-      // Gera token JWT
-      const token = jwt.sign(
-        { id: user.id, email: user.email },
-        JWT_SECRET,
-        { expiresIn: '1h' }
-      );
-
-      console.log('Usuário logado com sucesso:', user.email);
-
-      return {
-        token,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name
-        }
-      };
-    } catch (error) {
-      console.error('Erro no login de usuário:', error);
-      throw error; 
+      const newAccessToken = this.generateAccessToken(decoded.id, decoded.email);
+      return { accessToken: newAccessToken };
+    } catch (err) {
+      console.error('Erro ao validar refresh token:', err);
+      throw { statusCode: 401, message: 'Refresh token inválido ou expirado' };
     }
   }
 }

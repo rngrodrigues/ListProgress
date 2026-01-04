@@ -4,9 +4,9 @@ import { useCardService } from "./useCardServices";
 import { isDemoExpired, clearDemoData } from "../services/cardDemoService"; 
 import jwt_decode from "jwt-decode";  
 
-// Verifica se o token JWT (Modo Demo) armazenado está expirado, após login/cadastro o token é excluido.
+// Verifica se o token JWT armazenado está expirado.
 const isTokenExpired = () => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const token = localStorage.getItem("Token");
 
   // Sem token não há expiração a validar
   if (!token) {
