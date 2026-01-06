@@ -11,6 +11,7 @@ import { SearchInput } from "../../components/Utils/Inputs";
 import { useAuth } from "../../contexts/authContext";
 import { useCards } from "../../hooks/useCards";
 import type { Card } from "../../../../backend/src/types/Card";
+import Loading from "../../components/Loading/Loading";
 
 const ITEMS_PER_PAGE = 6; // Define quantos cards aparecem por página
 
@@ -71,7 +72,10 @@ const Home: React.FC = () => {
     setPage((prev) => prev + step);
   }
 
-  if (authLoading || cardsLoading) return null; // Espera carregamento de dados
+if (cardsLoading) {
+  return <Loading />;
+}
+ // Espera carregamento de dados
 
   return (
     <>

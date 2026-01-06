@@ -17,6 +17,7 @@ export function useCards() {
       if (demoExpired) {
         toast.info("Modo Demo expirado!");
         clearDemoData();
+        setLoading(false);
         setTimeout(() => {
           window.location.href = "/login"; 
         }, 1000);

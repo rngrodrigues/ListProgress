@@ -7,6 +7,7 @@ import { HistoricoTopContainer } from "./Historico.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
 import { SearchInput } from "../../components/Utils/Inputs";
 import { useCards } from "../../hooks/useCards";
+import Loading from "../../components/Loading/Loading";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -49,7 +50,9 @@ const Historico = () => {
     setPage((prev) => prev + step);
   }
 
-  if (loading) return null;
+ if ( loading ) {
+  return <Loading />;
+}
 
   return (
     <>
