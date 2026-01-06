@@ -2,47 +2,12 @@ import { useEffect, useState } from "react";
 import { toast } from "../components/Utils/Toasts/Toasts";
 import { useCardService } from "./useCardServices";
 import { isDemoExpired, clearDemoData } from "../services/cardDemoService"; 
-import jwt_decode from "jwt-decode";  
 
-// Verifica se o token JWT armazenado está expirado.
-const isTokenExpired = () => {
-  const token = localStorage.getItem("Token");
-
-  // Sem token não há expiração a validar
-  if (!token) {
-    return false; 
-  }
-
-  try {
-    const decodedToken: any = jwt_decode(token);
-    const currentTime = Date.now() / 1000; 
-
-    return decodedToken.exp < currentTime; 
-  } catch (error) {
-    console.error("Erro ao verificar a expiração do token:", error);
-    return true; 
-  }
-};
 // Hook de gerenciamento de cards com CRUD, validação de sessão e modo demo. <<--
 export function useCards() {
   const cardsService = useCardService();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Valida token e força login se estiver expirado
-  const checkTokenExpiration = () => {
-
-    if (isTokenExpired()) {
-      toast.error("Sessão expirada!");
-
-      setTimeout(() => {
-        window.location.href = "/login";
-      }, 1000); 
-
-      return true; 
-    }
-    return false; 
-  };
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -52,15 +17,11 @@ export function useCards() {
       if (demoExpired) {
         toast.info("Modo Demo expirado!");
         clearDemoData();
-
         setTimeout(() => {
           window.location.href = "/login"; 
         }, 1000);
         return; 
       }
-  
-      // Evita chamadas à API com token inválido
-      if (checkTokenExpiration()) return; 
 
       try {
         const data = await cardsService.list();
@@ -96,8 +57,6 @@ export function useCards() {
       return; 
     }
 
-    if (checkTokenExpiration()) return;
-
     try {
       // Define posição inicial do card
       const payload = { ...newCard, position: cards.length };
@@ -124,8 +83,6 @@ export function useCards() {
       return; 
     }
 
-    if (checkTokenExpiration()) return;
-
     try {
       const data = await cardsService.update(id, updatedCard);
 
@@ -151,8 +108,6 @@ export function useCards() {
       }, 1000);
       return; 
     }
-
-    if (checkTokenExpiration()) return;
 
     try {
       await cardsService.delete(id);

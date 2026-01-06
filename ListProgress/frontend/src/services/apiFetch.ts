@@ -1,4 +1,4 @@
-const BASE_URL = "https://listprogress-server.up.railway.app";
+const BASE_URL = "http://192.168.1.9:3001";
 // URL da API real: https://listprogress-server.up.railway.app localhost: http://192.168.1.9:3001
 
 type ApiFetchOptions = RequestInit & {
@@ -48,7 +48,7 @@ export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) 
   // Tenta requisição original
   let response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
 
-  // Se 401, tenta refresh (somente se houver refresh token)
+  // Se 401 (não autorizado), tenta refresh (somente se houver refresh token)
   if (response.status === 401) {
     try {
       token = await refreshAccessToken();
@@ -59,9 +59,10 @@ export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) 
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1000); 
       throw new Error("Sessão expirada, faça login novamente");
-        
     }
   }
 
