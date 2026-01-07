@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.1.9:3001";
+const BASE_URL = "https://listprogress-server.up.railway.app";
 // URL da API real: https://listprogress-server.up.railway.app localhost: http://192.168.1.9:3001
 
 type ApiFetchOptions = RequestInit & {
