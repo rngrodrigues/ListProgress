@@ -2,7 +2,6 @@ import { TaskRepository } from "../repositories/taskRepository.ts";
 
 export const TaskService = {
   async create(task: any, userId: string) {
-    
     return TaskRepository.create({
       ...task,
       user_id: userId,
@@ -14,7 +13,9 @@ export const TaskService = {
   },
 
   async listByCard(cardId: string, userId: string) {
-    return TaskRepository.listByCard(cardId, userId);
+    // Ordena as tarefas por posição
+    const tasks = await TaskRepository.listByCard(cardId, userId);
+    return tasks.sort((a: any, b: any) => (a.position ?? 0) - (b.position ?? 0));
   },
 
   async delete(id: string, userId: string) {

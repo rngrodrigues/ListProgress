@@ -27,14 +27,8 @@ export function useCards() {
       try {
         const data = await cardsService.list();
 
-        // Ordena cards pela posição para manter consistência visual
-       const ordered = [...data].sort((a: any, b: any) => {
-  if (a.position == null) return 1;
-  if (b.position == null) return -1;
-  return a.position - b.position;
-});
- 
-        setCards(ordered);
+       setCards(data);
+
       } catch (err) {
         console.error("Erro ao carregar cards:", err);
         toast.error("Erro ao carregar seus cards.");
@@ -91,7 +85,7 @@ export function useCards() {
       setCards((prev) =>
         prev.map((c) => (c.id === id ? { ...c, ...data } : c))
       );
-
+     toast.info("Card atualizado!");
     } catch (err) {
       console.error("Erro ao atualizar card:", err);
       toast.error("Erro ao atualizar a lista");

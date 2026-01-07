@@ -18,10 +18,7 @@ useEffect(() => {
   taskService
     .listByCard(cardId)
     .then((data) => {
-      const ordered = data.sort(
-        (a: any, b: any) => (a.position ?? 0) - (b.position ?? 0)
-      );
-      setTasks(ordered);
+      setTasks(data);
       setLoading(false); 
     })
     .catch((err) => {
@@ -37,10 +34,9 @@ useEffect(() => {
 
   const addTask = async (newTask: Partial<Task>) => {
     try {
-      // Define payload da nova tarefa com card_id e posição inicial
-      const payload = { ...newTask, card_id: cardId, position: tasks.length };
-      const createdTask = await taskService.create(payload); // Cria tarefa no backend
-      setTasks((prev) => [...prev, createdTask].sort((a, b) => a.position - b.position)); // Adiciona e ordena localmente
+      const payload = { ...newTask, card_id: cardId };
+      const createdTask = await taskService.create(payload); // Cria tarefa 
+      setTasks((prev) => [...prev, createdTask]); 
       toast.success("Tarefa criada com sucesso!"); 
     } catch (err) {
       console.error("Erro ao criar tarefa:", err);
@@ -79,17 +75,17 @@ useEffect(() => {
     const task = tasks.find((t) => t.id === taskId); // Busca tarefa específica
     if (!task) return;
 
-    const updatedTask = { ...task, completed: !task.completed }; // Alterna status
-    const savedTask = await taskService.update(taskId, updatedTask); // Salva no backend
+    const updatedTask = { ...task, completed: !task.completed }; 
+    const savedTask = await taskService.update(taskId, updatedTask);
 
-    const updatedTasks = tasks.map((t) => (t.id === taskId ? savedTask : t)); // Atualiza estado local
+    const updatedTasks = tasks.map((t) => (t.id === taskId ? savedTask : t)); 
     setTasks(updatedTasks);
 
-    const allCompleted = updatedTasks.every((t) => t.completed); // Verifica se todas as tarefas estão completas
+    const allCompleted = updatedTasks.every((t) => t.completed); 
 
-    await cardService.update(cardId, { completed: allCompleted }); // Atualiza status do card
-    if (onCardUpdate) onCardUpdate({ id: cardId, completed: allCompleted } as Card); // Chama callback opcional
+    await cardService.update(cardId, { completed: allCompleted }); 
+    if (onCardUpdate) onCardUpdate({ id: cardId, completed: allCompleted } as Card); 
   };
 
-  return { tasks, addTask, editTask, deleteTask, toggleCompleted, loading }; // Expõe funções e estado
+  return { tasks, addTask, editTask, deleteTask, toggleCompleted, loading }; 
 }
