@@ -10,18 +10,30 @@ export function useTask(cardId: string, onCardUpdate?: (updatedCard: Card) => vo
   const taskService = useTaskService(); 
   const cardService = useCardService(); 
   const [tasks, setTasks] = useState<Task[]>([]); 
+   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    taskService.listByCard(cardId)
-      .then((data) => {
-        const ordered = data.sort((a: any, b: any) => (a.position ?? 0) - (b.position ?? 0));
-        setTasks(ordered);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar tarefas:", err);
-        toast.error("Erro ao carregar as tarefas.");
-      });
-  }, [cardId, taskService]);
+useEffect(() => {
+  setLoading(true); 
+
+  taskService
+    .listByCard(cardId)
+    .then((data) => {
+      const ordered = data.sort(
+        (a: any, b: any) => (a.position ?? 0) - (b.position ?? 0)
+      );
+      setTasks(ordered);
+      setLoading(false); 
+    })
+    .catch((err) => {
+      console.error("Erro ao carregar tarefas:", err);
+      toast.error("Erro ao carregar as tarefas.");
+    })
+    .finally(() => {
+      setLoading(false); 
+    });
+}, [cardId, taskService]);
+
+
 
   const addTask = async (newTask: Partial<Task>) => {
     try {
@@ -79,5 +91,5 @@ export function useTask(cardId: string, onCardUpdate?: (updatedCard: Card) => vo
     if (onCardUpdate) onCardUpdate({ id: cardId, completed: allCompleted } as Card); // Chama callback opcional
   };
 
-  return { tasks, addTask, editTask, deleteTask, toggleCompleted }; // Expõe funções e estado
+  return { tasks, addTask, editTask, deleteTask, toggleCompleted, loading }; // Expõe funções e estado
 }

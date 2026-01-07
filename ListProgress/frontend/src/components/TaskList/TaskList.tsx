@@ -27,6 +27,7 @@ import { toast } from "../Utils/Toasts/Toasts";
 import type { Task } from "../../../../backend/src/types/Task";
 import type { Card } from "../../../../backend/src/types/Card";
 import { useTask } from "../../hooks/useTask";
+import  Loading  from "../Loading/Loading";
 
 type TaskListProps = {
   id: string;
@@ -46,7 +47,7 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const { tasks, addTask, editTask, deleteTask, toggleCompleted: toggleTaskCompletion } = useTask(id, onCardUpdate);
+  const { tasks, addTask, editTask, deleteTask, toggleCompleted: toggleTaskCompletion, loading } = useTask(id, onCardUpdate);
 
   function flip(taskId: string, to: boolean) {
     setFlipState((prev) => ({
@@ -77,6 +78,7 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
     }
   }
 
+    
   return (
     <BodyList>
       <AnimatePresence>
@@ -132,38 +134,80 @@ export const TaskList = ({ id, title, category, onBack, onCardUpdate }: TaskList
       <TaskTitle>{title}</TaskTitle>
 
       <MidContainer>
-        {tasks.map((task) => {
-          const expanded = flipState[task.id]?.expanded ?? false;
-          const isFlipping = flipState[task.id]?.isFlipping ?? false;
+  {loading ? (
+    <Loading /> 
+  ) : (
+    tasks.map((task) => {
+      const expanded = flipState[task.id]?.expanded ?? false;
+      const isFlipping = flipState[task.id]?.isFlipping ?? false;
 
-          return (
-            <motion.div key={task.id} animate={{ rotateX: isFlipping ? 90 : 0 }} transition={{ duration: 0.2 }} style={{ transformStyle: "preserve-3d" }}>
-              <ItemList layout transition={{ duration: 0.2, ease: "easeInOut" }}>
-                {expanded ? (
-                  <>
-                    <ItemDescription className={task.completed ? "completed" : ""}>
-                      {task.description ?? ""}
-                    </ItemDescription>
-                    <UpIcon className="UpIcon" onClick={(e) => { e.stopPropagation(); flip(task.id, false); }} />
-                  </>
-                ) : (
-                  <>
-                    <TextList className={task.completed ? "completed" : ""}>
-                      <CheckInput checked={task.completed ?? false} onChange={() => toggleCompleted(task.id)} />
-                      {task.title}
-                    </TextList>
-                    <IconsList>
-                      <EditIcon className="icon edit" onClick={() => { setSelectedTask(task); setOpenEdit(true); }} />
-                      <TrashIcon className="icon trash" onClick={() => { setTaskToDelete(task.id); setConfirmDeleteOpen(true); }} />
-                      <IIcon className="icon IIcon" onClick={(e) => { e.stopPropagation(); flip(task.id, true); }} />
-                    </IconsList>
-                  </>
-                )}
-              </ItemList>
-            </motion.div>
-          );
-        })}
-      </MidContainer>
+      return (
+      <motion.div
+  key={task.id}
+  initial={{ opacity: 0 }} 
+  animate={{ opacity: 1, rotateX: isFlipping ? 90 : 0 }} 
+  exit={{ opacity: 0 }} 
+  transition={{
+    opacity: { duration: 0.5 }, 
+    rotateX: { duration: 0.2 }, 
+  }}
+  style={{ transformStyle: "preserve-3d" }}
+>
+          <ItemList layout transition={{ duration: 0.2, ease: "easeInOut" }}>
+            {expanded ? (
+              <>
+                <ItemDescription className={task.completed ? "completed" : ""}>
+                  {task.description ?? ""}
+                </ItemDescription>
+                <UpIcon
+                  className="UpIcon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    flip(task.id, false);
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <TextList className={task.completed ? "completed" : ""}>
+                  <CheckInput
+                    checked={task.completed ?? false}
+                    onChange={() => toggleCompleted(task.id)}
+                  />
+                  {task.title}
+                </TextList>
+                <IconsList>
+                  <EditIcon
+                    className="icon edit"
+                    onClick={() => {
+                      setSelectedTask(task);
+                      setOpenEdit(true);
+                    }}
+                  />
+                  <TrashIcon
+                    className="icon trash"
+                    onClick={() => {
+                      setTaskToDelete(task.id);
+                      setConfirmDeleteOpen(true);
+                    }}
+                  />
+                  <IIcon
+                    className="icon IIcon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      flip(task.id, true);
+                    }}
+                  />
+                </IconsList>
+              </>
+            )}
+          </ItemList>
+        </motion.div>
+      );
+    })
+  )}
+</MidContainer>
+
 
       <BottomContainer>
         <TaskProgress tasks={tasks} />

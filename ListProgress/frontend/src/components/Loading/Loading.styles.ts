@@ -10,8 +10,8 @@ const spin = keyframes`
 `;
 
 export const Wrapper = styled.div`
-  height: 100vh;
-  width: 100%;
+position: fixed;
+inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
