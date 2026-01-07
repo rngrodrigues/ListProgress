@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
 import { toast } from "../components/Utils/Toasts/Toasts";
 import { useCardService } from "./useCardServices";
-import { isDemoExpired, clearDemoData } from "../services/cardDemoService"; 
+import { DemoExpiredError } from "../services/cardDemoService";
+import { useNavigate } from "react-router-dom";
 
-// Hook de gerenciamento de cards com CRUD, validação de sessão e modo demo. <<--
 export function useCards() {
   const cardsService = useCardService();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleDemoError = (err: any) => {
+    if (err instanceof DemoExpiredError) {
+      toast.info("Modo Demo expirado!");
+         navigate("/login");
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     const fetchCards = async () => {
-      
-      // Bloqueia uso se o modo demo tiver expirado
-      const demoExpired = isDemoExpired();
-      if (demoExpired) {
-        toast.info("Modo Demo expirado!");
-        clearDemoData();
-        setLoading(false);
-        setTimeout(() => {
-          window.location.href = "/login"; 
-        }, 1000);
-        return; 
-      }
+      setLoading(true);
 
       try {
         const data = await cardsService.list();
-
-       setCards(data);
-
+        setCards(data);
       } catch (err) {
-        console.error("Erro ao carregar cards:", err);
-        toast.error("Erro ao carregar seus cards.");
+        if (!handleDemoError(err)) {
+          console.error(err);
+          toast.error("Erro ao carregar seus cards.");
+        }
       } finally {
         setLoading(false);
       }
@@ -41,19 +40,7 @@ export function useCards() {
   }, [cardsService]);
 
   async function addCard(newCard: any) {
-
-    const demoExpired = isDemoExpired();
-    if (demoExpired) {
-      toast.info("Modo Demo expirado!");
-      clearDemoData();
-      setTimeout(() => {
-        window.location.href = "/login"; 
-      }, 1000);
-      return; 
-    }
-
     try {
-      // Define posição inicial do card
       const payload = { ...newCard, position: cards.length };
       const created = await cardsService.create(payload);
 
@@ -61,63 +48,44 @@ export function useCards() {
       toast.success("Card criado com sucesso!");
       return created;
     } catch (err) {
-      console.error("Erro ao criar card:", err);
-      toast.error("Erro ao criar card!");
+      if (!handleDemoError(err)) {
+        console.error(err);
+        toast.error("Erro ao criar card!");
+      }
     }
   }
 
   async function updateCard(id: string, updatedCard: any) {
-
-    const demoExpired = isDemoExpired();
-    if (demoExpired) {
-      toast.info("Modo Demo expirado!");
-      clearDemoData();
-      setTimeout(() => {
-        window.location.href = "/login"; 
-      }, 1000);
-      return; 
-    }
-
     try {
       const data = await cardsService.update(id, updatedCard);
 
-      // Atualiza apenas o card modificado
       setCards((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, ...data } : c))
-      );
-     toast.info("Card atualizado!");
+  prev.map((c) => (c.id === id ? { ...c, ...data } : c))
+);
+      toast.info("Card atualizado!");
     } catch (err) {
-      console.error("Erro ao atualizar card:", err);
-      toast.error("Erro ao atualizar a lista");
+      if (!handleDemoError(err)) {
+        console.error(err);
+        toast.error("Erro ao atualizar a lista");
+      }
     }
   }
 
   async function deleteCard(id: string) {
-
-    const demoExpired = isDemoExpired();
-    if (demoExpired) {
-      toast.info("Modo Demo expirado!");
-      clearDemoData();
-      setTimeout(() => {
-        window.location.href = "/login"; 
-      }, 1000);
-      return; 
-    }
-
     try {
       await cardsService.delete(id);
 
-      // Reorganiza posições após remoção
       setCards((prev) =>
         prev
           .filter((c) => c.id !== id)
           .map((c, index) => ({ ...c, position: index }))
       );
-
       toast.successDelete("Card removido!");
     } catch (err) {
-      console.error("Erro ao deletar card:", err);
-      toast.error("Erro ao remover a lista");
+      if (!handleDemoError(err)) {
+        console.error(err);
+        toast.error("Erro ao remover a lista");
+      }
     }
   }
 

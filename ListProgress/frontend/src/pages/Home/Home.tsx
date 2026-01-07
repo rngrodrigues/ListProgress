@@ -72,7 +72,7 @@ const Home: React.FC = () => {
     setPage((prev) => prev + step);
   }
 
-if (cardsLoading) {
+if (authLoading || cardsLoading) {
   return <Loading />;
 }
  // Espera carregamento de dados

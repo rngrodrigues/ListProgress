@@ -40,7 +40,8 @@ useEffect(() => {
     storage.setItem("accessToken", accessToken);
     storage.setItem("refreshToken", refreshToken);
     localStorage.removeItem("demo_start_time");
-
+    localStorage.removeItem("demo_cards");
+    localStorage.removeItem("demo_tasks");
 
     setUser(user);
   }
