@@ -2,7 +2,7 @@ import { ReactComponent as SearchIcon } from '../../../assets/icons/search.svg';
 import { ReactComponent as NameIcon } from '../../../assets/icons/name.svg';
 import { ReactComponent as EmailIcon } from '../../../assets/icons/email.svg';
 import { ReactComponent as PasswordIcon } from '../../../assets/icons/password.svg';
-import * as S from "./Inputs.styles.ts";
+import * as S from "./Inputs.styles";
 import React from "react";
 
 type IInputProps<T extends HTMLElement> =

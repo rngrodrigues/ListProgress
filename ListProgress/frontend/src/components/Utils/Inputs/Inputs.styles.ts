@@ -34,9 +34,9 @@ export const SearchInput = styled.input`
   padding: 0.5rem;
   margin-left: 0.5rem;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.text};;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.text};
   outline: none;
-  color: black;
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1.2rem;
   max-width: 9rem;
   transition: all 0.3s ease;
