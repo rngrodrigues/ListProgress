@@ -8,6 +8,7 @@ export function useCards() {
   const cardsService = useCardService();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
   const navigate = useNavigate();
 
   const handleDemoError = (err: any) => {
@@ -19,25 +20,25 @@ export function useCards() {
     return false;
   };
 
-  useEffect(() => {
-    const fetchCards = async () => {
-      setLoading(true);
+ useEffect(() => {
+  const fetchCards = async () => {
+    setLoading(true);
 
-      try {
-        const data = await cardsService.list();
-        setCards(data);
-      } catch (err) {
-        if (!handleDemoError(err)) {
-          console.error(err);
-          toast.error("Erro ao carregar seus cards.");
-        }
-      } finally {
-        setLoading(false);
+    try {
+      const data = await cardsService.list();
+      setCards(data);
+    } catch (err) {
+      if (!handleDemoError(err)) {
+        toast.error("Erro ao carregar seus cards.");
       }
-    };
+    } finally {
+      setLoading(false);
+      setReady(true); // 🔑 dados iniciais prontos
+    }
+  };
 
-    fetchCards();
-  }, [cardsService]);
+  fetchCards();
+}, [cardsService]);
 
   async function addCard(newCard: any) {
     try {
@@ -96,5 +97,6 @@ export function useCards() {
     updateCard,
     deleteCard,
     loading,
+    ready,
   };
 }

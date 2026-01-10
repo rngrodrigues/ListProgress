@@ -22,7 +22,7 @@ const Home: React.FC = () => {
     addCard,
     updateCard,
     deleteCard,
-    loading: cardsLoading, // Estado de carregamento dos cards
+    ready, // Estado de carregamento dos cards
   } = useCards();
 
   const [open, setOpen] = useState<boolean>(false); // Modal de criação de card
@@ -72,7 +72,7 @@ const Home: React.FC = () => {
     setPage((prev) => prev + step);
   }
 
-if (authLoading || cardsLoading) {
+if (authLoading || !ready) {
   return <Loading />;
 }
  // Espera carregamento de dados
