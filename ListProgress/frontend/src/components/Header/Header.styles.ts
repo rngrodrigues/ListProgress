@@ -15,7 +15,7 @@ export const MainContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    backdrop-filter: blur(0.15rem);
+    background: ${({ theme }) => theme.colors.bg} url('https://transparenttextures.com/patterns/xv.png') repeat;  
     box-shadow: 2px 0 10px ${({ theme }) => theme.colors.shadow};
     margin: 0;
     padding: 1rem;
@@ -150,7 +150,7 @@ export const MobileMenuOverlay = styled.div<{ $open: boolean }>`
 `;
 
 export const MobileMenu = styled.div<{ $open: boolean }>`
-  background: ${({ theme }) => theme.colors.bg};
+  background: ${({ theme }) => theme.colors.bg} url('https://transparenttextures.com/patterns/xv.png') repeat;  
   width: 100%;
   max-width: 50%;
   display: flex;
