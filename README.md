@@ -10,6 +10,15 @@
   </a>
 </p>
 
+## Preview
+
+### Desktop
+![Home Desktop](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/mobile-home.png)
+
+### Mobile
+![Home Mobile](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/desktop-home.png)
+
+
 ## O que é esse projeto?
 
 Aplicação web de produtividade para criação e gerenciamento de cards e tarefas, com cálculo automático de progresso, autenticação de usuários e isolamento total de dados por usuário.
@@ -104,15 +113,6 @@ frontend/
 ├── index.html
 └── package.json
 ```
-
-## Preview
-
-### Desktop
-![Home Desktop](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/mobile-home.png)
-
-### Mobile
-![Home Mobile](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/desktop-home.png)
-
 ---
 
 ## Tecnologias
