@@ -1,24 +1,35 @@
-# 🧑‍💻 ListProgress
+<h1 align="center">ListProgress</h1>
+
+<p align="center">
+  ↓ Acesse o projeto
+</p>
+
+<p align="center">
+  <a href="https://listprogress.vercel.app">
+    <img src="https://img.shields.io/badge/deploy-online-green?style=for-the-badge&logo=vercel" />
+  </a>
+</p>
+
+## Preview
+
+### Desktop
+![Home Desktop](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/mobile-home.png)
+
+### Mobile
+![Home Mobile](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/desktop-home.png)
+
+
+## O que é esse projeto?
 
 Aplicação web de produtividade para criação e gerenciamento de cards e tarefas, com cálculo automático de progresso, autenticação de usuários e isolamento total de dados por usuário.
 
-## 💡 Motivação
+## Motivação
 
 Este projeto foi desenvolvido com o objetivo de aplicar, na prática, conceitos de arquitetura frontend e backend, autenticação segura, separação de responsabilidades e regras de negócio comuns em aplicações reais de mercado.
 
 ---
 
-## 🌐 Deploy
-
-Foi utilizado Vercel para hospedagem do frontend e Railway para hospedagem da API.
-
-<a href="https://listprogress.vercel.app/login" target="_blank" rel="noopener noreferrer">
-  Clique aqui para acessar o ListProgress.
-</a>
-
----
-
-## 🎯 O que este projeto demonstra
+## O que este projeto demonstra
 
 - Consumo de API REST real;
 - Autenticação e autorização de usuários;
@@ -30,7 +41,7 @@ Foi utilizado Vercel para hospedagem do frontend e Railway para hospedagem da AP
 
 ---
 
-## 📌 Funcionalidades
+## Funcionalidades
 
 - Autenticação de usuários com JWT;
 - Token JWT com expiração automática (1h);
@@ -47,46 +58,93 @@ Foi utilizado Vercel para hospedagem do frontend e Railway para hospedagem da AP
 
 ---
 
-## 📸 Preview
+## Estrutura de pastas;
 
-### Desktop
-![Home Desktop](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/mobile-home.png)
+```
+backend/
+├── node_modules/
+├── src/
+│   ├── config/
+│   ├── controllers/
+│   ├── middlewares/
+│   ├── repositories/
+│   ├── routes/
+│   ├── services/
+│   ├── types/
+│   └── app/
+│
+├── package.json
+└── tsconfig.json
+```
 
-### Mobile
-![Home Mobile](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/desktop-home.png)
-
+```
+frontend/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── Layout/
+│   │   ├── Footer/
+│   │   ├── Header/
+│   │   ├── Loading/
+│   │   ├── Modals/
+│   │   ├── TaskBoard/
+│   │   ├── TaskCard/
+│   │   ├── TaskList/
+│   │   ├── TaskProgress/
+│   │   └── Utils/
+│   │       ├── Buttons/
+│   │       ├── Inputs/
+│   │       └── Toasts/
+│   │
+│   ├── contexts/
+│   ├── hooks/
+│   ├── pages/
+│   │   ├── Home/
+│   │   ├── Login/
+│   │   ├── Historico/
+│   │   ├── ComoUsar/
+│   │   └── SobreNos/
+│   │
+│   ├── services/
+│   ├── types/
+│   └── styles/
+│
+├── index.html
+└── package.json
+```
 ---
 
-## 🚀 Tecnologias
+## Tecnologias
 
 A aplicação é dividida em **Frontend** e **Backend**, seguindo princípios de separação de responsabilidades, reutilização de código e facilidade de manutenção.
 
 ### Frontend
-- **React 18.3.1**: Interface baseada em componentes reutilizáveis.
-- **TypeScript 5.9.3**: Tipagem estática para maior confiabilidade e manutenibilidade.
-- **Vite 7.1.7**: Build tool rápida e otimizada para desenvolvimento moderno.
-- **Styled Components 6.1.19**: Estilização com CSS-in-JS, temas e suporte a dark mode.
-- **React Router DOM 7.9.5**: Navegação entre páginas.
-- **Framer Motion 12.23.24**: Animações e transições.
-- **SweetAlert2 11.26.10**: Alertas interativos.
-- **UUID 13.0.0**: Geração de IDs únicos para cards e tarefas.
-- **JWT-decode 3.1.2**: Decodificação de tokens JWT.
-- **Fetch API**: Comunicação entre o frontend e a API.
-- **LocalStorage**: Persistência de dados no modo demo (sem necessidade de login).
+- **React 18.3.1**;
+- **TypeScript 5.9.3**;
+- **Vite 7.1.7**;
+- **Styled Components 6.1.19**;
+- **React Router DOM 7.9.5**;
+- **Framer Motion 12.23.24**;
+- **SweetAlert2 11.26.10**;
+- **UUID 13.0.0**;
+- **JWT-decode 3.1.2**;
+- **Fetch API**;
+- **LocalStorage**;
 
 ### Backend
-- **Express 5.2.1**: Framework para criação da API, gerenciamento de rotas e requisições.
-- **Node.js 24.10.0**: API REST para gerenciamento de cards, tarefas e usuários.
-- **TypeScript 5.9.3**: Padronização e segurança na lógica de negócio.
-- **bcrypt 6.0.0**: Hash de senhas para autenticação segura.
-- **JWT (JSON Web Token) 9.0.3**: Controle de autenticação e autorização via tokens seguros.
-- **dotenv 17.2.3**: Gerenciamento de variáveis de ambiente.
-- **CORS 2.8.5**: Middleware responsável por permitir a comunicação entre o frontend e a API.
-- **Supabase (PostgreSQL) 2.87.1**: Persistência de dados.
+- **Express 5.2.1**;
+- **Node.js 24.10.0**;
+- **TypeScript 5.9.3**;
+- **bcrypt 6.0.0**;
+- **JWT (JSON Web Token) 9.0.3**;
+- **dotenv 17.2.3**;
+- **CORS 2.8.5**;
+- **Supabase (PostgreSQL) 2.87.1**;
 
 ---
 
-## 🧠 Arquitetura do Projeto
+## Arquitetura do Projeto
 
 O projeto segue arquitetura em camadas, separando claramente interface, lógica de negócio e persistência de dados.
 
@@ -106,7 +164,7 @@ O projeto segue arquitetura em camadas, separando claramente interface, lógica 
 
 ---
 
-## ⚙️ Rodando o projeto localmente
+## Como rodar o projeto?
 
 Siga estes passos para testar o **ListProgress** na sua máquina:
 
