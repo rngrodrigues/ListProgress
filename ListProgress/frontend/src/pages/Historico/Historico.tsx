@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import MainContainer from "../../components/MainContainer";
 import Footer from "../../components/Footer";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { TaskList } from "../../components/TaskList/TaskList";
 import { HistoricoTopContainer } from "./Historico.styles";
 import { TaskBoard } from "../../components/TaskBoard/TaskBoard";
@@ -19,7 +19,7 @@ const Historico = () => {
   const [search, setSearch] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Filtra apenas cards concluídos e que correspondam ao termo de busca
+
   const filteredCompletedCards = useMemo(() => {
     return cards.filter((card) => {
       if (!card.completed) return false;
@@ -65,14 +65,14 @@ const Historico = () => {
             />
           </HistoricoTopContainer>
         )}
-
+<AnimatePresence mode="wait">
         {selectedTask && (
           <motion.div
-            key="tasklist"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.35 }}
-            style={{ width: "100%" }}
+         key="tasklist"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
           >
             <TaskList
               id={selectedTask.id}
@@ -93,7 +93,7 @@ const Historico = () => {
             />
           </motion.div>
         )}
-
+</AnimatePresence>
         {!selectedTask && (
           <TaskBoard
             cards={filteredCompletedCards}
