@@ -10,7 +10,7 @@ import {
   Equipe
 } from "./SobreNos.styles";
 import Footer from "../../components/Footer";
-import desenvolvedorImg from "../../assets/icons/img/desenvolvedor.jpg";
+import desenvolvedorImg from "../../assets/icons/img/desenvolvedor.png";
 
 export const SobreNos = () => {
 
