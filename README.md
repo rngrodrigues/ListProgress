@@ -1,5 +1,7 @@
 <h1 align="center">ListProgress</h1>
-
+<p align="center">
+ListProgress é um sistema web para criação e acompanhamento de metas organizado em cards e tarefas personalizados.
+  </p>
 <p align="center">
   ↓ Acesse o projeto
 </p>
@@ -10,26 +12,28 @@
   </a>
 </p>
 
-## Preview
+# Preview
 
-### Desktop
+## Desktop
 ![Home Desktop](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/mobile-home.png)
 
-### Mobile
+## Mobile
 ![Home Mobile](https://github.com/rngrodrigues/ListProgress/blob/main/ListProgress/frontend/src/assets/icons/img/desktop-home.png)
 
+# O que é esse projeto?
 
-## O que é esse projeto?
+Aplicação web de produtividade voltada para a criação e gerenciamento de cards e tarefas, permitindo o acompanhamento do progresso de forma automática. O sistema conta com autenticação de usuários e garante o isolamento total dos dados, assegurando que cada usuário tenha acesso apenas às suas próprias informações.
+O projeto foi desenvolvido com foco em organização, usabilidade e segurança.
 
-Aplicação web de produtividade para criação e gerenciamento de cards e tarefas, com cálculo automático de progresso, autenticação de usuários e isolamento total de dados por usuário.
+# Motivação
 
-## Motivação
-
-Este projeto foi desenvolvido com o objetivo de aplicar, na prática, conceitos de arquitetura frontend e backend, autenticação segura, separação de responsabilidades e regras de negócio comuns em aplicações reais de mercado.
+Este projeto foi desenvolvido com o objetivo de aplicar, na prática, conceitos fundamentais de arquitetura frontend e backend, como autenticação segura, separação de responsabilidades e implementação de regras de negócio.
+A idéia da aplicação surgiu a partir da necessidade de ter um sistema simples, intuitivo e eficiente para a organização dos meus próprios estudos e ter uma visão clara do progresso ao longo do tempo.
+Além disso, o desenvolvimento do projeto contribuiu para o aprimoramento do raciocínio lógico, da estruturação de código e da integração entre as diferentes camadas do sistema.
 
 ---
 
-## O que este projeto demonstra
+# Funcionalidades:
 
 - Consumo de API REST real;
 - Autenticação e autorização de usuários;
@@ -38,11 +42,6 @@ Este projeto foi desenvolvido com o objetivo de aplicar, na prática, conceitos 
 - Separação clara entre UI, lógica e dados;
 - Uso consistente de TypeScript no frontend e backend;
 - Boas práticas de organização e escalabilidade;
-
----
-
-## Funcionalidades
-
 - Autenticação de usuários com JWT;
 - Token JWT com expiração automática (1h);
 - Proteção de rotas autenticadas;
@@ -58,7 +57,7 @@ Este projeto foi desenvolvido com o objetivo de aplicar, na prática, conceitos 
 
 ---
 
-## Estrutura de pastas;
+## Estrutura de pastas:
 
 ```
 backend/
@@ -115,11 +114,11 @@ frontend/
 ```
 ---
 
-## Tecnologias
+# Tecnologias utilizadas:
 
 A aplicação é dividida em **Frontend** e **Backend**, seguindo princípios de separação de responsabilidades, reutilização de código e facilidade de manutenção.
 
-### Frontend
+## Frontend
 - **React 18.3.1**;
 - **TypeScript 5.9.3**;
 - **Vite 7.1.7**;
@@ -132,7 +131,7 @@ A aplicação é dividida em **Frontend** e **Backend**, seguindo princípios de
 - **Fetch API**;
 - **LocalStorage**;
 
-### Backend
+## Backend
 - **Express 5.2.1**;
 - **Node.js 24.10.0**;
 - **TypeScript 5.9.3**;
@@ -144,18 +143,18 @@ A aplicação é dividida em **Frontend** e **Backend**, seguindo princípios de
 
 ---
 
-## Arquitetura do Projeto
+# Arquitetura do Projeto
 
 O projeto segue arquitetura em camadas, separando claramente interface, lógica de negócio e persistência de dados.
 
-### Frontend
+## Frontend
 - **Components**: Componentes reutilizáveis de UI (Footer, Header, Layout, TaskCard, TaskProgress, etc);
 - **Pages**: Páginas da aplicação (Home, Historico, Como usar?, Sobre nós);
 - **Hooks**: Lógica de negócios desacopladas da interface (useCards, useLogin, useTask, usePagination);
 - **Contexts**: Estado global (authContext e themeContext);
 - **Services**: Requisições da aplicação (apiFetch, cardDemoService, cardServiceClient, taskDemoService, taskServiceClient);
 
-### Backend
+## Backend
 - **Controllers**: Camada responsável por receber as requisições (cardController, taskController);
 - **Services**: Regras de negócio da aplicação (authService, cardService, taskService);
 - **Repositories**: Acesso e persistência de dados (cardRepository, taskRepository e userRepository);
@@ -164,21 +163,35 @@ O projeto segue arquitetura em camadas, separando claramente interface, lógica 
 
 ---
 
-## Como rodar o projeto?
+# Melhorias futuras
+
+* Opção de **esqueci minha senha**;
+* Funcionalidade para **alteração de senha**;
+* Opção para **alterar nome de usuário**;
+* **Validação de e-mail** no cadastro;
+* Integração com autenticação social (**Google, Facebook**, entre outros);
+* Cards com funcionalidade **multiusuário**;
+* Definição de **prioridade nos cards**;
+* Implementação de **drag and drop** para organização dos cards;
+* Definição de **prazo (deadline)** para os cards;
+
+---
+
+# Como rodar o projeto?
 
 Siga estes passos para testar o **ListProgress** na sua máquina:
 
-### Pré-requisitos
+## Pré-requisitos
 
 - Node.js >= 20.x
 - npm ou yarn
 - Conta no Supabase
 
-### 1️⃣ Clonar o repositório
+## 1️⃣ Clonar o repositório
 
 git clone https://github.com/rngrodrigues/ListProgress.git
 
-### 2️⃣ Configurar Supabase
+## 2️⃣ Configurar Supabase
 
 Crie um projeto no Supabase;
 Copie o Project URL e a Anon public key;
@@ -187,7 +200,7 @@ Crie um arquivo .env na pasta **backend** e preencha:
 SUPABASE_URL=your_project_url
 SUPABASE_KEY=your_anon_key
 
-### 3️⃣ Rodar o backend 
+## 3️⃣ Rodar o backend 
 
 > Abra o terminal;
 > ⚠️ Certifique-se de estar na pasta correta (onde está o `.env`).  
@@ -200,9 +213,9 @@ npm install
 npm run dev
 ```
 
-Servidor ficará em: http://localhost:3001
+Ficará disponível em: http://localhost:3001
 
-### 4️⃣ Rodar o frontend:
+## 4️⃣ Rodar o frontend:
 
 > Abra outro terminal;
 > ⚠️ Certifique-se de estar na pasta correta
@@ -214,4 +227,9 @@ npm install
 npm run dev
 ```
 
-Aplicação ficará disponível em: http://localhost:5173
+Ficará disponível em: http://localhost:5173
+
+🚀 Fique à vontade para explorar o projeto, testar ou entrar em contato para feedbacks e sugestões.
+
+
+
