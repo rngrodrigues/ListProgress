@@ -1,4 +1,6 @@
 import type { DefaultTheme } from "styled-components";
+import bgImage from "@/assets/icons/img/brushed-alum-dark.png";
+import bgImageLight from "@/assets/icons/img/brushed-alum-dark.png";
 
 export const lightTheme: DefaultTheme = {
   colors: {
@@ -12,7 +14,7 @@ export const lightTheme: DefaultTheme = {
     progress:"#d9d9d9",
     itemList:"white",
   },
-  bgImage: "https://transparenttextures.com/patterns/asfalt-dark.png",
+  bgImage: bgImageLight,
 };
 
 export const darkTheme: DefaultTheme = {
@@ -27,6 +29,5 @@ export const darkTheme: DefaultTheme = {
     progress:"rgba(255, 255, 255, 0.5)",
     itemList:"#111111ff",
   },
- bgImage:
-  "https://transparenttextures.com/patterns/brushed-alum-dark.png",
+  bgImage: bgImage,
 };
