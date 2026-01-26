@@ -59,7 +59,8 @@ export const MenuContainer = styled.div`
   display: flex;
   align-items: center;
   border-radius: 5rem;
-  background: ${({ theme }) => theme.colors.bg} url('https://transparenttextures.com/patterns/xv.png') repeat; 
+  background-image: url(${bgImage});
+    background-repeat: repeat;
   padding: 0.5rem;
   margin: 0 1rem;
   box-shadow: 0 2px 2px 1px ${({ theme }) => theme.colors.shadow};
@@ -99,7 +100,8 @@ export const MenuContainer = styled.div`
 
 export const LoginContainer = styled.div`
   border-radius: 2rem;
-  background: ${({ theme }) => theme.colors.bg} url('https://transparenttextures.com/patterns/xv.png') repeat; 
+  background-image: url(${bgImage});
+    background-repeat: repeat;
   padding: 1rem;
   margin: 0 2rem;
   box-shadow: 0 2px 2px 1px ${({ theme }) => theme.colors.shadow};
@@ -151,7 +153,8 @@ export const MobileMenuOverlay = styled.div<{ $open: boolean }>`
 `;
 
 export const MobileMenu = styled.div<{ $open: boolean }>`
-  background: ${({ theme }) => theme.colors.bg} url('https://transparenttextures.com/patterns/xv.png') repeat;  
+ background-image: url(${bgImage});
+    background-repeat: repeat;
   width: 100%;
   max-width: 50%;
   display: flex;
