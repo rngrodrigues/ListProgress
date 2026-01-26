@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import bgImage from "../../assets/icons/img/xv.png";
 
 export const MainContainer = styled.div`
   max-width: 1920px;
@@ -15,8 +16,9 @@ export const MainContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    background: ${({ theme }) => theme.colors.bg} url('https://transparenttextures.com/patterns/xv.png') repeat;  
-    box-shadow: 2px 0 10px ${({ theme }) => theme.colors.shadow};
+    background: bgImage repeat;  
+    background-image: url(${bgImage});
+    background-repeat: repeat;
     margin: 0;
     padding: 1rem;
     height: auto;
