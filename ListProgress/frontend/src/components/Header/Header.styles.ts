@@ -16,9 +16,8 @@ export const MainContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    background: bgImage repeat;  
-    background-image: url(${bgImage});
-    background-repeat: repeat;
+    background: ${({ theme }) => theme.colors.bg} url(${bgImage}) repeat;
+    box-shadow: 2px 0 10px ${({ theme }) => theme.colors.shadow};
     margin: 0;
     padding: 1rem;
     height: auto;
@@ -59,8 +58,7 @@ export const MenuContainer = styled.div`
   display: flex;
   align-items: center;
   border-radius: 5rem;
-  background-image: url(${bgImage});
-    background-repeat: repeat;
+   background: ${({ theme }) => theme.colors.bg} url(${bgImage}) repeat;
   padding: 0.5rem;
   margin: 0 1rem;
   box-shadow: 0 2px 2px 1px ${({ theme }) => theme.colors.shadow};
@@ -100,8 +98,7 @@ export const MenuContainer = styled.div`
 
 export const LoginContainer = styled.div`
   border-radius: 2rem;
-  background-image: url(${bgImage});
-    background-repeat: repeat;
+   background: ${({ theme }) => theme.colors.bg} url(${bgImage}) repeat;
   padding: 1rem;
   margin: 0 2rem;
   box-shadow: 0 2px 2px 1px ${({ theme }) => theme.colors.shadow};
@@ -153,8 +150,7 @@ export const MobileMenuOverlay = styled.div<{ $open: boolean }>`
 `;
 
 export const MobileMenu = styled.div<{ $open: boolean }>`
- background-image: url(${bgImage});
-    background-repeat: repeat;
+    background: ${({ theme }) => theme.colors.bg} url(${bgImage}) repeat;
   width: 100%;
   max-width: 50%;
   display: flex;
