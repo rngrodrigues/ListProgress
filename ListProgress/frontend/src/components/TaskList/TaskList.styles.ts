@@ -133,10 +133,6 @@ display: flex;
 align-items: center;
 width: 100%;          
 list-style: none;
-
- &.completed {
-    text-decoration: line-through;
-  }
 `;
 
 export const ItemDescription = styled.p`
@@ -144,11 +140,7 @@ color:${({ theme }) => theme.colors.text};
 text-align: center; 
 white-space: pre-line;
 padding: 1rem;
-    
   word-break: break-word;  
- &.completed {
-    text-decoration: line-through;
-  }
 `;
 
 
