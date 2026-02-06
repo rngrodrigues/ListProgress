@@ -9,7 +9,7 @@ background: ${({ theme }) => theme.colors.card};
 padding: 3rem;
 position: relative;
 box-shadow: 0 3px 5px 1px ${({ theme }) => theme.colors.shadow};
-transition: all ease 0.3s;
+transition: all ease 0.15s;
 aspect-ratio: 1 / 1;
 overflow: hidden;
 &:hover {
@@ -23,7 +23,7 @@ top: 3rem;
 right: 2rem;
 width: 4rem;
 height: 4rem;
-transition: transform 0.3s ease;
+transition: transform 0.15s ease;
 }
 
  .icon:hover {
@@ -58,7 +58,7 @@ cursor: pointer;
 width: 3rem;
 height: 3rem;
 margin: 1rem;
-transition: fill 0.3s ease;
+transition: fill 0.15s ease;
 }
  .delete:hover {
     fill:red;
