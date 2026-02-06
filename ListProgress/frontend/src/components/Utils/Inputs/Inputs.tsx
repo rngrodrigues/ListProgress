@@ -8,14 +8,17 @@ import React from "react";
 type IInputProps<T extends HTMLElement> =
   React.InputHTMLAttributes<T> & {
     value: string;
+    name: string;
   };
 
-export const SearchInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+export const SearchInput = ({ value, onChange, name }: IInputProps<HTMLInputElement>) => {
   return (
     <S.SearchContainer tabIndex={0}>
       <SearchIcon className="icon" />
       <S.SearchInput
-      value={value}
+        id={name}
+        name={name}
+        value={value}
         onChange={onChange}
         type="text"
         aria-label="Pesquisar"
@@ -26,11 +29,13 @@ export const SearchInput = ({ value, onChange }: IInputProps<HTMLInputElement>) 
   );
 };
 
-export const TitleInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+export const TitleInput = ({ value, onChange, name }: IInputProps<HTMLInputElement>) => {
   return (
     <>
-      <S.TitleLabel>Título</S.TitleLabel>
+      <S.TitleLabel htmlFor={name}>Título</S.TitleLabel>
       <S.TitleInput
+        id={name}
+        name={name}
         required
         type="text"
         aria-label="Título"
@@ -43,11 +48,13 @@ export const TitleInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =
   );
 };
 
-export const CategoryInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+export const CategoryInput = ({ value, onChange, name }: IInputProps<HTMLInputElement>) => {
   return (
     <>
-      <S.CategoryLabel>Categoria</S.CategoryLabel>
+      <S.CategoryLabel htmlFor={name}>Categoria</S.CategoryLabel>
       <S.CategoryInput
+        id={name}
+        name={name}
         required
         type="text"
         aria-label="Categoria"
@@ -60,17 +67,18 @@ export const CategoryInput = ({ value, onChange }: IInputProps<HTMLInputElement>
   );
 };
 
-export const DescriptionInput = ({ value, onChange }: IInputProps<HTMLTextAreaElement>) => {
+export const DescriptionInput = ({ value, onChange, name }: IInputProps<HTMLTextAreaElement>) => {
   return (
     <>
-      <S.DescriptionLabel>Descrição</S.DescriptionLabel>
+      <S.DescriptionLabel htmlFor={name}>Descrição</S.DescriptionLabel>
       <S.DescriptionInput
+        id={name}
+        name={name}
         rows={5}
         aria-label="Descrição"
         placeholder="Uma breve descrição..."
         value={value}
         onChange={onChange}
-        autoComplete="off"
       />
     </>
   );
@@ -79,17 +87,28 @@ export const DescriptionInput = ({ value, onChange }: IInputProps<HTMLTextAreaEl
 interface CheckInputProps {
   checked: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name: string;
 }
 
-export const CheckInput = ({ checked, onChange }: CheckInputProps) => {
-  return <S.CheckInput type="checkbox" checked={checked} onChange={onChange} />;
+export const CheckInput = ({ checked, onChange, name }: CheckInputProps) => {
+  return (
+    <S.CheckInput
+      id={name}
+      name={name}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+    />
+  );
 };
 
-export const NameInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+export const NameInput = ({ value, onChange, name }: IInputProps<HTMLInputElement>) => {
   return (
     <S.NameContainer>
       <NameIcon className="icon" />
       <S.NameInput
+        id={name}
+        name={name}
         required
         type="text"
         aria-label="Nome"
@@ -102,11 +121,13 @@ export const NameInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =>
   );
 };
 
-export const EmailInput = ({ value, onChange }: IInputProps<HTMLInputElement>) => {
+export const EmailInput = ({ value, onChange, name }: IInputProps<HTMLInputElement>) => {
   return (
     <S.EmailContainer>
       <EmailIcon className="icon" />
       <S.EmailInput
+        id={name}
+        name={name}
         required
         type="email"
         aria-label="Email"
@@ -119,11 +140,18 @@ export const EmailInput = ({ value, onChange }: IInputProps<HTMLInputElement>) =
   );
 };
 
-export const PasswordInput = ({ value, onChange, isLogin = true }: IInputProps<HTMLInputElement> & { isLogin?: boolean }) => {
+export const PasswordInput = ({
+  value,
+  onChange,
+  name,
+  isLogin = true
+}: IInputProps<HTMLInputElement> & { isLogin?: boolean }) => {
   return (
     <S.PasswordContainer>
       <PasswordIcon className="icon" />
       <S.PasswordInput
+        id={name}
+        name={name}
         required
         type="password"
         aria-label="Senha"

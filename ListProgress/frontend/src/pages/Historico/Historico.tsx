@@ -19,7 +19,6 @@ const Historico = () => {
   const [search, setSearch] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
-
   const filteredCompletedCards = useMemo(() => {
     return cards.filter((card) => {
       if (!card.completed) return false;
@@ -34,7 +33,10 @@ const Historico = () => {
   }, [cards, search]);
 
   const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredCompletedCards.length / ITEMS_PER_PAGE));
+    return Math.max(
+      1,
+      Math.ceil(filteredCompletedCards.length / ITEMS_PER_PAGE)
+    );
   }, [filteredCompletedCards.length]);
 
   useEffect(() => {
@@ -50,9 +52,9 @@ const Historico = () => {
     setPage((prev) => prev + step);
   }
 
- if ( loading ) {
-  return <Loading />;
-}
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -60,40 +62,43 @@ const Historico = () => {
         {!selectedTask && (
           <HistoricoTopContainer>
             <SearchInput
+              name="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </HistoricoTopContainer>
         )}
-<AnimatePresence mode="wait">
-        {selectedTask && (
-          <motion.div
-         key="tasklist"
+
+        <AnimatePresence mode="wait">
+          {selectedTask && (
+            <motion.div
+              key="tasklist"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-          >
-            <TaskList
-              id={selectedTask.id}
-              title={selectedTask.title}
-              category={selectedTask.category}
-              description={selectedTask.description}
-              onBack={() => {
-                setSelectedTask(null);
-                setRefreshKey((prev) => prev + 1);
-              }}
-              onCardUpdate={(updatedCard) => {
-                setCards((prev) =>
-                  prev.map((c) =>
-                    c.id === updatedCard.id ? { ...c, ...updatedCard } : c
-                  )
-                );
-              }}
-            />
-          </motion.div>
-        )}
-</AnimatePresence>
+            >
+              <TaskList
+                id={selectedTask.id}
+                title={selectedTask.title}
+                category={selectedTask.category}
+                description={selectedTask.description}
+                onBack={() => {
+                  setSelectedTask(null);
+                  setRefreshKey((prev) => prev + 1);
+                }}
+                onCardUpdate={(updatedCard) => {
+                  setCards((prev) =>
+                    prev.map((c) =>
+                      c.id === updatedCard.id ? { ...c, ...updatedCard } : c
+                    )
+                  );
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {!selectedTask && (
           <TaskBoard
             cards={filteredCompletedCards}
