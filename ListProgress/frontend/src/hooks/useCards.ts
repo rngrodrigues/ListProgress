@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export function useCards() {
   const cardsService = useCardService();
   const [cards, setCards] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleDemoError = (err: any) => {
