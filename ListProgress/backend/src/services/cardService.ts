@@ -9,7 +9,6 @@ export const CardService = {
     }),
 
   list: (userId: string) =>
-    // Ordena os cards por posição
     CardRepository.listByUser(userId).then(cards => 
       cards.sort((a: any, b: any) => {
         if (a.position == null) return 1;

@@ -3,15 +3,14 @@ import type { Task } from "../types/Task.ts";
 
 export const TaskRepository = {
 
-  // Cria uma nova task. Supabase gera automaticamente ID e created_at.
   async create(
     task: Omit<Task, "id" | "created_at">
   ): Promise<Task> {
     const { data, error } = await supabase
       .from("tasks")
-      .insert(task)       // Insere a task na tabela
-      .select()           // Retorna os campos recém-criados
-      .single();          // Garante retorno único
+      .insert(task)
+      .select()
+      .single();
 
     if (error) {
       console.error("TaskRepository.create:", error);
@@ -21,13 +20,12 @@ export const TaskRepository = {
     return data;
   },
 
-  // Lista todas as tasks de um usuário, ordenadas pela posição
   async listByUser(userId: string): Promise<Task[]> {
     const { data, error } = await supabase
       .from("tasks")
       .select("*")
-      .eq("user_id", userId)           // Filtra apenas as tasks do usuário
-      .order("position", { ascending: true }); // Mantém a ordem visual
+      .eq("user_id", userId)
+      .order("position", { ascending: true });
 
     if (error) {
       console.error("TaskRepository.listByUser:", error);
@@ -37,7 +35,6 @@ export const TaskRepository = {
     return data ?? [];
   },
 
-  // Lista todas as tasks de um card específico, garantindo que pertençam ao usuário
   async listByCard(
     cardId: string,
     userId: string
@@ -45,9 +42,9 @@ export const TaskRepository = {
     const { data, error } = await supabase
       .from("tasks")
       .select("*")
-      .eq("card_id", cardId)           // Filtra pelo card
-      .eq("user_id", userId)           // Filtra pelo usuário
-      .order("position", { ascending: true }); // Ordena pela posição
+      .eq("card_id", cardId)
+      .eq("user_id", userId)
+      .order("position", { ascending: true });
 
     if (error) {
       console.error("TaskRepository.listByCard:", error);
@@ -57,7 +54,6 @@ export const TaskRepository = {
     return data ?? [];
   },
 
-  // Atualiza uma task específica do usuário
   async update(
     id: string,
     userId: string,
@@ -66,10 +62,10 @@ export const TaskRepository = {
     const { data, error } = await supabase
       .from("tasks")
       .update(updatedTask)
-      .eq("id", id)                    // Seleciona task pelo ID
-      .eq("user_id", userId)           // Confirma que pertence ao usuário
+      .eq("id", id)
+      .eq("user_id", userId)
       .select()
-      .single();                        // Retorna apenas uma task
+      .single();
 
     if (error) {
       console.error("TaskRepository.update:", error);
@@ -79,7 +75,6 @@ export const TaskRepository = {
     return data;
   },
 
-  // Deleta uma task pelo ID e usuário
   async delete(
     id: string,
     userId: string
@@ -88,7 +83,7 @@ export const TaskRepository = {
       .from("tasks")
       .delete()
       .eq("id", id)
-      .eq("user_id", userId);          // Garante que só deletará a task do usuário
+      .eq("user_id", userId);
 
     if (error) {
       console.error("TaskRepository.delete:", error);
@@ -98,7 +93,6 @@ export const TaskRepository = {
     return true;
   },
 
-  // Busca uma task pelo ID e usuário. Pode retornar null se não encontrada.
   async findById(
     id: string,
     userId: string
@@ -108,7 +102,7 @@ export const TaskRepository = {
       .select("*")
       .eq("id", id)
       .eq("user_id", userId)
-      .maybeSingle();                  // Retorna null se não existir
+      .maybeSingle();
 
     if (error) {
       console.error("TaskRepository.findById:", error);

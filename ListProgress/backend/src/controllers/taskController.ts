@@ -3,39 +3,23 @@ import { TaskService } from "../services/taskService.ts";
 
 export const TaskController = {
 
-  // Cria uma nova tarefa para o usuário logado
   async create(req: Request, res: Response) {
-    try {
-      const userId = req.user!.id; // Pega ID do usuário autenticado
-
-      const task = await TaskService.create(req.body, userId); // Chama serviço para criar a tarefa
-
-      res.status(201).json(task); // Retorna a tarefa criada com status 201
-    } catch (err: any) {
-      res.status(500).json({ error: err.message }); // Erro genérico
-    }
-  },
-
-  // Lista todas as tarefas do usuário logado
-  async listByUser(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
 
-      const tasks = await TaskService.listByUser(userId); // Busca todas as tarefas do usuário
+      const task = await TaskService.create(req.body, userId);
 
-      res.json(tasks); // Retorna lista de tarefas
+      res.status(201).json(task);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
   },
 
-  // Lista todas as tarefas de um card específico do usuário
-  async listByCard(req: Request, res: Response) {
+  async listByUser(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
-      const cardId = req.params.cardId; // ID do card
 
-      const tasks = await TaskService.listByCard(cardId, userId); // Busca tarefas do card específico
+      const tasks = await TaskService.listByUser(userId);
 
       res.json(tasks);
     } catch (err: any) {
@@ -43,35 +27,46 @@ export const TaskController = {
     }
   },
 
-  // Atualiza uma tarefa específica do usuário
-  async update(req: Request, res: Response) {
+  async listByCard(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
-      const id = req.params.id; // ID da tarefa
+      const cardId = req.params.cardId;
 
-      const updatedTask = await TaskService.update(id, userId, req.body); // Atualiza a tarefa
+      const tasks = await TaskService.listByCard(cardId, userId);
 
-      res.json(updatedTask); // Retorna a tarefa atualizada
+      res.json(tasks);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
   },
 
-  // Deleta uma tarefa específica do usuário
+  async update(req: Request, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const id = req.params.id;
+
+      const updatedTask = await TaskService.update(id, userId, req.body);
+
+      res.json(updatedTask);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
   async delete(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
-      const id = req.params.id; // ID da tarefa a ser deletada
+      const id = req.params.id;
 
-      const deleted = await TaskService.delete(id, userId); // Chama serviço para deletar a tarefa
+      const deleted = await TaskService.delete(id, userId);
 
       if (!deleted) {
-        return res.status(404).json({ error: "Task não encontrada" }); // Tarefa não existe
+        return res.status(404).json({ error: "Task não encontrada" });
       }
 
       return res.status(200).json({
         message: "Task deletada com sucesso",
-        id, // Retorna ID da tarefa deletada
+        id,
       });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

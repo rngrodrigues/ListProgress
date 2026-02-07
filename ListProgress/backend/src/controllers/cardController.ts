@@ -3,42 +3,39 @@ import { CardService } from "../services/cardService.ts";
 
 export const CardController = {
 
-  // Cria um novo card para o usuário logado
   async create(req: Request, res: Response) {
     try {
-      const userId = req.user!.id; // Pega o ID do usuário logado (autenticado)
-      console.log("Criando card para o usuário:", userId); 
+      const userId = req.user!.id;
+      console.log("Criando card para o usuário:", userId);
       
-      const card = await CardService.create(req.body, userId); // Chama serviço para criar card
-      res.status(201).json(card); // Retorna o card criado com status 201
+      const card = await CardService.create(req.body, userId);
+      res.status(201).json(card);
     } catch (err: any) {
-      console.error("Erro ao criar card:", err.message); 
-      res.status(500).json({ error: err.message }); // Erro genérico
+      console.error("Erro ao criar card:", err.message);
+      res.status(500).json({ error: err.message });
     }
   },
 
-  // Lista todos os cards do usuário logado
   async list(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
-      console.log("Listando cards do usuário:", userId); 
+      console.log("Listando cards do usuário:", userId);
 
-      const cards = await CardService.list(userId); // Chama serviço para buscar cards
-      res.json(cards); // Retorna lista de cards
+      const cards = await CardService.list(userId);
+      res.json(cards);
     } catch (err: any) {
       console.error("Erro ao listar cards:", err.message); 
       res.status(500).json({ error: err.message });
     }
   },
 
-  // Lista todas as tarefas de um card específico do usuário
   async listTasks(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
-      const { id } = req.params; // ID do card
-      console.log(`Listando tarefas para o card ${id} do usuário ${userId}`); 
+      const { id } = req.params;
+      console.log(`Listando tarefas para o card ${id} do usuário ${userId}`);
 
-      const tasks = await CardService.listTasks(id, userId); // Busca tarefas do card
+      const tasks = await CardService.listTasks(id, userId);
       res.json(tasks);
     } catch (err: any) {
       console.error("Erro ao listar tarefas:", err.message); 
@@ -46,7 +43,6 @@ export const CardController = {
     }
   },
 
-  // Atualiza um card específico do usuário
   async update(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
@@ -56,18 +52,17 @@ export const CardController = {
       const updatedCard = await CardService.update(id, req.body, userId);
 
       if (!updatedCard) {
-        return res.status(404).json({ error: "Card não encontrado" }); // Card não existe
+        return res.status(404).json({ error: "Card não encontrado" });
       }
 
-      console.log("UPDATE CARD CHAMADO:", id); 
-      return res.json(updatedCard); // Retorna o card atualizado
+      console.log("UPDATE CARD CHAMADO:", id);
+      return res.json(updatedCard);
     } catch (err: any) {
       console.error("Erro ao atualizar card:", err.message);
       res.status(500).json({ error: err.message });
     }
   },
 
-  // Deleta um card específico do usuário
   async delete(req: Request, res: Response) {
     try {
       const userId = req.user!.id;
@@ -77,13 +72,13 @@ export const CardController = {
       const deleted = await CardService.delete(id, userId);
 
       if (!deleted) {
-        return res.status(404).json({ error: "Card não encontrado" }); // Card não existe
+        return res.status(404).json({ error: "Card não encontrado" });
       }
 
-      console.log("DELETE CARD CHAMADO:", id); 
+      console.log("DELETE CARD CHAMADO:", id);
       return res.status(200).json({
         message: "Card deletado com sucesso",
-        id, // Retorna ID do card deletado
+        id,
       });
     } catch (err: any) {
       console.error("Erro ao deletar card:", err.message); 
