@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const CARDS_KEY = "demo_cards";
 const DEMO_START_KEY = "demo_start_time";
-const DEMO_EXPIRATION_TIME = 5 * 1000; // 1 hora
+const DEMO_EXPIRATION_TIME = 5 * 1000;
 
 const getStored = () => JSON.parse(localStorage.getItem(CARDS_KEY) || "[]");
 const saveStored = (cards: any[]) =>

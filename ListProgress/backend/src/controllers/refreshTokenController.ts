@@ -17,15 +17,12 @@ export async function refreshTokenController(req: Request, res: Response) {
       return res.status(401).json({ message: 'Refresh token não fornecido' });
     }
 
-    // Verifica se o refresh token é válido
     const decoded = jwt.verify(refreshToken, JWT_SECRET) as RefreshTokenPayload;
 
-    // Confirma que é realmente um refresh token
     if (decoded.type !== "refresh") {
       return res.status(401).json({ message: "Token inválido para refresh" });
     }
 
-    // --- Gera novos tokens ---
     const newAccessToken = jwt.sign(
       {
         id: decoded.id,
@@ -47,10 +44,9 @@ export async function refreshTokenController(req: Request, res: Response) {
     );
 
     console.log("Novo access token payload:", jwt.decode(newAccessToken));
-    console.log("Novo refresh token payload:", jwt.decode(newRefreshToken));
+    console.log("Novo refresh token payload:", jwt.decode(newRefreshToken)    );
 
-    // Retorna os dois tokens
-    return res.json({ 
+    return res.json({
       accessToken: newAccessToken,
       refreshToken: newRefreshToken
     });

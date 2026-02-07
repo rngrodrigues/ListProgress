@@ -5,7 +5,6 @@ import type { Task } from "../../../backend/src/types/Task";
 import type { Card } from "../../../backend/src/types/Card";
 import { toast } from "../components/Utils/Toasts/Toasts";
 
-// Hook de gerenciamento de tarefas de um card específico, com CRUD e atualização do status do card
 export function useTask(cardId: string, onCardUpdate?: (updatedCard: Card) => void) {
   const taskService = useTaskService(); 
   const cardService = useCardService(); 
@@ -35,7 +34,7 @@ useEffect(() => {
   const addTask = async (newTask: Partial<Task>) => {
     try {
       const payload = { ...newTask, card_id: cardId };
-      const createdTask = await taskService.create(payload); // Cria tarefa 
+      const createdTask = await taskService.create(payload);
       setTasks((prev) => [...prev, createdTask]); 
       toast.success("Tarefa criada com sucesso!"); 
     } catch (err) {
@@ -46,8 +45,8 @@ useEffect(() => {
 
   const editTask = async (updatedTask: Task) => {
     try {
-      const data = await taskService.update(updatedTask.id, updatedTask); // Atualiza tarefa no backend
-      setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? data : t))); // Atualiza estado local
+      const data = await taskService.update(updatedTask.id, updatedTask);
+      setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? data : t)));
       toast.success("Tarefa atualizada!"); 
     } catch (err) {
       console.error("Erro ao editar tarefa:", err);
@@ -60,8 +59,8 @@ useEffect(() => {
       await taskService.delete(taskId); 
       setTasks((prev) => {
         const filtered = prev.filter((t) => t.id !== taskId); 
-        const reindexed = filtered.map((t, i) => ({ ...t, position: i })); // Reorganiza posições
-        reindexed.forEach((t) => taskService.update(t.id, { position: t.position })); // Atualiza posições no backend
+        const reindexed = filtered.map((t, i) => ({ ...t, position: i }));
+        reindexed.forEach((t) => taskService.update(t.id, { position: t.position }));
         toast.warning("Tarefa removida!"); 
         return reindexed; 
       });
@@ -72,7 +71,7 @@ useEffect(() => {
   };
 
   const toggleCompleted = async (taskId: string) => {
-    const task = tasks.find((t) => t.id === taskId); // Busca tarefa específica
+    const task = tasks.find((t) => t.id === taskId);
     if (!task) return;
 
     const updatedTask = { ...task, completed: !task.completed }; 

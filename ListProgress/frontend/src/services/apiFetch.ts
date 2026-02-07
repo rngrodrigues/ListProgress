@@ -1,12 +1,10 @@
 const BASE_URL = "https://listprogress.onrender.com";
-// URL da API real: https://listprogress-server.up.railway.app localhost: http://192.168.1.9:3001
 
 type ApiFetchOptions = RequestInit & {
-  auth?: boolean; // Define se a requisição deve incluir token de autenticação
+  auth?: boolean;
 };
 
 export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) {
-  // Pega accessToken do localStorage
   let token: string | null = localStorage.getItem("accessToken");
 
   const buildHeaders = (token?: string) => {
@@ -38,24 +36,20 @@ export async function apiFetch(endpoint: string, options: ApiFetchOptions = {}) 
     throw new Error("Tokens não recebidos");
   }
 
-  // Atualiza os dois tokens
   localStorage.setItem("accessToken", data.accessToken);
   localStorage.setItem("refreshToken", data.refreshToken);
 
   return data.accessToken;
 };
 
-  // Tenta requisição original
   let response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
 
-  // Se 401 (não autorizado), tenta refresh (somente se houver refresh token)
   if (response.status === 401) {
     try {
       token = await refreshAccessToken();
       headers = buildHeaders(token);
       response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
     } catch (err) {
-      // Se refresh falhar, limpa storage e força logout
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");

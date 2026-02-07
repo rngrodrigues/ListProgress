@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
 
 export class AuthService {
 
-  // Gera Access Token (válido 1h)
   private generateAccessToken(id: string, email: string) {
     return jwt.sign(
       { id, email, type: 'access' }, 
@@ -16,7 +15,6 @@ export class AuthService {
     );
   }
 
-  // Gera Refresh Token (válido 7 dias)
   private generateRefreshToken(id: string, email: string) {
     return jwt.sign(
       { id, email, type: 'refresh' }, 
@@ -25,9 +23,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Registro de usuário
-   */
   async register(email: string, password: string, name?: string) {
     const existingUser = await userRepository.getUserByEmail(email);
     if (existingUser) throw { statusCode: 400, message: 'Email já cadastrado' };
@@ -56,9 +51,6 @@ export class AuthService {
     };
   }
 
-  /**
-   * Login de usuário
-   */
   async login(email: string, password: string) {
     const user = await userRepository.getUserByEmail(email);
     if (!user) throw { statusCode: 404, message: 'Usuário não encontrado' };
@@ -82,9 +74,6 @@ export class AuthService {
     };
   }
 
-  /**
-   * Valida e gera um novo Access Token a partir do Refresh Token
-   */
   async refreshAccessToken(refreshToken: string) {
     try {
       const decoded = jwt.verify(refreshToken, JWT_SECRET) as { id: string; email: string; type: string };
